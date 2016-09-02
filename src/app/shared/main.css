@@ -1,0 +1,21 @@
+.centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.full-height {
+  height: 100vh;
+}
+
+button {
+  text-transform: uppercase;
+}
+
+.material-icons.red400 {
+  color: #ef5350;
+}
+
+.material-icons.md-18 {
+  font-size: 18px;
+}

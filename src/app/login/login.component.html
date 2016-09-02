@@ -1,0 +1,40 @@
+<div class="container-fluid full-height centered">
+  <div class="login-container">
+    <div class="row alert alert-warning" [hidden]="loginError.code.length == 0">
+      <div class="col-xs-12 col-lg-12">{{loginError.message}}</div>
+    </div>
+    <form (ngSubmit)="onSubmit()" [formGroup]="form">
+      <div class="row">
+        <div class="col-xs-12 col-lg-12">
+          <md-input placeholder="Email"
+                    type="email"
+                    formControlName="email"
+                    [dividerColor]="inputDividerColor('email')">
+            <span md-suffix [hidden]="isValidOrPristine('email')">
+              <i class="material-icons red400 md-18">error</i>
+            </span>
+            <md-hint [hidden]="isValidOrPristine('email')" align="end">{{errorMessage('email')}}</md-hint>
+          </md-input>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-lg-12">
+          <md-input placeholder="Password"
+                    type="password"
+                    formControlName="password"
+                    [dividerColor]="inputDividerColor('password')">
+            <span md-suffix [hidden]="isValidOrPristine('password')">
+              <i class="material-icons red400 md-18">error</i>
+            </span>
+            <md-hint [hidden]="isValidOrPristine('password')" align="end">{{errorMessage('password')}}</md-hint>
+          </md-input>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-lg-12 login-button-container">
+          <button md-raised-button color="primary" type="submit">Login</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
