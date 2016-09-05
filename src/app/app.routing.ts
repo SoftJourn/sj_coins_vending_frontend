@@ -5,7 +5,8 @@ import { MainInfoComponent } from "./main-info/";
 
 const routes: Routes = [
   {path: '', pathMatch: 'full', redirectTo: 'main'},
-  {path: 'main', component: MainInfoComponent, canActivate: [AuthGuard]},
+  // {path: 'main', component: MainInfoComponent, canActivate: [AuthGuard]},
+  {path: 'main', component: MainInfoComponent},
   {path: 'login', component: LoginComponent}
 ];
 
