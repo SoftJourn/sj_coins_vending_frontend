@@ -12,13 +12,18 @@ import { MdIconModule } from "@angular2-material/icon";
 import { OverlayModule } from "@angular2-material/core";
 import { MainInfoComponent } from "./main-info/main-info.component";
 import { LoginComponent } from "./login/login.component";
+import { TopNavComponent } from './shared/top-nav/top-nav.component';
+import { SideBarComponent } from './shared/side-bar/side-bar.component';
+import { Ng2BootstrapModule, ButtonsModule } from "ng2-bootstrap/ng2-bootstrap"
 
 
 @NgModule({
   declarations: [
     AppComponent,
     MainInfoComponent,
-    LoginComponent
+    LoginComponent,
+    TopNavComponent,
+    SideBarComponent
   ],
   imports: [
     BrowserModule,
@@ -29,7 +34,9 @@ import { LoginComponent } from "./login/login.component";
     MdButtonModule,
     MdIconModule,
     OverlayModule,
-    HttpModule
+    HttpModule,
+    Ng2BootstrapModule,
+    ButtonsModule
   ],
   providers: [
     AppConsts,
