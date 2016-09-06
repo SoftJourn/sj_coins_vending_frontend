@@ -3,8 +3,10 @@
 </button>
 <nav class="sidebar" [ngClass]="{sidebarPushRight: isActive}">
   <ul class="list-group">
-    <a [routerLink]="['/main']" class="list-group-item">
-      <i class="fa fa-th fa-lg"></i>Dashboard</a>
+    <a [routerLink]="['/main']" routerLinkActive="router-link-active"
+       [routerLinkActiveOptions]="{exact: true}" class="list-group-item">
+      <i class="fa fa-th fa-lg"></i>Dashboard
+    </a>
     <div class="nested-menu">
       <a class="list-group-item" (click)="addExpandClass('products')">
         <span><i class="fa fa-shopping-basket fa-lg"></i>Products</span>
@@ -12,10 +14,16 @@
       <li class="nested" [ngClass]="setSubmenuClass('products')">
         <ul class="submenu">
           <li>
-            <a [routerLink]="['/main/products/add']"><span><i class="fa fa-plus-square fa-lg"></i>Create</span></a>
+            <a [routerLink]="['/main/products/add']" routerLinkActive="router-link-active"
+               [routerLinkActiveOptions]="{exact: true}">
+              <span><i class="fa fa-plus-square fa-lg"></i>Create</span>
+            </a>
           </li>
           <li>
-            <a [routerLink]="['/main/products']"><span><i class="fa fa-database fa-lg"></i>Show all</span></a>
+            <a [routerLink]="['/main/products']" routerLinkActive="router-link-active"
+               [routerLinkActiveOptions]="{exact: true}">
+              <span><i class="fa fa-database fa-lg"></i>Show all</span>
+            </a>
           </li>
         </ul>
       </li>
@@ -27,13 +35,22 @@
       <li class="nested" [ngClass]="setSubmenuClass('vending')">
         <ul class="submenu">
           <li>
-            <a [routerLink]="['/main']"><span><i class="fa fa-plus-square fa-lg"></i>Create</span></a>
+            <a [routerLink]="['/main/machines/add']" routerLinkActive="router-link-active"
+               [routerLinkActiveOptions]="{exact: true}">
+              <span><i class="fa fa-plus-square fa-lg"></i>Create</span>
+            </a>
           </li>
           <li>
-            <a [routerLink]="['/main']"><span><i class="fa fa-database fa-lg"></i>Show all</span></a>
+            <a [routerLink]="['/main/machines']" routerLinkActive="router-link-active"
+               [routerLinkActiveOptions]="{exact: true}">
+              <span><i class="fa fa-database fa-lg"></i>Show all</span>
+            </a>
           </li>
           <li>
-            <a [routerLink]="['/main']"><span><i class="fa fa-upload fa-lg"></i>Upload machine</span></a>
+            <a [routerLink]="['/main/machines/fill']" routerLinkActive="router-link-active"
+               [routerLinkActiveOptions]="{exact: true}">
+              <span><i class="fa fa-upload fa-lg"></i>Upload machine</span>
+            </a>
           </li>
         </ul>
       </li>
@@ -45,10 +62,16 @@
       <li class="nested" [ngClass]="setSubmenuClass('categories')">
         <ul class="submenu">
           <li>
-            <a [routerLink]="['/main']"><span><i class="fa fa-plus-square fa-lg"></i>Create</span></a>
+            <a [routerLink]="['/main/categories/add']" routerLinkActive="router-link-active"
+               [routerLinkActiveOptions]="{exact: true}">
+              <span><i class="fa fa-plus-square fa-lg"></i>Create</span>
+            </a>
           </li>
           <li>
-            <a [routerLink]="['/main']"><span><i class="fa fa-database fa-lg"></i>Show all</span></a>
+            <a [routerLink]="['/main/categories']" routerLinkActive="router-link-active"
+               [routerLinkActiveOptions]="{exact: true}">
+              <span><i class="fa fa-database fa-lg"></i>Show all</span>
+            </a>
           </li>
         </ul>
       </li>

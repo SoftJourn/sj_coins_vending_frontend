@@ -15,10 +15,10 @@ import { LoginComponent } from "./login/login.component";
 import { TopNavComponent } from './shared/top-nav/top-nav.component';
 import { SideBarComponent } from './shared/side-bar/side-bar.component';
 import { Ng2BootstrapModule, ButtonsModule } from "ng2-bootstrap/ng2-bootstrap";
-import { ProductsComponent } from './products/products.component';
-import { ProductItemComponent } from "./products/product-item/product-item.component";
-import { AddProductComponent } from "./products/add-product/add-product.component";
+import { ProductsComponent, ProductItemComponent, AddProductComponent } from './products/';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { MachinesComponent, MachineItemComponent, AddMachineComponent, FillMachineComponent } from './machines/';
+import { CategoriesComponent, CategoryItemComponent, AddCategoryComponent } from './categories/';
 
 
 @NgModule({
@@ -31,7 +31,14 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     ProductsComponent,
     ProductItemComponent,
     AddProductComponent,
-    DashboardComponent
+    DashboardComponent,
+    MachinesComponent,
+    MachineItemComponent,
+    AddMachineComponent,
+    FillMachineComponent,
+    CategoriesComponent,
+    CategoryItemComponent,
+    AddCategoryComponent
   ],
   imports: [
     BrowserModule,

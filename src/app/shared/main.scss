@@ -129,7 +129,7 @@ a:hover{
       background: darken($topnav-background-color, 5%);
       color: #fff;
     }
-    a.router-link-active{
+    a.router-link-active {
       background: darken($topnav-background-color, 5%);
       color: #fff;
     }
@@ -487,6 +487,7 @@ a:hover{
   }
   ul.submenu {
     height: 0;
+    padding-left: 0;
   }
   & .expand {
     ul.submenu {
@@ -498,9 +499,14 @@ a:hover{
           padding: 10px;
           display: block;
           text-decoration: none;
+          padding-left: 50px;
           i {
             padding-right: 10px;
           }
+        }
+        a.router-link-active {
+          background: darken($topnav-background-color, 5%);
+          color: #fff;
         }
       }
     }
