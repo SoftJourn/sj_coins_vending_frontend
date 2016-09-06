@@ -22,11 +22,11 @@ export class SideBarComponent implements OnInit {
     }
   }
 
-  setSubmenuClass() {
-    if (this.showMenu == '0') {
-      return 'hide';
-    } else {
+  setSubmenuClass(element: string) {
+    if (element === this.showMenu) {
       return 'expand';
+    } else {
+      return 'hide';
     }
   }
 
