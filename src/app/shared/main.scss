@@ -122,6 +122,9 @@ a:hover{
       color: #999;
       text-decoration: none;
     }
+    a.list-group-item i {
+      padding-right: 10px;
+    }
     a:hover{
       background: darken($topnav-background-color, 5%);
       color: #fff;
@@ -491,9 +494,13 @@ a:hover{
       height: auto;
       li {
         a {
-          color: #FFF;
+          color: #999;
           padding: 10px;
           display: block;
+          text-decoration: none;
+          i {
+            padding-right: 10px;
+          }
         }
       }
     }
@@ -501,6 +508,14 @@ a:hover{
   .hide {
     ul.submenu {
       display: none;
+    }
+  }
+}
+
+li.nav-item {
+  a {
+    i {
+      padding-right: 10px;
     }
   }
 }

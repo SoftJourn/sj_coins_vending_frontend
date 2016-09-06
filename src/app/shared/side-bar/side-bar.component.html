@@ -4,52 +4,51 @@
 <nav class="sidebar" [ngClass]="{sidebarPushRight: isActive}">
   <ul class="list-group">
     <a [routerLink]="['/main']" class="list-group-item">
-      <i class="fa fa-th fa-lg"></i> Dashboard
-    </a>
+      <i class="fa fa-th fa-lg"></i>Dashboard</a>
     <div class="nested-menu">
-      <a class="list-group-item" (click)="addExpandClass('pages1')">
-        <span><i class="fa fa-shopping-basket fa-lg"></i> &nbsp; Products</span>
+      <a class="list-group-item" (click)="addExpandClass('products')">
+        <span><i class="fa fa-shopping-basket fa-lg"></i>Products</span>
       </a>
-      <li class="nested" [ngClass]="setSubmenuClass('pages1')">
+      <li class="nested" [ngClass]="setSubmenuClass('products')">
         <ul class="submenu">
           <li>
-            <a [routerLink]="['/main']"><span><i class="fa fa-plus-square fa-lg"></i> Create</span></a>
+            <a [routerLink]="['/main/products/add']"><span><i class="fa fa-plus-square fa-lg"></i>Create</span></a>
           </li>
           <li>
-            <a [routerLink]="['/main']"><span><i class="fa fa-database fa-lg"></i> Show all</span></a>
+            <a [routerLink]="['/main/products']"><span><i class="fa fa-database fa-lg"></i>Show all</span></a>
           </li>
         </ul>
       </li>
     </div>
     <div class="nested-menu">
-      <a class="list-group-item" (click)="addExpandClass('pages2')">
-        <span><i class="fa fa-cogs fa-lg"></i> &nbsp; Vending machines</span>
+      <a class="list-group-item" (click)="addExpandClass('vending')">
+        <span><i class="fa fa-cogs fa-lg"></i>Vending machines</span>
       </a>
-      <li class="nested" [ngClass]="setSubmenuClass('pages2')">
+      <li class="nested" [ngClass]="setSubmenuClass('vending')">
         <ul class="submenu">
           <li>
-            <a [routerLink]="['/main']"><span><i class="fa fa-plus-square fa-lg"></i> Create</span></a>
+            <a [routerLink]="['/main']"><span><i class="fa fa-plus-square fa-lg"></i>Create</span></a>
           </li>
           <li>
-            <a [routerLink]="['/main']"><span><i class="fa fa-database fa-lg"></i> Show all</span></a>
+            <a [routerLink]="['/main']"><span><i class="fa fa-database fa-lg"></i>Show all</span></a>
           </li>
           <li>
-            <a [routerLink]="['/main']"><span><i class="fa fa-upload fa-lg"></i> Upload machine</span></a>
+            <a [routerLink]="['/main']"><span><i class="fa fa-upload fa-lg"></i>Upload machine</span></a>
           </li>
         </ul>
       </li>
     </div>
     <div class="nested-menu">
-      <a class="list-group-item" (click)="addExpandClass('pages3')">
-        <span><i class="fa fa-tags fa-lg"></i> &nbsp; Categories</span>
+      <a class="list-group-item" (click)="addExpandClass('categories')">
+        <span><i class="fa fa-tags fa-lg"></i>Categories</span>
       </a>
-      <li class="nested" [ngClass]="setSubmenuClass('pages3')">
+      <li class="nested" [ngClass]="setSubmenuClass('categories')">
         <ul class="submenu">
           <li>
-            <a [routerLink]="['/main']"><span><i class="fa fa-plus-square fa-lg"></i> Create</span></a>
+            <a [routerLink]="['/main']"><span><i class="fa fa-plus-square fa-lg"></i>Create</span></a>
           </li>
           <li>
-            <a [routerLink]="['/main']"><span><i class="fa fa-database fa-lg"></i> Show all</span></a>
+            <a [routerLink]="['/main']"><span><i class="fa fa-database fa-lg"></i>Show all</span></a>
           </li>
         </ul>
       </li>

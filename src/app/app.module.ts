@@ -14,7 +14,11 @@ import { MainInfoComponent } from "./main-info/main-info.component";
 import { LoginComponent } from "./login/login.component";
 import { TopNavComponent } from './shared/top-nav/top-nav.component';
 import { SideBarComponent } from './shared/side-bar/side-bar.component';
-import { Ng2BootstrapModule, ButtonsModule } from "ng2-bootstrap/ng2-bootstrap"
+import { Ng2BootstrapModule, ButtonsModule } from "ng2-bootstrap/ng2-bootstrap";
+import { ProductsComponent } from './products/products.component';
+import { ProductItemComponent } from "./products/product-item/product-item.component";
+import { AddProductComponent } from "./products/add-product/add-product.component";
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 
 @NgModule({
@@ -23,7 +27,11 @@ import { Ng2BootstrapModule, ButtonsModule } from "ng2-bootstrap/ng2-bootstrap"
     MainInfoComponent,
     LoginComponent,
     TopNavComponent,
-    SideBarComponent
+    SideBarComponent,
+    ProductsComponent,
+    ProductItemComponent,
+    AddProductComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,

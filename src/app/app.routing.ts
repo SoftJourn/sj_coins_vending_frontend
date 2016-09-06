@@ -2,12 +2,19 @@ import { Routes, RouterModule } from "@angular/router";
 import { AuthGuard } from "./auth.guard";
 import { LoginComponent } from "./login/";
 import { MainInfoComponent } from "./main-info/";
+import { ProductsComponent } from "./products/products.component";
+import { AddProductComponent } from "./products/add-product/add-product.component";
+import { DashboardComponent } from "./dashboard/dashboard.component";
 
 const routes: Routes = [
-  {path: '', pathMatch: 'full', redirectTo: 'main'},
+  { path: '', pathMatch: 'full', redirectTo: 'main' },
   // {path: 'main', component: MainInfoComponent, canActivate: [AuthGuard]},
-  {path: 'main', component: MainInfoComponent},
-  {path: 'login', component: LoginComponent}
+  { path: 'main', component: MainInfoComponent, children: [
+    { path: '', component: DashboardComponent },
+    { path: 'products', component: ProductsComponent },
+    { path: 'products/add', component: AddProductComponent }
+  ]},
+  { path: 'login', component: LoginComponent }
 ];
 
 export const appRoutingProviders: any[] = [
