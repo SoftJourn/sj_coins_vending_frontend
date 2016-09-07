@@ -3,7 +3,7 @@ import {
   Account,
   AccountPhoto,
   AppError,
-  EmailPasswordCredentials
+  UsernamePasswordCredentials
 } from "../";
 import { Observable } from "rxjs/Rx";
 import { Http, Headers } from "@angular/http";
@@ -21,9 +21,9 @@ export class AccountService {
     private http: Http
   ) {}
 
-  private createAccount(): Observable<Account> {
+  private createAccount(username: string): Observable<Account> {
     return new Observable<Account>(observer => {
-      let url = `${this.APP_CONSTS.API_ENDPOINT}/account/me`;
+      let url = `${this.APP_CONSTS.USER_ENDPOINT}/${username}`;
 
       this.getHeaders()
         .flatMap(headers => this.http.get(url, {headers: headers}))
@@ -46,14 +46,14 @@ export class AccountService {
     });
   }
 
-  public login(credentials: EmailPasswordCredentials): Observable<void> {
+  public login(credentials: UsernamePasswordCredentials): Observable<void> {
     return new Observable<void>(observer => {
       if (this.verifyCredentials(credentials)) {
         let grantType = `grant_type=password`;
-        let clientId = 'client_id=trustedClient';
-        let scope = 'scope=read write trust';
-        let username = `username=${credentials.email}`;
-        let password = `password=${btoa(credentials.password)}`;
+        let clientId = 'client_id=user_cred';
+        let scope = 'scope=read write';
+        let username = `username=${credentials.username}`;
+        let password = `password=${credentials.password}`;
 
         let body = encodeURI(`${grantType}&${clientId}&${scope}&${username}&${password}`);
         let url = this.APP_CONSTS.AUTH_ENDPOINT;
@@ -64,7 +64,7 @@ export class AccountService {
           response => {
             if (response.ok) {
               this.tokenService.saveTokens(response.text());
-              this.createAccount().subscribe(
+              this.createAccount(credentials.username).subscribe(
                 account => {
                   this.account = account;
                   observer.complete();
@@ -88,26 +88,19 @@ export class AccountService {
     this.tokenService.deleteTokensFromStorage();
   }
 
-  private verifyCredentials(credentials: EmailPasswordCredentials): boolean {
+  private verifyCredentials(credentials: UsernamePasswordCredentials): boolean {
     let regExp = /^[\w!@#\$%\^&\*\(\)\-\\\.|\/\?><;':"+=~`{}\[\],]+$/i;
 
-    return regExp.test(credentials.email) && regExp.test(credentials.password);
+    return regExp.test(credentials.username) && regExp.test(credentials.password);
   }
 
   private createAccountFromJson(user: any): Account {
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(user));
 
     return new Account(
-      user.id,
-      user.name,
-      user.email,
-      new AccountPhoto(
-        user.photo.id,
-        user.photo['content_url'],
-        user.photo['file_name'],
-        user.photo.width,
-        user.photo.height
-      )
+      user.ldapName,
+      user.fullName,
+      user.email
     );
   }
 
@@ -121,7 +114,7 @@ export class AccountService {
 
   private getHeadersForTokenRequest(): Headers {
     let headers = new Headers();
-    headers.append('Authorization', 'Basic dHJ1c3RlZENsaWVudDpjb25maWdzZWM=');
+    headers.append('Authorization', `Basic ${this.APP_CONSTS.CLIENT_AUTH_HASH}`);
     headers.append('Content-Type', 'application/x-www-form-urlencoded');
 
     return headers;

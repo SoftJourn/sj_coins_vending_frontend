@@ -7,13 +7,13 @@
       <div class="row">
         <div class="col-xs-12 col-lg-12">
           <md-input placeholder="Email"
-                    type="email"
-                    formControlName="email"
-                    [dividerColor]="inputDividerColor('email')">
-            <span md-suffix [hidden]="isValidOrPristine('email')">
+                    type="text"
+                    formControlName="username"
+                    [dividerColor]="inputDividerColor('username')">
+            <span md-suffix [hidden]="isValidOrPristine('username')">
               <i class="material-icons red400 md-18">error</i>
             </span>
-            <md-hint [hidden]="isValidOrPristine('email')" align="end">{{errorMessage('email')}}</md-hint>
+            <md-hint [hidden]="isValidOrPristine('username')" align="end">{{errorMessage('username')}}</md-hint>
           </md-input>
         </div>
       </div>

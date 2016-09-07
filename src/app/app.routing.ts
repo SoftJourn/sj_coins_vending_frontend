@@ -11,7 +11,7 @@ import { CategoriesComponent, AddCategoryComponent } from "./categories/";
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'main' },
   // {path: 'main', component: MainInfoComponent, canActivate: [AuthGuard]},
-  { path: 'main', component: MainInfoComponent, children: [
+  { path: 'main', component: MainInfoComponent, canActivate: [AuthGuard], children: [
     { path: '', component: DashboardComponent },
     { path: 'products', component: ProductsComponent },
     { path: 'products/add', component: AddProductComponent },

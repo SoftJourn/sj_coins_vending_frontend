@@ -6,8 +6,7 @@ import { AccountService, AppError } from "../shared/";
 @Component({
   selector: 'app-login',
   templateUrl: 'login.component.html',
-  styleUrls: ['login.component.scss'],
-  directives: []
+  styleUrls: ['login.component.scss']
 })
 export class LoginComponent implements OnInit {
   form: FormGroup;
@@ -22,9 +21,9 @@ export class LoginComponent implements OnInit {
     this.loginError = new AppError();
 
     this.form = new FormGroup({
-      email: new FormControl('', [
+      username: new FormControl('', [
         Validators.required,
-        Validators.pattern('[\\d\\w\\.]+@(chromeriver|softjourn)\\.com')
+        Validators.pattern('[\\d\\w\\.]+')
       ]),
       password: new FormControl('', [
         Validators.required

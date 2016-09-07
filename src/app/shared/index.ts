@@ -2,6 +2,6 @@ export * from './account';
 export * from './account-photo';
 export * from './app-error';
 export * from './app.consts';
-export * from './email-password-credentials';
+export * from './username-password-credentials';
 export * from './services/account.service';
 export * from './services/token.service';

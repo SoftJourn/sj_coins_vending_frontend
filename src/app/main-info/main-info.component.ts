@@ -7,14 +7,9 @@ import { AccountService, Account } from "../shared/";
   styleUrls: ['main-info.component.scss'],
 })
 export class MainInfoComponent implements OnInit {
-  account: Account;
 
-  constructor(
-    private accountService: AccountService
-  ) {}
+  constructor() {}
 
-  ngOnInit() {
-    this.account = this.accountService.getAccount()
-  }
+  ngOnInit() {}
 
 }
