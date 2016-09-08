@@ -1,3 +1,63 @@
-<p>
-  add-machine works!
-</p>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12">
+      <h1 class="page-header">Add machine</h1>
+    </div>
+  </div>
+</div>
+<hr>
+<div class="container-fluid">
+  <div class="col-xs-12 col-lg-12">
+    <div class="card card-block card-outline-success">
+      <form>
+        <div class="form-group row">
+          <label for="vm-name" class="col-sm-2 col-form-label">Name</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="vm-name" placeholder="Name">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="vm-eris-account" class="col-sm-2 col-form-label">Eris account address</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="vm-eris-account" placeholder="Eris account address">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="vm-rows" class="col-sm-2 col-form-label">Rows count</label>
+          <div class="col-sm-10">
+            <input type="number" class="form-control" id="vm-rows" placeholder="Rows count">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="vm-rows-numbering" class="col-sm-2 col-form-label">Row numbering</label>
+          <div class="col-sm-10">
+            <select class="form-control" id="vm-rows-numbering">
+              <option>Numerical</option>
+              <option>Alphabetical</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="vm-columns" class="col-sm-2 col-form-label">Columns count</label>
+          <div class="col-sm-10">
+            <input type="number" class="form-control" id="vm-columns" placeholder="Rows count">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="vm-columns-numbering" class="col-sm-2 col-form-label">Column numbering</label>
+          <div class="col-sm-10">
+            <select class="form-control" id="vm-columns-numbering">
+              <option>Numerical</option>
+              <option>Alphabetical</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="offset-sm-2 col-sm-10">
+            <button type="submit" class="btn btn-success">Submit</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
