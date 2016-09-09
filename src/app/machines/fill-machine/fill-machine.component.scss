@@ -1,0 +1,41 @@
+@media (min-width: 768px) {
+  .cell-card-row {
+    height: 175px;
+  }
+
+  .card-block-full-height {
+    height: 100%;
+  }
+
+  .machine-bg {
+    padding: 20px;
+    background-color: #4c4c6a;
+    i.fa {
+      color: #c2c4ce;
+    }
+  }
+
+  .bottom-container {
+    padding: 20px;
+    height: 200px;
+    background-color: #4c4c6a;
+    .top-row {
+      height: 50px;
+    }
+    .center-row {
+      height: 100px;
+      .receiver-box {
+        height: 100px;
+        background-color: #c2c4ce;
+        border-radius: 10px;
+      }
+    }
+    .bottom-row {
+      height: 50px;
+    }
+  }
+
+  .product-card {
+    cursor: pointer;
+  }
+}
