@@ -19,6 +19,7 @@ import { ProductsComponent, ProductItemComponent, AddProductComponent } from './
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { MachinesComponent, MachineItemComponent, AddMachineComponent, FillMachineComponent } from './machines/';
 import { CategoriesComponent, CategoryItemComponent, AddCategoryComponent } from './categories/';
+import { MachineService } from "./shared/services/machine.service";
 
 
 @NgModule({
@@ -57,7 +58,8 @@ import { CategoriesComponent, CategoryItemComponent, AddCategoryComponent } from
     AppConsts,
     TokenService,
     AccountService,
-    appRoutingProviders
+    appRoutingProviders,
+    MachineService
   ],
   bootstrap: [AppComponent]
 })

@@ -40,7 +40,7 @@
     "@angular2-material/tabs": "v2.0.0-alpha.8-1",
     "@angular2-material/toolbar": "v2.0.0-alpha.8-1",
     "@angular2-material/tooltip": "v2.0.0-alpha.8-1",
-    "bootstrap": "4.0.0-alpha.3",
+    "bootstrap": "4.0.0-alpha.4",
     "core-js": "^2.4.0",
     "font-awesome": "^4.6.3",
     "ng2-bootstrap": "1.1.1",

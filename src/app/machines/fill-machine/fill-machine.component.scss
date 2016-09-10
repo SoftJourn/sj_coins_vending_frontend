@@ -1,3 +1,34 @@
+.product-card {
+  cursor: pointer;
+}
+
+.cell-card-row {
+}
+
+.card-block-full-height {
+}
+
+.machine-bg {
+}
+
+.bottom-container {
+}
+
+.top-row {
+}
+
+.center-row {
+}
+
+.receiver-box {
+}
+
+.bottom-row {
+}
+
+.cell-form {
+}
+
 @media (min-width: 768px) {
   .cell-card-row {
     height: 175px;
@@ -13,6 +44,12 @@
     i.fa {
       color: #c2c4ce;
     }
+  }
+
+  .cell-form {
+    background-color: #FFFFFF;
+    margin: 0 20px;
+    border-radius: .25rem;
   }
 
   .bottom-container {
@@ -33,9 +70,5 @@
     .bottom-row {
       height: 50px;
     }
-  }
-
-  .product-card {
-    cursor: pointer;
   }
 }
