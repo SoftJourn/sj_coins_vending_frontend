@@ -1,11 +1,12 @@
 {
   "name": "configuration-tracking-system",
-  "version": "0.0.0",
+  "version": "0.1.0-alpha.1",
   "license": "MIT",
   "angular-cli": {},
   "scripts": {
     "start": "ng serve",
     "startProd": "ng serve -prod",
+    "build": "ng build --prod",
     "lint": "tslint \"src/**/*.ts\"",
     "test": "ng test",
     "pree2e": "webdriver-manager update",
