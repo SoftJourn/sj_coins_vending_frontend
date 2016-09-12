@@ -5,9 +5,6 @@
 .cell-card-row {
 }
 
-.card-block-full-height {
-}
-
 .machine-bg {
 }
 
@@ -29,13 +26,17 @@
 .cell-form {
 }
 
+.card-icon-centered {
+}
+
 @media (min-width: 768px) {
   .cell-card-row {
     height: 175px;
   }
 
-  .card-block-full-height {
-    height: 100%;
+  .card-icon-centered {
+    vertical-align: middle;
+    text-align: center;
   }
 
   .machine-bg {

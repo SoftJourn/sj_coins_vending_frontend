@@ -12,10 +12,10 @@
       <div class="card-deck-wrapper">
         <div *ngFor="let row of machine.rows">
           <div class="card-deck cell-card-row">
-            <div class="card product-card" *ngFor="let field of row.fields"
+            <div class="card product-card card-icon-centered" *ngFor="let field of row.fields"
                  (click)="toggleState(field.internalId, row.id)"
                  [@selectDeselectCard]="applyCardState(field.internalId)">
-              <div class="card-block-full-height centered">
+              <div>
                 <i class="fa fa-plus-circle fa-3x" aria-hidden="true"></i>
               </div>
             </div>
