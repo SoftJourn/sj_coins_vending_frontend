@@ -2,6 +2,15 @@
 
 This project was generated with [angular-cli](https://github.com/angular/angular-cli) version 1.0.0-beta.11-webpack.8.
 
+## Certificate issue on testing server
+In order to login to the app you will need to add certificate of sjcoins.testing.softjourn.if.ua to trusted store.
+
+###Linux
+Most browsers use their own CA database, and so tools like certutil have to be used to modify their contents (on Debian that is provided by the libnss3-tools package). For example, with Chrome you run something along the lines of:
+
+`certutil -d sql:$HOME/.pki/nssdb -A -t "C,," -n "Softjourn CA" -i /path/to/CA/cert.file`
+Firefox will allow you to browse to the certificate on disk, recognize it a certificate file and then allow you to import it to Root CA list.
+
 ## Development server
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
