@@ -1,4 +1,4 @@
-import { Product } from "../../shared/product";
+import { Product } from "../../shared/entity/product";
 
 export class Machine {
   id: string;

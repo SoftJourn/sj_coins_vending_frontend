@@ -20,6 +20,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { MachinesComponent, MachineItemComponent, AddMachineComponent, FillMachineComponent } from './machines/';
 import { CategoriesComponent, CategoryItemComponent, AddCategoryComponent } from './categories/';
 import { MachineService } from "./shared/services/machine.service";
+import {DashboardService} from "./shared/services/dashboard.service";
 
 
 @NgModule({
@@ -59,7 +60,8 @@ import { MachineService } from "./shared/services/machine.service";
     TokenService,
     AccountService,
     appRoutingProviders,
-    MachineService
+    MachineService,
+    DashboardService
   ],
   bootstrap: [AppComponent]
 })

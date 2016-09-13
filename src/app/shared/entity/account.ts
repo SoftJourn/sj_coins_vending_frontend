@@ -1,5 +1,3 @@
-import { AccountPhoto } from "./";
-
 export class Account {
 
   constructor(

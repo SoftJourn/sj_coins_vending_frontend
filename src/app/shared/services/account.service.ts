@@ -120,7 +120,7 @@ export class AccountService {
     return headers;
   }
 
-  private getHeaders(): Observable<Headers> {
+  public getHeaders(): Observable<Headers> {
     return new Observable<Headers>(observer => {
       if (!this.tokenService.getTokenType()) {
         observer.error(new AppError(
