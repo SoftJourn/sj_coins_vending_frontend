@@ -10,16 +10,15 @@ import { CategoriesComponent, AddCategoryComponent } from "./categories/";
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'main' },
-  // {path: 'main', component: MainInfoComponent, canActivate: [AuthGuard]},
-  { path: 'main', component: MainInfoComponent, canActivate: [AuthGuard], children: [
-    { path: '', component: DashboardComponent },
-    { path: 'products', component: ProductsComponent },
-    { path: 'products/add', component: AddProductComponent },
-    { path: 'machines', component: MachinesComponent },
-    { path: 'machines/add', component: AddMachineComponent },
-    { path: 'machines/fill', component: FillMachineComponent },
-    { path: 'categories', component: CategoriesComponent },
-    { path: 'categories/add', component: AddCategoryComponent }
+  { path: 'main', component: MainInfoComponent, children: [
+    { path: '', component: DashboardComponent, canActivate: [AuthGuard] },
+    { path: 'products', component: ProductsComponent, canActivate: [AuthGuard] },
+    { path: 'products/add', component: AddProductComponent, canActivate: [AuthGuard] },
+    { path: 'machines', component: MachinesComponent, canActivate: [AuthGuard] },
+    { path: 'machines/add', component: AddMachineComponent, canActivate: [AuthGuard] },
+    { path: 'machines/fill', component: FillMachineComponent, canActivate: [AuthGuard] },
+    { path: 'categories', component: CategoriesComponent, canActivate: [AuthGuard] },
+    { path: 'categories/add', component: AddCategoryComponent, canActivate: [AuthGuard] }
   ]},
   { path: 'login', component: LoginComponent }
 ];

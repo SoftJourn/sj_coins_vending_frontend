@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Machine, Field, Row } from "../../machines/shared/machine";
+import { Observable } from "rxjs";
+import { AddMachineDTO } from "../../machines/shared/add-machine-dto";
 
 @Injectable()
 export class MachineService {
@@ -53,5 +55,11 @@ export class MachineService {
 
   getMachine(machineId: string): Machine {
     return this.machine;
+  }
+
+  createMachine(machine: AddMachineDTO): Observable<void> {
+    return new Observable<void>(observer => {
+      observer.complete();
+    });
   }
 }

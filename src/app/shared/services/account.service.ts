@@ -48,6 +48,11 @@ export class AccountService {
 
   public login(credentials: UsernamePasswordCredentials): Observable<void> {
     return new Observable<void>(observer => {
+      let badCredError = new AppError(
+        'auth/account-not-found',
+        'Wrong credentials'
+      );
+
       if (this.verifyCredentials(credentials)) {
         let grantType = `grant_type=password`;
         let clientId = 'client_id=user_cred';
@@ -72,13 +77,11 @@ export class AccountService {
                 error => observer.error(error)
               )
             }
-          }
+          },
+          error => observer.error(badCredError)
         )
       } else {
-        observer.error(new AppError(
-          'auth/zendesk-account-not-found',
-          'Wrong credentials or you do not have Zendesk account'
-        ));
+        observer.error(badCredError);
       }
     });
   }
@@ -105,11 +108,7 @@ export class AccountService {
   }
 
   public getAccount(): Account {
-    if (this.account) {
-      return this.account
-    } else {
-      return JSON.parse(localStorage.getItem('account'));
-    }
+    return JSON.parse(localStorage.getItem('account'));
   }
 
   private getHeadersForTokenRequest(): Headers {
