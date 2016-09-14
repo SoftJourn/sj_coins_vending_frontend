@@ -1,14 +1,11 @@
 import { Injectable, Inject } from "@angular/core";
-import {
-  Account,
-  AccountPhoto,
-  AppError,
-  UsernamePasswordCredentials
-} from "../";
 import { Observable } from "rxjs/Rx";
 import { Http, Headers } from "@angular/http";
 import { TokenService } from "./token.service";
 import { AppConsts } from "../app.consts";
+import { AppError } from "../app-error";
+import { Account } from "../entity/account";
+import { UsernamePasswordCredentials } from "../username-password-credentials";
 
 @Injectable()
 export class AccountService {

@@ -1,6 +1,6 @@
 import {Injectable, Inject} from '@angular/core';
 import {AppConsts} from "../app.consts";
-import {Http, Headers} from "@angular/http";
+import { Http, Headers, Response } from "@angular/http";
 import {Observable} from "rxjs/Rx";
 import {AppError} from "../app-error";
 import {Dashboard} from "../entity/dashboard";
@@ -19,20 +19,19 @@ export class DashboardService {
       let url = `${this.APP_CONSTS.API_VENDING_ENDPOINT}/dashboard`;
       this.accountService.getHeaders()
         .flatMap(headers => this.http.get(url, {headers: headers}))
-          .subscribe(
-            response => {
-              if (response.ok) {
-                console.log(response);
-                let dashboard = this.jsonToDashboard(response.json());
-                console.log(dashboard);
-                observer.next(dashboard);
-                observer.complete();
-              }
-            },
-            error => observer.error(new AppError(
-              'auth/creation-failure',
-              'Error appeared during account creation please try again later'))
-          );
+        .subscribe(
+          response => {
+            if (response.ok) {
+              let dashboard = this.jsonToDashboard(response.json());
+
+              observer.next(dashboard);
+              observer.complete();
+            }
+          },
+          error => observer.error(new AppError(
+            'auth/creation-failure',
+            'Error appeared during account creation please try again later'))
+        );
     });
   }
 

@@ -12,6 +12,15 @@ export class AddCategoryComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    this.buildForm();
   }
 
+  private buildForm(): void {
+    this.form = new FormGroup({
+      category: new FormControl('', Validators.required)
+    });
+  }
+
+  submit() {
+  }
 }

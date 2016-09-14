@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { AppComponent } from './app.component';
-import { AppConsts, TokenService, AccountService } from "./shared/";
+import { AppConsts } from "./shared/app.consts";
 import { routing, appRoutingProviders } from "./app.routing";
 import { MdInputModule } from "@angular2-material/input";
 import { MdButtonModule } from "@angular2-material/button";
@@ -21,6 +21,8 @@ import { MachinesComponent, MachineItemComponent, AddMachineComponent, FillMachi
 import { CategoriesComponent, CategoryItemComponent, AddCategoryComponent } from './categories/';
 import { MachineService } from "./shared/services/machine.service";
 import {DashboardService} from "./shared/services/dashboard.service";
+import { TokenService } from "./shared/services/token.service";
+import { AccountService } from "./shared/services/account.service";
 
 
 @NgModule({

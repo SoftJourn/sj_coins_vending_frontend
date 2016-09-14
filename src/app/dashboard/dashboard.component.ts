@@ -17,7 +17,8 @@ export class DashboardComponent implements OnInit {
     this.dashboardService.getDashboard().subscribe(
       data => {
         this.dashboard = data;
-      }
+      },
+      error => {}
     );
   }
 }

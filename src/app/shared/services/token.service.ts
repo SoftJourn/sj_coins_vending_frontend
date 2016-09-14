@@ -26,22 +26,25 @@ export class TokenService {
   }
 
   public saveTokens(tokenResponse: string): void {
-    localStorage.setItem(this.STORAGE_KEY, tokenResponse);
-    this.populateFields(tokenResponse);
+    let tokesJson = JSON.parse(tokenResponse);
+    let expiresInMilis = (tokesJson['expires_in'] as number) * 1000;
+    tokesJson['expires_in'] = new Date(Date.now() + expiresInMilis).getTime();
+
+    var tokensStr = JSON.stringify(tokesJson);
+    localStorage.setItem(this.STORAGE_KEY, tokensStr);
+    this.populateFields(tokensStr);
   }
 
-  private populateFields(tokenResponse: string){
-      let tokenRespJson = JSON.parse(tokenResponse);
+  private populateFields(tokenResponse: string) {
+    let tokenRespJson = JSON.parse(tokenResponse);
 
-      this.accessToken = tokenRespJson['access_token'];
-      this.refreshToken = tokenRespJson['refresh_token'];
-      this.tokenType = tokenRespJson['token_type'];
-
-      let expiresInMilis = (tokenRespJson['expires_in'] as number) * 1000;
-      this.expirationTime = new Date(Date.now() + expiresInMilis);
-      this.scope = tokenRespJson['scope'];
-      this.jti = tokenRespJson['jti'];
-      }
+    this.accessToken = tokenRespJson['access_token'];
+    this.refreshToken = tokenRespJson['refresh_token'];
+    this.tokenType = tokenRespJson['token_type'];
+    this.expirationTime = new Date(tokenRespJson['expires_in']);
+    this.scope = tokenRespJson['scope'];
+    this.jti = tokenRespJson['jti'];
+  }
 
   public getAccessToken(): Observable<string> {
     return new Observable<string>(
@@ -66,10 +69,10 @@ export class TokenService {
               'Can not obtain access token from authorization server'
             ))
           )
+        } else {
+          observer.next(this.accessToken);
+          observer.complete();
         }
-
-        observer.next(this.accessToken);
-        observer.complete();
       }
     );
   }
@@ -127,7 +130,7 @@ export class TokenService {
 
   private getHeadersForTokenRequest(): Headers {
     let headers = new Headers();
-    headers.append('Authorization', 'Basic dHJ1c3RlZENsaWVudDpjb25maWdzZWM=');
+    headers.append('Authorization', `Basic ${this.APP_CONSTS.CLIENT_AUTH_HASH}`);
     headers.append('Content-Type', 'application/x-www-form-urlencoded');
 
     return headers;

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormGroup } from "@angular/forms";
 
 @Component({
   selector: 'add-product',
@@ -6,10 +7,18 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./add-product.component.scss']
 })
 export class AddProductComponent implements OnInit {
+  form: FormGroup;
 
   constructor() { }
 
   ngOnInit() {
+    this.buildForm();
   }
 
+  private buildForm() {
+    this.form = new FormGroup({});
+  }
+
+  submit() {
+  }
 }

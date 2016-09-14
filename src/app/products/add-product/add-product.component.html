@@ -8,7 +8,7 @@
 <hr>
 <div class="container-fluid">
   <div class="card card-block card-outline-success">
-    <form>
+    <form (ngSubmit)="submit()" [formGroup]="form">
       <div class="row">
         <!--left column-->
         <div class="col-xl-6 col-xl-6">
