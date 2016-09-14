@@ -13,6 +13,10 @@ export class AddMachineComponent implements OnInit {
   constructor(private machineService: MachineService) { }
 
   ngOnInit() {
+    this.buildForm();
+  }
+
+  private buildForm(): void {
     this.form = new FormGroup({
       name: new FormControl('', Validators.required),
       erisAccount: new FormControl('', Validators.required),
@@ -30,6 +34,15 @@ export class AddMachineComponent implements OnInit {
   }
 
   submit() {
-    this.machineService.createMachine(this.form.value)
+    this.machineService.createMachine(this.form.value).subscribe(
+      () => {},
+      error => {},
+      () => this.buildForm()
+    );
+  }
+
+  clear() {
+    this.form.reset();
+    this.buildForm();
   }
 }
