@@ -1,6 +1,6 @@
 # Vending Admin
 
-This project was generated with [angular-cli](https://github.com/angular/angular-cli) version 1.0.0-beta.11-webpack.9-4.
+This project was generated with [angular-cli](https://github.com/angular/angular-cli) version 1.0.0-beta.14.
 
 ## Certificate issue on testing server
 In order to login to the app you will need to add certificate of sjcoins.testing.softjourn.if.ua to trusted store.
