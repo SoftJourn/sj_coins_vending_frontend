@@ -15,7 +15,7 @@
           <div class="form-group row">
             <label for="product-name" class="col-xs-2 col-form-label">Name</label>
             <div class="col-xs-10">
-              <input class="form-control" type="text" placeholder="Enter name" id="product-name">
+              <input class="form-control" type="text" placeholder="Enter name" id="product-name" formControlName="name">
             </div>
           </div>
           <div class="form-group row">
@@ -23,16 +23,16 @@
             <div class="col-xs-10">
               <div class="input-group">
                 <div class="input-group-addon"><i class="fa fa-bitcoin fa-lg"></i></div>
-                <input class="form-control" type="number" placeholder="Enter price" id="product-price">
+                <input class="form-control" type="number" placeholder="Enter price" id="product-price"
+                       formControlName="price">
               </div>
             </div>
           </div>
           <div class="form-group row">
             <label for="product-category" class="col-xs-2 col-form-label">Category</label>
             <div class="col-xs-10">
-              <select id="product-category" class="form-control">
-                <option>Drinks</option>
-                <option>Snacks</option>
+              <select id="product-category" class="form-control" formControlName="category">
+                <option *ngFor="let category of categories;" [ngValue]="category">{{category.name}}</option>
               </select>
             </div>
           </div>
@@ -40,24 +40,28 @@
             <label for="product-description" class="col-xs-2 col-form-label">Description</label>
             <div class="col-xs-10">
               <textarea class="form-control" id="product-description" rows="3"
-                        placeholder="Enter description"></textarea>
+                        placeholder="Enter description" formControlName="description"></textarea>
             </div>
           </div>
         </div>
         <!--right column-->
         <div class="col-xl-6 col-xl-6">
           <div align="center" class="form-group row">
-            <img src="/assets/images/default-product-350x350.jpg" height="200px" width="200px">
+            <img
+                 [src]="imageSrc"
+                 (load)="handleImageLoad()"
+                 [class.loaded]="imageLoaded">
           </div>
           <div class="form-group row">
             <div class="input-group col-xs-12">
               <span class="input-group-addon"><i class="fa fa-picture-o fa-lg"></i></span>
-              <input type="text" class="form-control" disabled placeholder="Upload Image">
-              <div class="input-group-btn">
-                <button class="browse btn btn-info" type="button"><i class="fa fa-search fa-lg"></i>
-                  Browse
-                </button>
-              </div>
+              <input type="text" class="form-control" readonly>
+              <label class="input-group-btn">
+                    <span class="btn btn-info">
+                        <i class="fa fa-search fa-lg"></i> Browse<input type="file" style="display: none;"
+                                                                        (change)="handleInputChange($event)">
+                    </span>
+              </label>
             </div>
           </div>
           <div class="form-group row">
