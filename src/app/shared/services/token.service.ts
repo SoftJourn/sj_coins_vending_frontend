@@ -1,8 +1,9 @@
-import { Injectable, Inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { AppConsts } from "../app.consts";
 import { Http, Headers } from "@angular/http";
 import { Observable } from "rxjs/Rx";
 import { AppError } from "../app-error";
+import { UsernamePasswordCredentials } from "../username-password-credentials";
 
 @Injectable()
 export class TokenService {
@@ -46,17 +47,30 @@ export class TokenService {
     this.jti = tokenRespJson['jti'];
   }
 
-  public getAccessToken(): Observable<string> {
+  public getAccessToken(credentials?: UsernamePasswordCredentials): Observable<string> {
     return new Observable<string>(
       observer => {
-        if (!this.accessToken) {
+        let accessTokenError = new AppError(
+          'token/authorization-server',
+          'Can not obtain access token from authorization server'
+        );
+
+        if (!this.accessToken && !credentials) {
           observer.error(new AppError(
             'token/access_token-missing',
             'Access token is missing'
           ));
-        }
+        } else if (!this.accessToken && credentials) {
+          this.getTokens(credentials).subscribe(
+            tokensResponse => {
+              this.saveTokens(tokensResponse);
 
-        if (this.isAccessTokenExpired()) {
+              observer.next(this.accessToken);
+              observer.complete();
+            },
+            error => observer.error(accessTokenError)
+          );
+        } else if (this.isAccessTokenExpired()) {
           this.getTokensFromRefreshToken(this.getRefreshToken()).subscribe(
             tokensResponse => {
               this.saveTokens(tokensResponse);
@@ -64,10 +78,7 @@ export class TokenService {
               observer.next(this.accessToken);
               observer.complete();
             },
-            error => observer.error(new AppError(
-              'token/authorization-server',
-              'Can not obtain access token from authorization server'
-            ))
+            error => observer.error(accessTokenError)
           )
         } else {
           observer.next(this.accessToken);
@@ -106,6 +117,31 @@ export class TokenService {
 
   private isTokensExistsInStorage(): boolean {
     return !!localStorage.getItem(this.STORAGE_KEY);
+  }
+
+  private getTokens(credentials: UsernamePasswordCredentials): Observable<string> {
+    return new Observable<string>(observer => {
+      let grantType = `grant_type=password`;
+      let clientId = 'client_id=user_cred';
+      let scope = 'scope=read write';
+      let username = `username=${credentials.username}`;
+      let password = `password=${credentials.password}`;
+
+      let body = encodeURI(`${grantType}&${clientId}&${scope}&${username}&${password}`);
+      let url = this.APP_CONSTS.AUTH_ENDPOINT;
+
+      this.http.post(url, body, {
+        headers: this.getHeadersForTokenRequest()
+      }).subscribe(
+        response => {
+          if (response.ok) {
+            observer.next(response.text());
+            observer.complete();
+          }
+        },
+        error => observer.error(error)
+      );
+    });
   }
 
   private getTokensFromRefreshToken(refreshToken: string): Observable<string> {

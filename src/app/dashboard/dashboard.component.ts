@@ -10,7 +10,7 @@ import {DashboardService} from "../shared/services/dashboard.service";
 export class DashboardComponent implements OnInit {
   public dashboard:Dashboard = new Dashboard();
 
-  constructor(private dashboardService:DashboardService) {
+  constructor(private dashboardService: DashboardService) {
   }
 
   ngOnInit() {

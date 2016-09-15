@@ -37,12 +37,19 @@ export class AddMachineComponent implements OnInit {
     this.machineService.createMachine(this.form.value).subscribe(
       () => {},
       error => {},
-      () => this.buildForm()
+      () => this.clear()
     );
   }
 
   clear() {
-    this.form.reset();
-    this.buildForm();
+    this.form.reset({
+      name: '',
+      erisAccount: '',
+      rowsCount: '',
+      rowsNumbering: 'ALPHABETICAL',
+      columnsCount: '',
+      columnsNumbering: 'NUMERICAL'
+    });
+    // this.buildForm();
   }
 }

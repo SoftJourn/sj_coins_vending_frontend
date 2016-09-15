@@ -1,35 +1,32 @@
-import {Injectable, Inject} from '@angular/core';
-import {AppConsts} from "../app.consts";
-import {Http} from "@angular/http";
-import {Observable} from "rxjs/Rx";
-import {AppError} from "../app-error";
-import {Dashboard} from "../entity/dashboard";
-import {AccountService} from "./account.service";
+import { Injectable } from "@angular/core";
+import { AppConsts } from "../app.consts";
+import { Observable } from "rxjs/Rx";
+import { AppError } from "../app-error";
+import { Dashboard } from "../entity/dashboard";
+import { HttpService } from "./http.service";
 
 @Injectable()
 export class DashboardService {
 
   constructor(private APP_CONSTS: AppConsts,
-              private accountService: AccountService,
-              private http: Http) {
+              private httpService: HttpService) {
   }
 
   public getDashboard(): Observable<Dashboard> {
     return new Observable<Dashboard>(observer => {
       let url = `${this.APP_CONSTS.API_VENDING_ENDPOINT}/dashboard`;
-      this.accountService.getHeaders()
-        .flatMap(headers => this.http.get(url, {headers: headers}))
-        .subscribe(
-          response => {
-            if (response.ok) {
-              observer.next(response.json());
-              observer.complete();
-            }
-          },
-          error => observer.error(new AppError(
-            'auth/creation-failure',
-            'Error appeared during account creation please try again later'))
-        );
+
+      this.httpService.get(url).subscribe(
+        response => {
+          if (response.ok) {
+            observer.next(response.json());
+            observer.complete();
+          }
+        },
+        error => observer.error(new AppError(
+          'api/get-dashboard',
+          'Error appeared during accessing dashboard data.'))
+      );
     });
   }
 

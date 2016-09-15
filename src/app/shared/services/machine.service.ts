@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { Machine, Field, Row } from "../../machines/shared/machine";
 import { Observable } from "rxjs";
 import { AddMachineDTO } from "../../machines/shared/add-machine-dto";
+import { AccountService } from "./account.service";
 
 @Injectable()
 export class MachineService {
   private machines: Machine[];
   private machine: Machine;
 
-  constructor() {
+  constructor(private accountService: AccountService) {
     this.machine = new Machine('123456', [
       new Row(1, [
         new Field('A0'),

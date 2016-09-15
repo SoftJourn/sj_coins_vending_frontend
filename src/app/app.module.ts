@@ -5,8 +5,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { AppComponent } from './app.component';
 import { AppConsts } from "./shared/app.consts";
-import { AccountService } from "./shared/services/account.service";
-import { TokenService } from "./shared/services/token.service"
 import { routing, appRoutingProviders } from "./app.routing";
 import { MdInputModule } from "@angular2-material/input";
 import { MdButtonModule } from "@angular2-material/button";
@@ -22,8 +20,11 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { MachinesComponent, MachineItemComponent, AddMachineComponent, FillMachineComponent } from './machines/';
 import { CategoriesComponent, AddCategoryComponent } from './categories/';
 import { MachineService } from "./shared/services/machine.service";
-import {DashboardService} from "./shared/services/dashboard.service";
-import {CategoryService} from "./shared/services/category.service";
+import { DashboardService } from "./shared/services/dashboard.service";
+import { CategoryService } from "./shared/services/category.service";
+import { TokenService } from "./shared/services/token.service";
+import { AccountService } from "./shared/services/account.service";
+import { HttpService } from "./shared/services/http.service";
 
 
 @NgModule({
@@ -60,6 +61,7 @@ import {CategoryService} from "./shared/services/category.service";
   providers: [
     AppConsts,
     TokenService,
+    HttpService,
     AccountService,
     appRoutingProviders,
     MachineService,
