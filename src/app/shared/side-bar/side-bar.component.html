@@ -56,25 +56,10 @@
       </li>
     </div>
     <div class="nested-menu">
-      <a class="list-group-item" (click)="addExpandClass('categories')">
+      <a class="list-group-item" [routerLink]="['/main/categories']" routerLinkActive="router-link-active"
+         [routerLinkActiveOptions]="{exact: true}">
         <span><i class="fa fa-tags fa-lg"></i>Categories</span>
       </a>
-      <li class="nested" [ngClass]="setSubmenuClass('categories')">
-        <ul class="submenu">
-          <li>
-            <a [routerLink]="['/main/categories/add']" routerLinkActive="router-link-active"
-               [routerLinkActiveOptions]="{exact: true}">
-              <span><i class="fa fa-plus-square fa-lg"></i>Create</span>
-            </a>
-          </li>
-          <li>
-            <a [routerLink]="['/main/categories']" routerLinkActive="router-link-active"
-               [routerLinkActiveOptions]="{exact: true}">
-              <span><i class="fa fa-database fa-lg"></i>Show all</span>
-            </a>
-          </li>
-        </ul>
-      </li>
     </div>
   </ul>
 </nav>

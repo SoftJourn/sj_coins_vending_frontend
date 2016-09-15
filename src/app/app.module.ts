@@ -5,6 +5,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { AppComponent } from './app.component';
 import { AppConsts } from "./shared/app.consts";
+import { AccountService } from "./shared/services/account.service";
+import { TokenService } from "./shared/services/token.service"
 import { routing, appRoutingProviders } from "./app.routing";
 import { MdInputModule } from "@angular2-material/input";
 import { MdButtonModule } from "@angular2-material/button";
@@ -18,11 +20,10 @@ import { Ng2BootstrapModule, ButtonsModule } from "ng2-bootstrap/ng2-bootstrap";
 import { ProductsComponent, ProductItemComponent, AddProductComponent } from './products/';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { MachinesComponent, MachineItemComponent, AddMachineComponent, FillMachineComponent } from './machines/';
-import { CategoriesComponent, CategoryItemComponent, AddCategoryComponent } from './categories/';
+import { CategoriesComponent, AddCategoryComponent } from './categories/';
 import { MachineService } from "./shared/services/machine.service";
 import {DashboardService} from "./shared/services/dashboard.service";
-import { TokenService } from "./shared/services/token.service";
-import { AccountService } from "./shared/services/account.service";
+import {CategoryService} from "./shared/services/category.service";
 
 
 @NgModule({
@@ -41,7 +42,6 @@ import { AccountService } from "./shared/services/account.service";
     AddMachineComponent,
     FillMachineComponent,
     CategoriesComponent,
-    CategoryItemComponent,
     AddCategoryComponent
   ],
   imports: [
@@ -63,7 +63,8 @@ import { AccountService } from "./shared/services/account.service";
     AccountService,
     appRoutingProviders,
     MachineService,
-    DashboardService
+    DashboardService,
+    CategoryService
   ],
   bootstrap: [AppComponent]
 })

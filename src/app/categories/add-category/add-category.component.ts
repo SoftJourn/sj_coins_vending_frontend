@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from "@angular/forms";
+import {Category} from "../../shared/entity/category";
+import {CategoryService} from "../../shared/services/category.service";
 
 @Component({
   selector: 'add-category',
@@ -7,9 +9,10 @@ import { FormGroup, FormControl, Validators } from "@angular/forms";
   styleUrls: ['./add-category.component.scss']
 })
 export class AddCategoryComponent implements OnInit {
+  public category: Category = new Category();
   form: FormGroup;
 
-  constructor() { }
+  constructor(private categoryService: CategoryService) { }
 
   ngOnInit() {
     this.buildForm();
@@ -22,5 +25,9 @@ export class AddCategoryComponent implements OnInit {
   }
 
   submit() {
+    this.categoryService.createCategory(this.category)
+      .subscribe(next => {
+        console.log(next.toString());
+      });
   }
 }

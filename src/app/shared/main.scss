@@ -24,6 +24,12 @@ button {
   text-align: right !important;
 }
 
+.btn-v-centered {
+  display: inline-block;
+  vertical-align: middle;
+  float: none;
+}
+
 // BS Admin 2.0
 $topnav-background-color: #222;
 .user-avatar {

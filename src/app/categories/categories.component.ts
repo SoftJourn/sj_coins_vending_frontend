@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {CategoryService} from "../shared/services/category.service";
+import {Category} from "../shared/entity/category";
 
 @Component({
   selector: 'categories-list',
@@ -6,10 +8,27 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./categories.component.scss']
 })
 export class CategoriesComponent implements OnInit {
+  public categories: Category[];
 
-  constructor() { }
+  constructor(private categoryService: CategoryService) {
+  }
 
   ngOnInit() {
+    this.categoryService.getCategories().subscribe(
+      data => {
+        this.categories = data;
+      });
+  }
+
+  private deleteCategory(id: number) {
+    this.categoryService.deleteCategory(id).subscribe(next => {},
+      error=> {},
+      () => {
+        this.categoryService.getCategories().subscribe(
+          data => {
+            this.categories = data;
+          });
+      });
   }
 
 }
