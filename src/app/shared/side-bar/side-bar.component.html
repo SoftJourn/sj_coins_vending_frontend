@@ -7,59 +7,18 @@
        [routerLinkActiveOptions]="{exact: true}" class="list-group-item">
       <i class="fa fa-th fa-lg"></i>Dashboard
     </a>
-    <div class="nested-menu">
-      <a class="list-group-item" (click)="addExpandClass('products')">
-        <span><i class="fa fa-shopping-basket fa-lg"></i>Products</span>
-      </a>
-      <li class="nested" [ngClass]="setSubmenuClass('products')">
-        <ul class="submenu">
-          <li>
-            <a [routerLink]="['/main/products/add']" routerLinkActive="router-link-active"
-               [routerLinkActiveOptions]="{exact: true}">
-              <span><i class="fa fa-plus-square fa-lg"></i>Create</span>
-            </a>
-          </li>
-          <li>
-            <a [routerLink]="['/main/products']" routerLinkActive="router-link-active"
-               [routerLinkActiveOptions]="{exact: true}">
-              <span><i class="fa fa-database fa-lg"></i>Show all</span>
-            </a>
-          </li>
-        </ul>
-      </li>
-    </div>
-    <div class="nested-menu">
-      <a class="list-group-item" (click)="addExpandClass('vending')">
-        <span><i class="fa fa-cogs fa-lg"></i>Vending machines</span>
-      </a>
-      <li class="nested" [ngClass]="setSubmenuClass('vending')">
-        <ul class="submenu">
-          <li>
-            <a [routerLink]="['/main/machines/add']" routerLinkActive="router-link-active"
-               [routerLinkActiveOptions]="{exact: true}">
-              <span><i class="fa fa-plus-square fa-lg"></i>Create</span>
-            </a>
-          </li>
-          <li>
-            <a [routerLink]="['/main/machines']" routerLinkActive="router-link-active"
-               [routerLinkActiveOptions]="{exact: true}">
-              <span><i class="fa fa-database fa-lg"></i>Show all</span>
-            </a>
-          </li>
-          <li>
-            <a [routerLink]="['/main/machines/fill']" routerLinkActive="router-link-active"
-               [routerLinkActiveOptions]="{exact: true}">
-              <span><i class="fa fa-upload fa-lg"></i>Upload machine</span>
-            </a>
-          </li>
-        </ul>
-      </li>
-    </div>
-    <div class="nested-menu">
-      <a class="list-group-item" [routerLink]="['/main/categories']" routerLinkActive="router-link-active"
-         [routerLinkActiveOptions]="{exact: true}">
-        <span><i class="fa fa-tags fa-lg"></i>Categories</span>
-      </a>
-    </div>
+    <a [routerLink]="['/main/products']"
+       routerLinkActive="router-link-active"
+       [routerLinkActiveOptions]="{exact: true}" class="list-group-item">
+      <span><i class="fa fa-shopping-basket fa-lg"></i>Products</span>
+    </a>
+    <a [routerLink]="['/main/machines']" routerLinkActive="router-link-active"
+       [routerLinkActiveOptions]="{exact: true}" class="list-group-item">
+      <span><i class="fa fa-cogs fa-lg"></i>Vending machines</span>
+    </a>
+    <a [routerLink]="['/main/categories']" routerLinkActive="router-link-active"
+       [routerLinkActiveOptions]="{exact: true}" class="list-group-item">
+      <span><i class="fa fa-tags fa-lg"></i>Categories</span>
+    </a>
   </ul>
 </nav>

@@ -1,6 +1,6 @@
-import {Component, OnInit} from '@angular/core';
-import {Dashboard} from "../shared/entity/dashboard";
-import {DashboardService} from "../shared/services/dashboard.service";
+import { Component, OnInit } from "@angular/core";
+import { Dashboard } from "../shared/entity/dashboard";
+import { DashboardService } from "../shared/services/dashboard.service";
 
 @Component({
   selector: 'app-dashboard',
@@ -8,7 +8,7 @@ import {DashboardService} from "../shared/services/dashboard.service";
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-  public dashboard:Dashboard = new Dashboard();
+  public dashboard: Dashboard = new Dashboard();
 
   constructor(private dashboardService: DashboardService) {
   }

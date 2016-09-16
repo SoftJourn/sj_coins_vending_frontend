@@ -1,6 +1,6 @@
-import {Component, OnInit} from '@angular/core';
-import {CategoryService} from "../shared/services/category.service";
-import {Category} from "../shared/entity/category";
+import { Component, OnInit } from "@angular/core";
+import { CategoryService } from "../shared/services/category.service";
+import { Category } from "../shared/entity/category";
 
 @Component({
   selector: 'categories-list',
@@ -17,16 +17,20 @@ export class CategoriesComponent implements OnInit {
     this.categoryService.getCategories().subscribe(
       data => {
         this.categories = data;
-      });
+      }
+    );
+
+    this.categories = [new Category('Drink', 1), new Category('Drink', 2)];
   }
 
   private deleteCategory(id: number) {
-    this.categoryService.deleteCategory(id).subscribe(next => {},
+    this.categoryService.deleteCategory(id).subscribe(
+      next => {},
       error=> {},
       () => {
         this.categoryService.getCategories().subscribe(
-          data => {
-            this.categories = data;
+          categories => {
+            this.categories = categories;
           });
       });
   }
