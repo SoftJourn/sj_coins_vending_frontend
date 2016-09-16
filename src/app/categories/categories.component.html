@@ -24,8 +24,8 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let category of categories; let i = index + 1">
-          <th scope="row">{{i}}</th>
+        <tr *ngFor="let category of categories; let i = index">
+          <th scope="row">{{i+1}}</th>
           <td>{{category.name}}</td>
           <td>
             <button type="button" class="btn btn-danger" (click)="deleteCategory(category.id)">
