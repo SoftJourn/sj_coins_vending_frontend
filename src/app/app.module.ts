@@ -25,6 +25,7 @@ import { CategoryService } from "./shared/services/category.service";
 import { TokenService } from "./shared/services/token.service";
 import { AccountService } from "./shared/services/account.service";
 import { HttpService } from "./shared/services/http.service";
+import { MdCardModule } from "@angular2-material/card";
 
 
 @NgModule({
@@ -53,6 +54,7 @@ import { HttpService } from "./shared/services/http.service";
     MdInputModule,
     MdButtonModule,
     MdIconModule,
+    MdCardModule,
     OverlayModule,
     HttpModule,
     Ng2BootstrapModule,

@@ -4,7 +4,8 @@
         <h1>Categories</h1>
       </div>
       <div class="col-sm-8 header-buttons-container">
-        <button class="btn btn-success" [routerLink]="['/main/categories/add']">Create
+        <button class="btn btn-success" [routerLink]="['/main/categories/add']">
+          <i class="fa fa-plus btn-icon"></i>Create
         </button>
       </div>
   </div>
@@ -23,11 +24,13 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let category of categories; let i = index">
-          <th scope="row">{{i+1}}</th>
+        <tr *ngFor="let category of categories; let i = index + 1">
+          <th scope="row">{{i}}</th>
           <td>{{category.name}}</td>
           <td>
-            <button type="button" class="btn btn-danger" (click)="deleteCategory(category.id)">Delete</button>
+            <button type="button" class="btn btn-danger" (click)="deleteCategory(category.id)">
+              <i class="fa fa-trash btn-icon"></i>Delete
+            </button>
           </td>
         </tr>
         </tbody>

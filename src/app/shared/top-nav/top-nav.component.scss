@@ -1,3 +1,13 @@
 .nav-link-disabled {
-  cursor: default;
 }
+
+nav {
+  a.nav-link-disabled {
+    cursor: default;
+  }
+
+  a.nav-link-disabled:hover {
+    color: rgba(255, 255, 255, .5);
+  }
+}
+

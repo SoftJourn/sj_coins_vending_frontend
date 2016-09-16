@@ -4,13 +4,20 @@
       <h1 class="page-header">Products</h1>
     </div>
     <div class="col-sm-8 header-buttons-container">
-      <button class="btn btn-success" [routerLink]="['/main/products/add']">Create</button>
+      <button class="btn btn-success" [routerLink]="['/main/products/add']">
+        <i class="fa fa-plus btn-icon"></i>Create
+      </button>
     </div>
   </div>
 </div>
 <hr>
 <div class="container-fluid">
-  <div class="row">
+  <product-item></product-item>
+  <product-item></product-item>
+  <product-item></product-item>
+  <product-item></product-item>
+  <product-item></product-item>
+  <!--<div class="row">
     <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
       <a href="#" class="wrapper-link">
         <div class="card">
@@ -123,7 +130,7 @@
         </div>
       </a>
     </div>
-  </div>
+  </div>-->
 </div>
 
 

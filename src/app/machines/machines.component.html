@@ -4,12 +4,15 @@
       <h1>Vending machines</h1>
     </div>
     <div class="col-sm-7 header-buttons-container">
-      <button class="btn btn-success" [routerLink]="['/main/machines/add']">Create</button>
-      <button class="btn btn-success" [routerLink]="['/main/machines/fill']">Fill</button>
+      <button class="btn btn-success" [routerLink]="['/main/machines/add']">
+        <i class="fa fa-plus btn-icon"></i>Create
+      </button>
     </div>
   </div>
 </div>
 <hr>
 <div class="container-fluid">
-
+  <machine-item></machine-item>
+  <machine-item></machine-item>
+  <machine-item></machine-item>
 </div>
