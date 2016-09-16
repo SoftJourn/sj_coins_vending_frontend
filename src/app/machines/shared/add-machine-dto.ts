@@ -1,6 +1,6 @@
 export interface AddMachineDTO {
   name: string;
-  erisAccount: string;
+  address: string;
   rowsCount: number;
   rowsNumbering: string;
   columnsCount: number;

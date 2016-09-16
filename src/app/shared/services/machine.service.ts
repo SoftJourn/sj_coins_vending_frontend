@@ -1,15 +1,19 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 import { Machine, Field, Row } from "../../machines/shared/machine";
 import { Observable } from "rxjs";
 import { AddMachineDTO } from "../../machines/shared/add-machine-dto";
-import { AccountService } from "./account.service";
+import { HttpService } from "./http.service";
+import { AppConsts } from "../app.consts";
 
 @Injectable()
 export class MachineService {
   private machines: Machine[];
   private machine: Machine;
 
-  constructor(private accountService: AccountService) {
+  constructor(
+    private httpService: HttpService,
+    private APP_CONSTS: AppConsts
+  ) {
     this.machine = new Machine('123456', [
       new Row(1, [
         new Field('A0'),
@@ -60,7 +64,16 @@ export class MachineService {
 
   createMachine(machine: AddMachineDTO): Observable<void> {
     return new Observable<void>(observer => {
-      observer.complete();
+      let url = `${this.APP_CONSTS.API_VENDING_ENDPOINT}/vending`;
+      let contentType = 'application/json';
+
+      this.httpService.post(url, machine, contentType).subscribe(
+        createdMachine => {
+          console.log(createdMachine);
+          observer.complete();
+        },
+        error => observer.error(error)
+      );
     });
   }
 }

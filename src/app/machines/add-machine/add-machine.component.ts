@@ -19,7 +19,7 @@ export class AddMachineComponent implements OnInit {
   private buildForm(): void {
     this.form = new FormGroup({
       name: new FormControl('', Validators.required),
-      erisAccount: new FormControl('', Validators.required),
+      address: new FormControl('', Validators.required),
       rowsCount: new FormControl('', [
         Validators.required,
         Validators.pattern('\\d+')
