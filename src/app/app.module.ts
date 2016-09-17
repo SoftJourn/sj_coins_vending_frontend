@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { AppComponent } from './app.component';
-import { AppConsts } from "./shared/app.consts";
 import { routing, appRoutingProviders } from "./app.routing";
 import { MdInputModule } from "@angular2-material/input";
 import { MdButtonModule } from "@angular2-material/button";
@@ -26,6 +25,8 @@ import { TokenService } from "./shared/services/token.service";
 import { AccountService } from "./shared/services/account.service";
 import { HttpService } from "./shared/services/http.service";
 import { MdCardModule } from "@angular2-material/card";
+import { MachineSizePipe } from './machines/machine-item/machine-size.pipe';
+import { ProductService } from "./shared/services/product.service";
 
 
 @NgModule({
@@ -44,7 +45,8 @@ import { MdCardModule } from "@angular2-material/card";
     AddMachineComponent,
     FillMachineComponent,
     CategoriesComponent,
-    AddCategoryComponent
+    AddCategoryComponent,
+    MachineSizePipe
   ],
   imports: [
     BrowserModule,
@@ -61,14 +63,14 @@ import { MdCardModule } from "@angular2-material/card";
     ButtonsModule
   ],
   providers: [
-    AppConsts,
     TokenService,
     HttpService,
     AccountService,
     appRoutingProviders,
     MachineService,
     DashboardService,
-    CategoryService
+    CategoryService,
+    ProductService
   ],
   bootstrap: [AppComponent]
 })

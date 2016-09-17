@@ -26,8 +26,8 @@ export class AddCategoryComponent implements OnInit {
   submit() {
     let category = new Category(this.form.get('name').value);
 
-    this.categoryService.createCategory(category)
-      .subscribe(next => {
+    this.categoryService.save(category)
+      .subscribe(category => {
         /* TODO add toast notification */
       });
   }

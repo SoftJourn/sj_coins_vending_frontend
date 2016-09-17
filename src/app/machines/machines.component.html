@@ -12,7 +12,7 @@
 </div>
 <hr>
 <div class="container-fluid">
-  <machine-item></machine-item>
-  <machine-item></machine-item>
-  <machine-item></machine-item>
+  <machine-item *ngFor="let machine of machines"
+                [machine]="machine" (onDelete)="onDelete($event)">
+  </machine-item>
 </div>

@@ -1,120 +1,60 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions, Response } from "@angular/http";
+import { Http, Headers, Response } from "@angular/http";
 import { Observable } from "rxjs";
-import { AppError } from "../app-error";
 import { TokenService } from "./token.service";
+import { HttpHeaders } from "../http-headers";
 
 @Injectable()
 export class HttpService {
 
   constructor(
-    private http: Http,
+    public http: Http,
     private tokenService: TokenService
   ) { }
 
   get(url: string): Observable<Response> {
-    return new Observable<Response>(observer => {
-      let options = new RequestOptions();
-
-      this.getAuthHeaders()
-        .flatMap(headers => {
-          options.headers = headers;
-
-          return this.http.get(url, options)
-        })
-        .subscribe(
-          response => {
-            observer.next(response);
-            observer.complete();
-          },
-          error => observer.error(error)
-        )
-    });
+    return this.getAuthHeaders()
+      .flatMap(
+        headers => this.http.get(url, {headers: headers})
+      );
   }
 
-  post(url: string, body: any, contentType: string): Observable<Response> {
-    return new Observable<Response>(observer => {
-      let options = new RequestOptions();
+  post(url: string, body: any, contentType?: string): Observable<Response> {
+    return this.getAuthHeaders()
+      .flatMap((headers: Headers) => {
+        if (contentType == null) {
+          return this.http.post(url, body, {headers: headers});
+        } else {
+          headers.append(HttpHeaders.CONTENT_TYPE, contentType);
 
-      this.getAuthHeaders()
-        .flatMap((headers: Headers) => {
-          headers.append('Content-Type', contentType);
-          options.headers = headers;
-
-          return this.http.post(url, body, options);
-        })
-        .subscribe(
-          response => {
-            observer.next(response);
-            observer.complete();
-          },
-          error => observer.error()
-        );
-    })
+          return this.http.post(url, body, {headers: headers});
+        }
+      });
   }
 
   put(url: string, body: any, contentType: string): Observable<Response> {
-    return new Observable<Response>(observer => {
-      var options = new RequestOptions();
+    return this.getAuthHeaders()
+      .flatMap((headers: Headers) => {
+        headers.append(HttpHeaders.CONTENT_TYPE, contentType);
 
-      this.getAuthHeaders()
-        .flatMap(headers => {
-          headers.append('Content-Type', contentType);
-          options.headers = headers;
-
-          return this.http.put(url, body, options)
-        })
-        .subscribe(
-          response => {
-            observer.next(response);
-            observer.complete();
-          },
-          error => observer.error(error)
-        );
-    });
+        return this.http.put(url, body, {headers: headers});
+      });
   }
 
   delete(url: string): Observable<Response> {
-    return new Observable<Response>(observer => {
-      let options = new RequestOptions();
-
-      this.getAuthHeaders()
-        .flatMap(headers => {
-          options.headers = headers;
-
-          return this.http.delete(url, options);
-        })
-        .subscribe(
-          response => {
-            observer.next(response);
-            observer.complete();
-          },
-          error => observer.error(error)
-        );
-    });
+    return this.getAuthHeaders()
+      .flatMap((headers: Headers) => this.http.delete(url, {headers: headers}));
   }
 
   private getAuthHeaders(): Observable<Headers> {
-    return new Observable<Headers>(observer => {
-      if (!this.tokenService.getTokenType()) {
-        observer.error(new AppError(
-          'header/authorization',
-          'Error appeared during creation of authorization headers'
-        ))
-      }
+    return this.tokenService.getAccessToken()
+      .map(accessToken => {
+        let headers = new Headers();
+        let authValue = `${this.tokenService.getTokenType()} ${accessToken}`;
 
-      this.tokenService.getAccessToken().subscribe(
-        accessToken => {
-          let headers = new Headers();
+        headers.append(HttpHeaders.AUTHORIZATION, authValue);
 
-          let authValue = `${this.tokenService.getTokenType()} ${accessToken}`;
-          headers.append('Authorization', authValue);
-
-          observer.next(headers);
-          observer.complete();
-        },
-        error => observer.error(error)
-      );
-    });
+        return headers;
+      });
   }
 }

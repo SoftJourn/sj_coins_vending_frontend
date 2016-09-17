@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
-import { AppConsts } from "../app.consts";
 import { Http, Headers } from "@angular/http";
 import { Observable } from "rxjs/Rx";
+import {
+  MediaType,
+  HttpHeaders,
+  UsernamePasswordCredentials } from "../";
 import { AppError } from "../app-error";
-import { UsernamePasswordCredentials } from "../username-password-credentials";
+import { AppProperties } from "../app.properties";
 
 @Injectable()
 export class TokenService {
@@ -17,7 +20,6 @@ export class TokenService {
   private STORAGE_KEY = 'tokens';
 
   constructor(
-    private APP_CONSTS: AppConsts,
     private http: Http
   ) {
     if (this.isTokensExistsInStorage()) {
@@ -48,44 +50,33 @@ export class TokenService {
   }
 
   public getAccessToken(credentials?: UsernamePasswordCredentials): Observable<string> {
-    return new Observable<string>(
-      observer => {
-        let accessTokenError = new AppError(
-          'token/authorization-server',
-          'Can not obtain access token from authorization server'
-        );
-
-        if (!this.accessToken && !credentials) {
-          observer.error(new AppError(
-            'token/access_token-missing',
-            'Access token is missing'
-          ));
-        } else if (!this.accessToken && credentials) {
-          this.getTokens(credentials).subscribe(
-            tokensResponse => {
-              this.saveTokens(tokensResponse);
-
-              observer.next(this.accessToken);
-              observer.complete();
-            },
-            error => observer.error(accessTokenError)
-          );
-        } else if (this.isAccessTokenExpired()) {
-          this.getTokensFromRefreshToken(this.getRefreshToken()).subscribe(
-            tokensResponse => {
-              this.saveTokens(tokensResponse);
-
-              observer.next(this.accessToken);
-              observer.complete();
-            },
-            error => observer.error(accessTokenError)
-          )
-        } else {
-          observer.next(this.accessToken);
-          observer.complete();
-        }
-      }
+    let authServerError = new AppError(
+      'auth/auth-server-error',
+      'Can not obtain access token from authorization server'
     );
+
+    if (!this.accessToken && !credentials) {
+      return Observable.throw(new AppError(
+        'token/access_token-missing',
+        'Access token is missing'
+      ));
+    } else if (!this.accessToken && credentials) {
+      return this.getTokens(credentials)
+        .map(tokenResponse => {
+          this.saveTokens(tokenResponse);
+
+          return this.accessToken;
+        });
+    } else if (this.isAccessTokenExpired()) {
+      return this.getTokensFromRefreshToken(this.refreshToken)
+        .map(tokenResponse => {
+          this.saveTokens(tokenResponse);
+
+          return this.accessToken;
+        });
+    } else {
+      return Observable.of(this.accessToken);
+    }
   }
 
   private getRefreshToken(): string {
@@ -120,54 +111,34 @@ export class TokenService {
   }
 
   private getTokens(credentials: UsernamePasswordCredentials): Observable<string> {
-    return new Observable<string>(observer => {
-      let grantType = `grant_type=password`;
-      let clientId = 'client_id=user_cred';
-      let scope = 'scope=read write';
-      let username = `username=${credentials.username}`;
-      let password = `password=${credentials.password}`;
+    let grantType = `grant_type=password`;
+    let clientId = 'client_id=user_cred';
+    let scope = 'scope=read write';
+    let username = `username=${credentials.username}`;
+    let password = `password=${credentials.password}`;
 
-      let body = encodeURI(`${grantType}&${clientId}&${scope}&${username}&${password}`);
-      let url = this.APP_CONSTS.AUTH_ENDPOINT;
+    let body = encodeURI(`${grantType}&${clientId}&${scope}&${username}&${password}`);
+    let url = AppProperties.AUTH_ENDPOINT;
 
-      this.http.post(url, body, {
-        headers: this.getHeadersForTokenRequest()
-      }).subscribe(
-        response => {
-          if (response.ok) {
-            observer.next(response.text());
-            observer.complete();
-          }
-        },
-        error => observer.error(error)
-      );
-    });
+    return this.http.post(url, body, {headers: this.getHeadersForTokenRequest()})
+      .map(response => response.text());
   }
 
   private getTokensFromRefreshToken(refreshToken: string): Observable<string> {
-    return new Observable<string>(observer => {
-      let url = this.APP_CONSTS.AUTH_ENDPOINT;
-      let grantType = 'grant_type=refresh_token';
-      let refreshTokenParam = `refresh_token=${refreshToken}`;
+    let url = AppProperties.AUTH_ENDPOINT;
+    let grantType = 'grant_type=refresh_token';
+    let refreshTokenParam = `refresh_token=${refreshToken}`;
 
-      let body = `${grantType}&${refreshTokenParam}`;
+    let body = `${grantType}&${refreshTokenParam}`;
 
-      this.http.post(url, body, {headers: this.getHeadersForTokenRequest()}).subscribe(
-        response => {
-          if (response.ok) {
-            observer.next(response.text());
-            observer.complete();
-          }
-        },
-        error => observer.error(error)
-      )
-    });
+    return this.http.post(url, body, {headers: this.getHeadersForTokenRequest()})
+      .map(response => response.text());
   }
 
   private getHeadersForTokenRequest(): Headers {
     let headers = new Headers();
-    headers.append('Authorization', `Basic ${this.APP_CONSTS.CLIENT_AUTH_HASH}`);
-    headers.append('Content-Type', 'application/x-www-form-urlencoded');
+    headers.append(HttpHeaders.AUTHORIZATION, `Basic ${AppProperties.CLIENT_AUTH_HASH}`);
+    headers.append(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
 
     return headers;
   }

@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
+import { Machine } from "../shared/machine";
+import { MachineService } from "../../shared/services/machine.service";
 
 @Component({
   selector: 'machine-item',
@@ -6,10 +8,15 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./machine-item.component.scss']
 })
 export class MachineItemComponent implements OnInit {
+  @Input() machine: Machine;
+  @Output() onDelete = new EventEmitter<number>();
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
   }
 
+  deleteMachine(): void {
+    this.onDelete.emit(this.machine.id);
+  }
 }

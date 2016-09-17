@@ -9,6 +9,7 @@ import {
 import { MachineService } from "../../shared/services/machine.service";
 import { Machine } from "../shared/machine";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: 'fill-machine',
@@ -36,10 +37,18 @@ export class FillMachineComponent implements OnInit {
   machine: Machine;
   form: FormGroup;
 
-  constructor(private machineService: MachineService) { }
+  constructor(
+    private machineService: MachineService,
+    private route: ActivatedRoute
+  ) { }
 
   ngOnInit() {
-    this.machine = this.machineService.getMachine('123456');
+    let id = parseInt(this.route.snapshot.params['id']);
+
+    this.machineService.findOne(id).subscribe(
+      machine => this.machine = machine,
+      error => {}
+    );
 
     this.form = new FormGroup({
       cellId: new FormControl('', Validators.required),

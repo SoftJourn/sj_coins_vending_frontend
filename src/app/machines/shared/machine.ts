@@ -1,32 +1,39 @@
 import { Product } from "../../shared/entity/product";
 
 export class Machine {
-  id: string;
-  rows: Row[];
 
-  constructor(id: string, rows: Row[]) {
-    this.id = id;
-    this.rows = rows;
-  }
+  constructor(
+    public id: number,
+    public name: string,
+    public address: string,
+    public rows: Row[],
+    public size: MachineSize
+  ) {}
 }
 
 export class Row {
-  id: number;
-  fields: Field[];
 
-  constructor(id: number, fields: Field[]) {
-    this.id = id;
-    this.fields = fields;
-  }
+  constructor(
+    public id: number,
+    public rowId: string,
+    public fields: Field[]
+  ) {}
 }
 
 export class Field {
-  id: number;
-  internalId: string;
-  count = 0;
-  product: Product;
 
-  constructor(internalId: string) {
-    this.internalId = internalId;
-  }
+  constructor(
+    public id: number,
+    public internalId: string,
+    public count = 0,
+    public product: Product
+  ) {}
+}
+
+export class MachineSize {
+
+  constructor(
+    public rows: number,
+    public columns: number
+  ) {}
 }

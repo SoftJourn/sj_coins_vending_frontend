@@ -14,24 +14,19 @@ export class CategoriesComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.categoryService.getCategories().subscribe(
-      data => {
-        this.categories = data;
-      }
+    this.categoryService.findAll().subscribe(
+      categories => this.categories = categories
     );
-
-    this.categories = [new Category('Drink', 1), new Category('Drink', 2)];
   }
 
   private deleteCategory(id: number) {
-    this.categoryService.deleteCategory(id).subscribe(
+    this.categoryService.delete(id).subscribe(
       next => {},
       error=> {},
       () => {
-        this.categoryService.getCategories().subscribe(
-          categories => {
-            this.categories = categories;
-          });
+        this.categoryService.findAll().subscribe(
+          categories => this.categories = categories
+        );
       });
   }
 

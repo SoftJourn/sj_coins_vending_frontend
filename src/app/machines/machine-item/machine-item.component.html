@@ -2,17 +2,17 @@
   <md-card class="vm-card-bg">
     <md-card-title-group>
       <img md-card-sm-image src="/assets/images/vending-256.png">
-      <md-card-title>Machine 1</md-card-title>
-      <md-card-subtitle>AE16SDAFASDDF456456ASD</md-card-subtitle>
-      <md-card-subtitle>5x6</md-card-subtitle>
+      <md-card-title>{{machine.name}}</md-card-title>
+      <md-card-subtitle>{{machine.address}}</md-card-subtitle>
+      <md-card-subtitle>{{machine.size | machineSize}}</md-card-subtitle>
     </md-card-title-group>
     <md-card-actions>
       <div class="action-btn-container">
         <button class="btn btn-success"><i class="fa fa-edit btn-icon"></i>Edit</button>
-        <button class="btn btn-success" [routerLink]="['/main/machines/fill']">
+        <button class="btn btn-success" [routerLink]="['/main/machines/fill', machine.id]">
           <i class="fa fa-upload btn-icon"></i>Fill
         </button>
-        <button class="btn btn-danger"><i class="fa fa-trash btn-icon"></i>Delete</button>
+        <button class="btn btn-danger" (click)="deleteMachine()"><i class="fa fa-trash btn-icon"></i>Delete</button>
       </div>
     </md-card-actions>
   </md-card>

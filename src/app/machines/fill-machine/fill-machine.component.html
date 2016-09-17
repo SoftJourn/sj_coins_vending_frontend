@@ -10,7 +10,7 @@
   <div class="offset-sm-1 offset-lg-1 col-sm-10 col-lg-10">
     <div class="machine-bg">
       <div class="card-deck-wrapper">
-        <div *ngFor="let row of machine.rows">
+        <div *ngFor="let row of machine?.rows">
           <div class="card-deck cell-card-row">
             <div class="card product-card card-icon-centered" *ngFor="let field of row.fields"
                  (click)="toggleState(field.internalId, row.id)"

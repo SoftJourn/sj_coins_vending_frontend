@@ -8,7 +8,7 @@
 <hr>
 <div class="container-fluid">
   <div class="card card-block card-outline-success">
-    <form (ngSubmit)="submit()" [formGroup]="form">
+    <form (ngSubmit)="submit()" [formGroup]="form" enctype="multipart/form-data">
       <div class="row">
         <!--left column-->
         <div class="col-xl-6 col-xl-6">
@@ -32,7 +32,7 @@
             <label for="product-category" class="col-xs-2 col-form-label">Category</label>
             <div class="col-xs-10">
               <select id="product-category" class="form-control" formControlName="category">
-                <option *ngFor="let category of categories;" [ngValue]="category">{{category.name}}</option>
+                <option *ngFor="let category of categories;" [ngValue]="category">{{category?.name}}</option>
               </select>
             </div>
           </div>
@@ -58,8 +58,8 @@
               <input type="text" class="form-control" readonly>
               <label class="input-group-btn">
                     <span class="btn btn-info">
-                        <i class="fa fa-search fa-lg"></i> Browse<input type="file" style="display: none;"
-                                                                        (change)="handleInputChange($event)">
+                      <i class="fa fa-search btn-icon"></i>Browse
+                      <input type="file" style="display: none;" (change)="handleInputChange($event)">
                     </span>
               </label>
             </div>

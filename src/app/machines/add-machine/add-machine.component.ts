@@ -34,7 +34,7 @@ export class AddMachineComponent implements OnInit {
   }
 
   submit() {
-    this.machineService.createMachine(this.form.value).subscribe(
+    this.machineService.save(this.form.value).subscribe(
       () => {},
       error => {},
       () => this.clear()
@@ -50,6 +50,5 @@ export class AddMachineComponent implements OnInit {
       columnsCount: '',
       columnsNumbering: 'NUMERICAL'
     });
-    // this.buildForm();
   }
 }

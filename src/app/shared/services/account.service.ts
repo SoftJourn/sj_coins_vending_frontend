@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs/Rx";
 import { TokenService } from "./token.service";
-import { AppConsts } from "../app.consts";
+import { AppProperties } from "../app.properties";
 import { AppError } from "../app-error";
 import { Account } from "../entity/account";
 import { UsernamePasswordCredentials } from "../username-password-credentials";
@@ -13,7 +13,6 @@ export class AccountService {
   private STORAGE_KEY = 'account';
 
   constructor(
-    private APP_CONSTS: AppConsts,
     private tokenService: TokenService,
     private httpService: HttpService
   ) {}
@@ -24,7 +23,7 @@ export class AccountService {
         'auth/creation-failure',
         'Error appeared during account creation please try again later');
 
-      let url = `${this.APP_CONSTS.USER_ENDPOINT}/${username}`;
+      let url = `${AppProperties.USER_ENDPOINT}/${username}`;
 
       this.httpService.get(url).subscribe(
         response => {
