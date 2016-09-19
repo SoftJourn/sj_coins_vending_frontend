@@ -1,14 +1,14 @@
 <div class="p-card-container">
   <md-card class="p-card-bg">
     <md-card-title-group>
-      <img md-card-sm-image src="/assets/images/default-product-350x350.jpg">
-      <md-card-title>Coca-Cola</md-card-title>
-      <md-card-subtitle>100 coins</md-card-subtitle>
+      <img md-card-sm-image src="{{imageUrl}}">
+      <md-card-title>{{product?.name}}</md-card-title>
+      <md-card-subtitle>{{product?.price}} <i class="fa fa-bitcoin fa-lg"></i></md-card-subtitle>
     </md-card-title-group>
     <md-card-actions>
       <div class="action-btn-container">
         <button class="btn btn-success"><i class="fa fa-edit btn-icon"></i>Edit</button>
-        <button class="btn btn-danger"><i class="fa fa-trash btn-icon"></i>Delete</button>
+        <button class="btn btn-danger" (click)="deleteProduct()"><i class="fa fa-trash btn-icon"></i>Delete</button>
       </div>
     </md-card-actions>
   </md-card>
