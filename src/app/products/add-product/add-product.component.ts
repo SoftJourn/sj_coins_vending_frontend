@@ -3,8 +3,7 @@ import {FormGroup, Validators, FormControl} from "@angular/forms";
 import {Category} from "../../shared/entity/category";
 import {CategoryService} from "../../shared/services/category.service";
 import {Product} from "../../shared/entity/product";
-import { Response } from "@angular/http";
-import { ProductService } from "../../shared/services/product.service";
+import {ProductService} from "../../shared/services/product.service";
 
 @Component({
   selector: 'add-product',
@@ -21,11 +20,11 @@ export class AddProductComponent implements OnInit {
   loaded: boolean = false;
   private defaultImageSrc = '/assets/images/default-product-350x350.jpg';
   imageSrc: string;
+  imageName: string = '';
 
-  constructor(
-    private categoryService: CategoryService,
-    private productService: ProductService
-  ) {}
+  constructor(private categoryService: CategoryService,
+              private productService: ProductService) {
+  }
 
   ngOnInit() {
     this.imageSrc = this.defaultImageSrc;
@@ -51,8 +50,10 @@ export class AddProductComponent implements OnInit {
     this.productService.save(this.form.value)
       .flatMap((product: Product) => this.productService.updateImage(product.id, this.formData))
       .subscribe(
-        () => {},
-        error => {},
+        () => {
+        },
+        error => {
+        },
         () => {
           this.formData = new FormData();
           this.imageSrc = this.defaultImageSrc;
@@ -81,6 +82,7 @@ export class AddProductComponent implements OnInit {
 
     reader.onload = this._handleReaderLoaded.bind(this);
     reader.readAsDataURL(file);
+    this.imageName = file.name;
   }
 
   private _handleReaderLoaded(e) {
