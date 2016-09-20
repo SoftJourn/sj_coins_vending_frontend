@@ -41,6 +41,7 @@
     "@angular2-material/tabs": "v2.0.0-alpha.8-2",
     "@angular2-material/toolbar": "v2.0.0-alpha.8-2",
     "@angular2-material/tooltip": "v2.0.0-alpha.8-2",
+    "angular2-notifications": "^0.3.7",
     "bootstrap": "4.0.0-alpha.4",
     "core-js": "^2.4.1",
     "font-awesome": "^4.6.3",
@@ -52,7 +53,7 @@
   "devDependencies": {
     "@types/hammerjs": "^2.0.32",
     "@types/jasmine": "^2.2.30",
-    "angular-cli": "1.0.0-beta.14",
+    "angular-cli": "1.0.0-beta.15",
     "codelyzer": "~0.0.26",
     "jasmine-core": "2.4.1",
     "jasmine-spec-reporter": "2.5.0",

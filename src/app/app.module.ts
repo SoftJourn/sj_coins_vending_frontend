@@ -27,6 +27,7 @@ import { HttpService } from "./shared/services/http.service";
 import { MdCardModule } from "@angular2-material/card";
 import { MachineSizePipe } from './machines/machine-item/machine-size.pipe';
 import { ProductService } from "./shared/services/product.service";
+import { SimpleNotificationsModule } from "angular2-notifications";
 
 
 @NgModule({
@@ -60,7 +61,8 @@ import { ProductService } from "./shared/services/product.service";
     OverlayModule,
     HttpModule,
     Ng2BootstrapModule,
-    ButtonsModule
+    ButtonsModule,
+    SimpleNotificationsModule
   ],
   providers: [
     TokenService,

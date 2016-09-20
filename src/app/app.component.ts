@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { AppProperties } from "./shared/app.properties";
 
 @Component({
   selector: 'app-root',
@@ -6,7 +7,7 @@ import { Component, OnInit } from "@angular/core";
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  title = 'app works!';
+  public options = AppProperties.NOTIFICATION_OPTIONS;
 
   constructor() {}
 

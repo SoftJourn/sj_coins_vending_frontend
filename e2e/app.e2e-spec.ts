@@ -1,10 +1,10 @@
-import { ConfigurationTrackingSystemPage } from './app.po';
+import { VendingAdminPage } from './app.po';
 
-describe('configuration-tracking-system App', function() {
-  let page: ConfigurationTrackingSystemPage;
+describe('vending-admin App', function() {
+  let page: VendingAdminPage;
 
   beforeEach(() => {
-    page = new ConfigurationTrackingSystemPage();
+    page = new VendingAdminPage();
   });
 
   it('should display message saying app works', () => {

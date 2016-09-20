@@ -1,6 +1,6 @@
 import { browser, element, by } from 'protractor/globals';
 
-export class ConfigurationTrackingSystemPage {
+export class VendingAdminPage {
   navigateTo() {
     return browser.get('/');
   }
