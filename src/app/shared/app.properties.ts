@@ -1,9 +1,10 @@
 export class AppProperties {
   static API_VENDING_ENDPOINT = 'https://vending.softjourn.if.ua/v1';
-  static VENDING_HOST = 'https://vending.softjourn.if.ua';
-  static AUTH_ENDPOINT = 'https://sjcoins.testing.softjourn.if.ua/auth/oauth/token';
-  static USER_ENDPOINT = 'https://sjcoins.testing.softjourn.if.ua/auth/api/v1/users';
+  static AUTH_SERVER='https://sjcoins.testing.softjourn.if.ua/auth';
+  static AUTH_ENDPOINT = AppProperties.AUTH_SERVER +'/oauth/token';
+  static AUTH_API = AppProperties.AUTH_SERVER + '/api/v1';
   static CLIENT_AUTH_HASH = 'dXNlcl9jcmVkOnN1cGVyc2VjcmV0';
+  static VENDING_HOST = 'https://vending.softjourn.if.ua';
   static NOTIFICATION_OPTIONS = {
     position: ["bottom", "right"],
     timeOut: 5000,

@@ -7,6 +7,7 @@ import { AddProductComponent } from "./products/add-product/add-product.componen
 import { DashboardComponent } from "./dashboard/dashboard.component";
 import { MachinesComponent, AddMachineComponent, FillMachineComponent } from "./machines/";
 import { CategoriesComponent, AddCategoryComponent } from "./categories/";
+import {UsersMangerComponent} from "./users/users.component";
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'main' },
@@ -18,7 +19,8 @@ const routes: Routes = [
     { path: 'machines/add', component: AddMachineComponent, canActivate: [AuthGuard] },
     { path: 'machines/fill/:id', component: FillMachineComponent, canActivate: [AuthGuard] },
     { path: 'categories', component: CategoriesComponent, canActivate: [AuthGuard] },
-    { path: 'categories/add', component: AddCategoryComponent, canActivate: [AuthGuard] }
+    { path: 'categories/add', component: AddCategoryComponent, canActivate: [AuthGuard] },
+    { path: 'users', component: UsersMangerComponent, canActivate: [AuthGuard]}
   ]},
   { path: 'login', component: LoginComponent }
 ];

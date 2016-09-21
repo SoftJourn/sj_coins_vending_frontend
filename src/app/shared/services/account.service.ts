@@ -23,7 +23,7 @@ export class AccountService {
         'auth/creation-failure',
         'Error appeared during account creation please try again later');
 
-      let url = `${AppProperties.USER_ENDPOINT}/${username}`;
+      let url = `${AppProperties.AUTH_API}/users/${username}`;
 
       this.httpService.get(url).subscribe(
         response => {
@@ -83,7 +83,8 @@ export class AccountService {
     return new Account(
       user.ldapName,
       user.fullName,
-      user.email
+      user.email,
+      user.authorities
     );
   }
 

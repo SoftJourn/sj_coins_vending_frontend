@@ -13,7 +13,7 @@ export abstract class CrudService<T> {
       .map(response => response.json());
   }
 
-  public findOne(id: number): Observable<T> {
+  public findOne(id: number | string): Observable<T> {
     let url = `${this.getUrl()}/${id}`;
 
     return this.httpService.get(url)
@@ -25,7 +25,7 @@ export abstract class CrudService<T> {
       .map(response => response.json());
   }
 
-  public delete(id: number): Observable<void> {
+  public delete(id: number | string): Observable<void> {
     let url = `${this.getUrl()}/${id}`;
 
     return this.httpService.delete(url)
