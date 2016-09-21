@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from "@angular/forms";
-import { Category } from "../../shared/entity/category";
-import { CategoryService } from "../../shared/services/category.service";
+import {Component, OnInit} from '@angular/core';
+import {FormGroup, FormControl, Validators} from "@angular/forms";
+import {Category} from "../../shared/entity/category";
+import {CategoryService} from "../../shared/services/category.service";
+import {NotificationsService} from "angular2-notifications/components";
 
 @Component({
   selector: 'add-category',
@@ -11,7 +12,9 @@ import { CategoryService } from "../../shared/services/category.service";
 export class AddCategoryComponent implements OnInit {
   form: FormGroup;
 
-  constructor(private categoryService: CategoryService) { }
+  constructor(private categoryService: CategoryService,
+              private notificationService: NotificationsService) {
+  }
 
   ngOnInit() {
     this.buildForm();
@@ -19,16 +22,46 @@ export class AddCategoryComponent implements OnInit {
 
   private buildForm(): void {
     this.form = new FormGroup({
-      name: new FormControl('', Validators.required)
+      name: new FormControl('', [Validators.required,
+        Validators.maxLength(50),
+        Validators.pattern('^[a-zA-Z][\\-a-z]+[ \\-a-z]+')
+      ])
     });
+  }
+
+  getValidationClass(controlName: string): string {
+    if (this.form.controls[controlName].pristine) {
+      return "";
+    } else if (this.form.controls[controlName].valid) {
+      return "has-success";
+    } else if (!this.form.controls[controlName].valid) {
+      return "has-danger";
+    }
+  }
+
+  getValidationIcon(controlName: string): string {
+    if (this.form.controls[controlName].pristine) {
+      return "";
+    } else if (this.form.controls[controlName].valid) {
+      return "form-control-success";
+    } else if (!this.form.controls[controlName].valid) {
+      return "form-control-danger";
+    }
+  }
+
+  isValidOrPristine(controlName: string): boolean {
+    return this.form.controls[controlName].valid
+      || this.form.controls[controlName].pristine;
   }
 
   submit() {
     let category = new Category(this.form.get('name').value);
-
     this.categoryService.save(category)
       .subscribe(category => {
-        /* TODO add toast notification */
+        this.notificationService.success('Create', 'Category was created successfully');
+        this.form.reset({
+          name: ''
+        });
       });
   }
 }
