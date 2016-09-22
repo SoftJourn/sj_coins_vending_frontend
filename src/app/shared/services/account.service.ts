@@ -67,6 +67,10 @@ export class AccountService {
   }
 
   public logout(): void {
+    this.tokenService.revokeRefreshToken().subscribe(
+      () => null,
+      error => {}
+    );
     this.deleteAccountFromLocalStorage();
     this.tokenService.deleteTokensFromStorage();
   }

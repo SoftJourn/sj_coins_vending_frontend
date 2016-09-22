@@ -3,6 +3,7 @@ import { Router } from "@angular/router";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import {AppError} from "../shared/app-error";
 import {AccountService} from "../shared/services/account.service";
+import { NotificationsService } from "angular2-notifications";
 
 @Component({
   selector: 'app-login',
@@ -15,7 +16,8 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private notificationService: NotificationsService
   ) {}
 
   ngOnInit() {
@@ -55,7 +57,7 @@ export class LoginComponent implements OnInit {
     this.accountService.login(this.form.value)
       .subscribe(
         () => {},
-        (error: AppError) => this.loginError = error,
+        (error: AppError) => this.notificationService.error('Error', error.message),
         () => this.router.navigate(['/main'])
       )
   }

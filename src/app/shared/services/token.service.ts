@@ -153,4 +153,12 @@ export class TokenService {
     this.scope = null;
     this.jti = null;
   }
+
+  public revokeRefreshToken(): Observable<{}> {
+    let url = `${AppProperties.AUTH_ENDPOINT}/revoke`;
+    let body = `token_value=${this.refreshToken}`;
+
+    return this.http.post(url, body, {headers: this.getHeadersForTokenRequest()})
+      .map(response => Observable.empty());
+  }
 }
