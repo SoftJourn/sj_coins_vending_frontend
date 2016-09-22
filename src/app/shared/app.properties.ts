@@ -7,7 +7,7 @@ export class AppProperties {
   static VENDING_HOST = 'https://vending.softjourn.if.ua';
   static NOTIFICATION_OPTIONS = {
     position: ["bottom", "right"],
-    timeOut: 5000,
+    timeOut: 2000,
     lastOnBottom: true
   };
 }

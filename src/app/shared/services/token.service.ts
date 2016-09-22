@@ -56,7 +56,7 @@ export class TokenService {
     );
 
     if (!this.accessToken && !credentials) {
-      return Observable.throw(new AppError(
+      return <Observable<string>>Observable.throw(new AppError(
         'token/access_token-missing',
         'Access token is missing'
       ));
