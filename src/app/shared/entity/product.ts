@@ -8,6 +8,6 @@ export class Product {
     public name: string,
     public imageUrl: string,
     public description: string,
-    public category: Category,
+    public category: Category
   ) {}
 }

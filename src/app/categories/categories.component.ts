@@ -1,7 +1,8 @@
-import { Component, OnInit } from "@angular/core";
-import { CategoryService } from "../shared/services/category.service";
-import { Category } from "../shared/entity/category";
-import { NotificationsService } from "angular2-notifications";
+import {Component, OnInit} from "@angular/core";
+import {CategoryService} from "../shared/services/category.service";
+import {Category} from "../shared/entity/category";
+import {NotificationsService} from "angular2-notifications";
+import {ErrorDetail} from "../shared/entity/error-detail";
 
 @Component({
   selector: 'categories-list',
@@ -11,10 +12,9 @@ import { NotificationsService } from "angular2-notifications";
 export class CategoriesComponent implements OnInit {
   public categories: Category[];
 
-  constructor(
-    private categoryService: CategoryService,
-    private notificationService: NotificationsService
-  ) {}
+  constructor(private categoryService: CategoryService,
+              private notificationService: NotificationsService) {
+  }
 
   ngOnInit() {
     this.categoryService.findAll().subscribe(
@@ -24,8 +24,17 @@ export class CategoriesComponent implements OnInit {
 
   private deleteCategory(id: number) {
     this.categoryService.delete(id).subscribe(
-      next => {},
-      error=> {},
+      next => {
+      },
+      error => {
+        var errorDetail: ErrorDetail = JSON.parse(error._body);
+        if (errorDetail.code == 1451) {
+          this.notificationService.error('Error', 'Can not delete, this category is being used!');
+        }
+        else {
+          this.notificationService.error('Error', errorDetail.detail);
+        }
+      },
       () => {
         this.categoryService.findAll().subscribe(
           categories => {
@@ -33,7 +42,8 @@ export class CategoriesComponent implements OnInit {
             this.notificationService.success('Delete', 'Category has been deleted successfully.');
           }
         );
-      });
+      }
+    );
   }
 
 }

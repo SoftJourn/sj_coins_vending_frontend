@@ -22,7 +22,7 @@ export abstract class CrudService<T> {
 
   public save(entity: T): Observable<T> {
     return this.httpService.post(this.getUrl(), entity, MediaType.APPLICATION_JSON)
-      .map(response => response.json());
+      .map(response => response.json(), error => error.json());
   }
 
   public delete(id: number | string): Observable<void> {

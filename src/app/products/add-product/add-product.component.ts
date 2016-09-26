@@ -4,6 +4,8 @@ import {Category} from "../../shared/entity/category";
 import {CategoryService} from "../../shared/services/category.service";
 import {Product} from "../../shared/entity/product";
 import {ProductService} from "../../shared/services/product.service";
+import {ErrorDetail} from "../../shared/entity/error-detail";
+import {NotificationsService} from "angular2-notifications/components";
 
 @Component({
   selector: 'add-product',
@@ -23,7 +25,8 @@ export class AddProductComponent implements OnInit {
   imageName: string = '';
 
   constructor(private categoryService: CategoryService,
-              private productService: ProductService) {
+              private productService: ProductService,
+              private notificationService: NotificationsService) {
   }
 
   ngOnInit() {
@@ -39,12 +42,42 @@ export class AddProductComponent implements OnInit {
 
   private buildForm(): void {
     this.form = new FormGroup({
-      name: new FormControl('', Validators.required),
+      name: new FormControl('', [Validators.required,
+        Validators.maxLength(50),
+        Validators.pattern('^[a-zA-Z]+[ a-zA-Z]+')
+      ]),
       price: new FormControl('', [Validators.required, Validators.pattern('\\d+')]),
-      description: new FormControl('', Validators.required),
+      description: new FormControl(''),
       category: new FormControl('', Validators.required)
     });
   }
+
+
+  getValidationClass(controlName: string): string {
+    if (this.form.controls[controlName].pristine) {
+      return "";
+    } else if (this.form.controls[controlName].valid) {
+      return "has-success";
+    } else if (!this.form.controls[controlName].valid) {
+      return "has-danger";
+    }
+  }
+
+  getValidationIcon(controlName: string): string {
+    if (this.form.controls[controlName].pristine) {
+      return "";
+    } else if (this.form.controls[controlName].valid) {
+      return "form-control-success";
+    } else if (!this.form.controls[controlName].valid) {
+      return "form-control-danger";
+    }
+  }
+
+  isValidOrPristine(controlName: string): boolean {
+    return this.form.controls[controlName].valid
+      || this.form.controls[controlName].pristine;
+  }
+
 
   submit() {
     this.productService.save(this.form.value)
@@ -53,10 +86,19 @@ export class AddProductComponent implements OnInit {
         () => {
         },
         error => {
+          var errorDetail: ErrorDetail = JSON.parse(error._body);
+          if (errorDetail.code == 1062) {
+            this.notificationService.error('Error', 'Such product name exists!');
+          }
+          else {
+            this.notificationService.error('Error', errorDetail.detail);
+          }
         },
         () => {
+          this.notificationService.success('Create', 'Product was created successfully');
           this.formData = new FormData();
           this.imageSrc = this.defaultImageSrc;
+          this.imageName = '';
           this.form.reset({
             name: '',
             price: '',
