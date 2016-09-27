@@ -4,6 +4,7 @@ import {Category} from "../../shared/entity/category";
 import {CategoryService} from "../../shared/services/category.service";
 import {NotificationsService} from "angular2-notifications/components";
 import {ErrorDetail} from "../../shared/entity/error-detail";
+import { FormValidationStyles } from "../../shared/form-validation-styles";
 
 @Component({
   selector: 'add-category',
@@ -12,6 +13,7 @@ import {ErrorDetail} from "../../shared/entity/error-detail";
 })
 export class AddCategoryComponent implements OnInit {
   form: FormGroup;
+  formStyles: FormValidationStyles;
 
   constructor(private categoryService: CategoryService,
               private notificationService: NotificationsService) {
@@ -25,34 +27,11 @@ export class AddCategoryComponent implements OnInit {
     this.form = new FormGroup({
       name: new FormControl('', [Validators.required,
         Validators.maxLength(50),
-        Validators.pattern('^[a-zA-Z]+[ a-zA-Z]+')
+        Validators.pattern('^[a-zA-Z]+[a-zA-Z ]*[a-zA-Z]+$')
       ])
     });
-  }
 
-  getValidationClass(controlName: string): string {
-    if (this.form.controls[controlName].pristine) {
-      return "";
-    } else if (this.form.controls[controlName].valid) {
-      return "has-success";
-    } else if (!this.form.controls[controlName].valid) {
-      return "has-danger";
-    }
-  }
-
-  getValidationIcon(controlName: string): string {
-    if (this.form.controls[controlName].pristine) {
-      return "";
-    } else if (this.form.controls[controlName].valid) {
-      return "form-control-success";
-    } else if (!this.form.controls[controlName].valid) {
-      return "form-control-danger";
-    }
-  }
-
-  isValidOrPristine(controlName: string): boolean {
-    return this.form.controls[controlName].valid
-      || this.form.controls[controlName].pristine;
+    this.formStyles = new FormValidationStyles(this.form);
   }
 
   submit() {
