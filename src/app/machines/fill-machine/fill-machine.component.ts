@@ -7,9 +7,11 @@ import {
   transition,
   trigger } from "@angular/core";
 import { MachineService } from "../../shared/services/machine.service";
-import { Machine } from "../shared/machine";
+import { Machine, Field } from "../shared/machine";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
+import { ProductService } from "../../shared/services/product.service";
+import { Product } from "../../shared/entity/product";
 
 @Component({
   selector: 'fill-machine',
@@ -35,10 +37,12 @@ export class FillMachineComponent implements OnInit {
   private selectedCardId = '';
   private selectedRowId = -1;
   machine: Machine;
+  products: Product[];
   form: FormGroup;
 
   constructor(
     private machineService: MachineService,
+    private productService: ProductService,
     private route: ActivatedRoute
   ) { }
 
@@ -50,6 +54,12 @@ export class FillMachineComponent implements OnInit {
       error => {}
     );
 
+    this.productService.findAll().subscribe(
+      products => {
+        this.products = products;
+      }
+    );
+
     this.form = new FormGroup({
       cellId: new FormControl('', Validators.required),
       product: new FormControl('', Validators.required),
@@ -58,13 +68,22 @@ export class FillMachineComponent implements OnInit {
         Validators.pattern('[1-9][0-9]*')
       ])
     });
+
+    this.form.get('cellId').valueChanges
+      .subscribe((field: Field) => {
+        if (field != null) {
+          this.selectedCardId = field.internalId;
+        } else {
+          this.selectedCardId = '';
+        }
+      });
   }
 
-  toggleState(cardId: string, rowId: number): void {
-    this.selectedCardId = cardId;
+  toggleState(field: Field, rowId: number): void {
+    this.selectedCardId = field.internalId;
     this.selectedRowId = rowId;
     this.cellFormState = 'active';
-    this.form.controls['cellId'].patchValue(cardId, {onlySelf: true})
+    this.form.controls['cellId'].patchValue(field, {onlySelf: true});
   }
 
   applyCellFormState(rowId: number): string {

@@ -14,4 +14,8 @@ export class MachineService extends CrudService<Machine> {
   protected getUrl(): string {
     return `${AppProperties.API_VENDING_ENDPOINT}/vending`;
   }
+
+  public updateField() {
+
+  }
 }

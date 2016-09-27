@@ -4,7 +4,6 @@ export class AppProperties {
   static AUTH_ENDPOINT = AppProperties.AUTH_SERVER +'/oauth/token';
   static AUTH_API = AppProperties.AUTH_SERVER + '/api/v1';
   static CLIENT_AUTH_HASH = 'dXNlcl9jcmVkOnN1cGVyc2VjcmV0';
-  static VENDING_HOST = 'https://vending.softjourn.if.ua';
   static NOTIFICATION_OPTIONS = {
     position: ["bottom", "right"],
     timeOut: 2000,

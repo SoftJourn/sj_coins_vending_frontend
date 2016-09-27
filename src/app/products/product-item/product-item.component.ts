@@ -16,7 +16,7 @@ export class ProductItemComponent implements OnInit {
 
   ngOnInit() {
     if (this.product.imageUrl != null) {
-      this.imageUrl = `${AppProperties.VENDING_HOST}/${this.product.imageUrl}`
+      this.imageUrl = `${AppProperties.API_VENDING_ENDPOINT}/${this.product.imageUrl}`
     } else {
       this.imageUrl = '/assets/images/default-product-350x350.jpg';
     }
