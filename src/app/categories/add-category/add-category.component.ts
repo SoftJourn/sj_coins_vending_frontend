@@ -27,7 +27,7 @@ export class AddCategoryComponent implements OnInit {
     this.form = new FormGroup({
       name: new FormControl('', [Validators.required,
         Validators.maxLength(50),
-        Validators.pattern('^[a-zA-Z]+[a-zA-Z ]*[a-zA-Z]+$')
+        Validators.pattern('^[a-zA-Z\u0400-\u04FF]+[a-zA-Z \u0400-\u04FF]*[a-zA-Z\u0400-\u04FF]+$')
       ])
     });
 

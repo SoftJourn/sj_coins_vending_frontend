@@ -24,8 +24,14 @@ export class AddMachineComponent implements OnInit {
 
   private buildForm(): void {
     this.form = new FormGroup({
-      name: new FormControl('', Validators.required),
-      address: new FormControl('', Validators.required),
+      name: new FormControl('', [
+        Validators.required,
+        Validators.pattern('^[a-zA-Z0-9\u0400-\u04FF]+[ a-zA-Z0-9\u0400-\u04FF]*[a-zA-Z0-9\u0400-\u04FF]$')
+      ]),
+      address: new FormControl('', [
+        Validators.required,
+        Validators.pattern('[a-zA-Z0-9]+')
+      ]),
       rowsCount: new FormControl('', [
         Validators.required,
         Validators.pattern('^[1-9]$|^[1][0-9]{0,1}$')
@@ -45,7 +51,10 @@ export class AddMachineComponent implements OnInit {
     this.machineService.save(this.form.value).subscribe(
       () => {},
       error => {},
-      () => this.clear()
+      () => {
+        this.notificationService.success('Create', 'Machine has been created successfully');
+        this.clear()
+      }
     );
   }
 

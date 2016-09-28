@@ -44,7 +44,7 @@ export class AddProductComponent implements OnInit {
     this.form = new FormGroup({
       name: new FormControl('', [Validators.required,
         Validators.maxLength(50),
-        Validators.pattern('^[a-zA-Z0-9]+[ a-zA-Z0-9]*[a-zA-Z0-9]+')
+        Validators.pattern('^[a-zA-Z0-9\u0400-\u04FF]+[ a-zA-Z0-9\u0400-\u04FF]*[a-zA-Z0-9\u0400-\u04FF]+')
       ]),
       price: new FormControl('', [Validators.required,
         Validators.maxLength(5),
