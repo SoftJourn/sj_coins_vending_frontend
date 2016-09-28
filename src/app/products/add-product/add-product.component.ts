@@ -6,6 +6,7 @@ import {Product} from "../../shared/entity/product";
 import {ProductService} from "../../shared/services/product.service";
 import {ErrorDetail} from "../../shared/entity/error-detail";
 import {NotificationsService} from "angular2-notifications/components";
+import { FormValidationStyles } from "../../shared/form-validation-styles";
 
 @Component({
   selector: 'add-product',
@@ -16,6 +17,7 @@ export class AddProductComponent implements OnInit {
   public categories: Category[];
   public product: Product;
   form: FormGroup;
+  formStyles: FormValidationStyles;
   private imageFile: File = null;
   private formData: FormData = new FormData();
 
@@ -25,10 +27,11 @@ export class AddProductComponent implements OnInit {
   imageSrc: string;
   imageName: string = '';
 
-  constructor(private categoryService: CategoryService,
-              private productService: ProductService,
-              private notificationService: NotificationsService) {
-  }
+  constructor(
+    private categoryService: CategoryService,
+    private productService: ProductService,
+    private notificationService: NotificationsService
+  ) {}
 
   ngOnInit() {
     this.imageSrc = this.defaultImageSrc;
@@ -52,33 +55,9 @@ export class AddProductComponent implements OnInit {
       description: new FormControl(''),
       category: new FormControl('', Validators.required)
     });
-  }
 
-  getValidationClass(controlName: string): string {
-    if (this.form.controls[controlName].pristine) {
-      return "";
-    } else if (this.form.controls[controlName].valid) {
-      return "has-success";
-    } else if (!this.form.controls[controlName].valid) {
-      return "has-danger";
-    }
+    this.formStyles = new FormValidationStyles(this.form);
   }
-
-  getValidationIcon(controlName: string): string {
-    if (this.form.controls[controlName].pristine) {
-      return "";
-    } else if (this.form.controls[controlName].valid) {
-      return "form-control-success";
-    } else if (!this.form.controls[controlName].valid) {
-      return "form-control-danger";
-    }
-  }
-
-  isValidOrPristine(controlName: string): boolean {
-    return this.form.controls[controlName].valid
-      || this.form.controls[controlName].pristine;
-  }
-
 
   submit() {
     if (this.imageFile != null) {
