@@ -44,7 +44,7 @@ export class AddProductComponent implements OnInit {
     this.form = new FormGroup({
       name: new FormControl('', [Validators.required,
         Validators.maxLength(50),
-        Validators.pattern('^[a-zA-Z]+[ a-zA-Z]+')
+        Validators.pattern('^[a-zA-Z0-9]+[ a-zA-Z0-9]*[a-zA-Z0-9]+')
       ]),
       price: new FormControl('', [Validators.required, Validators.pattern('\\d+')]),
       description: new FormControl(''),
@@ -120,7 +120,7 @@ export class AddProductComponent implements OnInit {
     }
 
     this.loaded = false;
-    this.formData.append('file', file, file.name)
+    this.formData.append('file', file, file.name);
 
     reader.onload = this._handleReaderLoaded.bind(this);
     reader.readAsDataURL(file);
