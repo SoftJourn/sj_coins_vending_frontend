@@ -9,7 +9,6 @@ export class Account {
   ) {}
 
   public get role(): string {
-    console.log('hello');
     let regex =/.*ROLE_/;
     return this._role = this.authorities.replace(regex,'');
   }

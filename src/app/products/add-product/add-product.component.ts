@@ -6,7 +6,7 @@ import {Product} from "../../shared/entity/product";
 import {ProductService} from "../../shared/services/product.service";
 import {ErrorDetail} from "../../shared/entity/error-detail";
 import {NotificationsService} from "angular2-notifications/components";
-import { FormValidationStyles } from "../../shared/form-validation-styles";
+import {FormValidationStyles} from "../../shared/form-validation-styles";
 
 @Component({
   selector: 'add-product',
@@ -27,11 +27,10 @@ export class AddProductComponent implements OnInit {
   imageSrc: string;
   imageName: string = '';
 
-  constructor(
-    private categoryService: CategoryService,
-    private productService: ProductService,
-    private notificationService: NotificationsService
-  ) {}
+  constructor(private categoryService: CategoryService,
+              private productService: ProductService,
+              private notificationService: NotificationsService) {
+  }
 
   ngOnInit() {
     this.imageSrc = this.defaultImageSrc;
@@ -98,7 +97,6 @@ export class AddProductComponent implements OnInit {
 
   public handleInputChange(e) {
     this.imageFile = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0];
-    console.log(this.imageFile);
     var pattern = /image\/(?:jpeg|png|jpg|apng|svg|bmp)/;
     var reader = new FileReader();
     // check image pattern
@@ -122,14 +120,26 @@ export class AddProductComponent implements OnInit {
     }
   }
 
+  public handleImageLoad() {
+    this.imageLoaded = true;
+  }
+
+  public reset(): void {
+    this.imageFile = null;
+    this.imageSrc = this.defaultImageSrc;
+    this.imageName = '';
+    this.form.reset({
+      name: '',
+      price: '',
+      description: '',
+      category: this.categories[0]
+    })
+  }
+
   private _handleReaderLoaded(e) {
     var reader = e.target;
     this.imageSrc = reader.result;
     this.loaded = true;
-  }
-
-  public handleImageLoad() {
-    this.imageLoaded = true;
   }
 
   private validImageDimensions(image: File): boolean {

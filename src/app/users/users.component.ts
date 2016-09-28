@@ -67,7 +67,6 @@ export class UsersMangerComponent implements OnInit {
   }
 
   public deleteUser(ldapName: string) {
-    console.log(ldapName);
     this.adminUserService.delete(ldapName)
       .subscribe(
         next => {},
@@ -78,7 +77,6 @@ export class UsersMangerComponent implements OnInit {
   }
 
   public flySuperman(){
-    console.log("HE IS THERE!!!");
     if(this.superUserState=="inactive"){
       this.superUserSrc="../../assets/images/SUPER_ADMIN.png";
       this.superUserState="active";
@@ -87,7 +85,6 @@ export class UsersMangerComponent implements OnInit {
     else{
       this.superUserSrc="../../assets/images/Super_Logo.png";
       this.superUserState="inactive";
-
     }
 
   }

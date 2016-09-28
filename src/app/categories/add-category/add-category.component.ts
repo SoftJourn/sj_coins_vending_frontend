@@ -36,7 +36,6 @@ export class AddCategoryComponent implements OnInit {
 
   submit() {
     let category = new Category(this.form.get('name').value);
-    console.log(this.form.get('name').value);
     this.categoryService.save(category)
       .subscribe(category => {
           this.notificationService.success('Create', 'Category was created successfully');
