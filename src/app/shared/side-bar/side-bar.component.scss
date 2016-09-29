@@ -1,0 +1,9 @@
+.log-out {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .log-out {
+    display: block;
+  }
+}

@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { AccountService } from "../services/account.service";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'side-bar',
@@ -9,6 +11,14 @@ export class SideBarComponent implements OnInit {
 
   isActive = false;
   showMenu: string = '0';
+
+  constructor(
+    private accountService: AccountService,
+    private router: Router
+  ) {}
+
+  ngOnInit() {
+  }
 
   eventCalled() {
     this.isActive = !this.isActive;
@@ -30,9 +40,8 @@ export class SideBarComponent implements OnInit {
     }
   }
 
-  constructor() { }
-
-  ngOnInit() {
+  logout() {
+    this.accountService.logout();
+    this.router.navigate(['/login']);
   }
-
 }

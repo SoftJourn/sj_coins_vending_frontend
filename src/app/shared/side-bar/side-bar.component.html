@@ -23,6 +23,9 @@
     <a [routerLink]="['/main/users']" routerLinkActive="router-link-active"
        [routerLinkActiveOptions]="{exact: true}" class="list-group-item">
       <span><i class="fa fa-users fa-lg"></i>Users</span>
-      </a>
+    </a>
+    <a class="list-group-item log-out" (click)="logout()">
+      <span><i class="fa fa-power-off fa-lg"></i>Log Out</span>
+    </a>
   </ul>
 </nav>
