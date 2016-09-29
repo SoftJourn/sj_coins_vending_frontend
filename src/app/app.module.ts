@@ -4,11 +4,7 @@ import { CommonModule } from "@angular/common";
 import { ReactiveFormsModule } from "@angular/forms";
 import { HttpModule } from "@angular/http";
 import { AppComponent } from "./app.component";
-import { routing, appRoutingProviders } from "./app.routing";
-import { MdInputModule } from "@angular2-material/input";
-import { MdButtonModule } from "@angular2-material/button";
-import { MdIconModule } from "@angular2-material/icon";
-import { OverlayModule } from "@angular2-material/core";
+import { MdInputModule, MdButtonModule, MdIconModule, OverlayModule, MdCardModule } from "@angular/material";
 import { MainInfoComponent } from "./main-info/main-info.component";
 import { LoginComponent } from "./login/login.component";
 import { TopNavComponent } from "./shared/top-nav/top-nav.component";
@@ -25,12 +21,12 @@ import { TokenService } from "./shared/services/token.service";
 import { AccountService } from "./shared/services/account.service";
 import { HttpService } from "./shared/services/http.service";
 import { UsersMangerComponent } from "./users/users.component";
-import { MdCardModule } from "@angular2-material/card";
 import { MachineSizePipe } from "./machines/machine-item/machine-size.pipe";
 import { ProductService } from "./shared/services/product.service";
 import { SimpleNotificationsModule } from "angular2-notifications";
 import { LdapUsersService } from "./shared/services/ldap.users.service";
 import { AdminUsersService } from "./shared/services/admin.users.service";
+import { VendingAdminRoutingModule } from "./app-routing.module";
 
 
 @NgModule({
@@ -58,7 +54,7 @@ import { AdminUsersService } from "./shared/services/admin.users.service";
     BrowserModule,
     CommonModule,
     ReactiveFormsModule,
-    routing,
+    VendingAdminRoutingModule,
     MdInputModule,
     MdButtonModule,
     MdIconModule,
@@ -73,7 +69,6 @@ import { AdminUsersService } from "./shared/services/admin.users.service";
     TokenService,
     HttpService,
     AccountService,
-    appRoutingProviders,
     MachineService,
     DashboardService,
     CategoryService,

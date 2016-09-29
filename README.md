@@ -1,11 +1,11 @@
 # Vending Admin
 
-This project was generated with [angular-cli](https://github.com/angular/angular-cli) version 1.0.0-beta.15.
+This project was generated with [angular-cli](https://github.com/angular/angular-cli) version 1.0.0-beta.16.
 
 ## Certificate issue on testing server
 In order to login to the app you will need to add certificate of sjcoins.testing.softjourn.if.ua to trusted store.
 
-###Linux
+### Linux
 Most browsers use their own CA database, and so tools like certutil have to be used to modify their contents (on Debian that is provided by the libnss3-tools package). For example, with Chrome you run something along the lines of:
 
 `certutil -d sql:$HOME/.pki/nssdb -A -t "C,," -n "Softjourn CA" -i /path/to/CA/cert.file`
