@@ -27,6 +27,12 @@ button {
 .header-container {
   display: flex;
   align-items: center;
+  margin: 0px;
+  padding: 0px;
+  div {
+    padding: 0px;
+    margin-right: 15px;
+  }
 }
 
 .header-buttons-container {

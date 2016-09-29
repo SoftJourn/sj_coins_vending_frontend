@@ -11,10 +11,10 @@
     <form (ngSubmit)="submit()" [formGroup]="form" enctype="multipart/form-data">
       <div class="row">
         <!--left column-->
-        <div class="col-xl-6 col-xl-6">
+        <div class="col-xl-6">
           <div class="form-group row" [ngClass]="formStyles.getValidationClass('name')">
-            <label for="product-name" class="col-xs-2 col-form-label">Name</label>
-            <div class="col-xs-10">
+            <label for="product-name" class="col-xs-4 col-md-2 col-xl-2 col-form-label">Name</label>
+            <div class="col-xs-8 col-md-10 col-xl-10">
               <input class="form-control" type="text" placeholder="Enter name" id="product-name" formControlName="name"
                      [ngClass]="formStyles.getValidationIcon('name')">
               <label [hidden]="formStyles.isValidOrPristine('name')" class="form-control-feedback pull-right">Enter valid
@@ -22,8 +22,8 @@
             </div>
           </div>
           <div class="form-group row" [ngClass]="formStyles.getValidationClass('price')">
-            <label for="product-price" class="col-xs-2 col-form-label">Price</label>
-            <div class="col-xs-10">
+            <label for="product-price" class="col-xs-4 col-md-2 col-xl-2 col-form-label">Price</label>
+            <div class="col-xs-8 col-md-10 col-xl-10">
               <div class="input-group">
                 <div class="input-group-addon"><i class="fa fa-bitcoin fa-lg"></i></div>
                 <input class="form-control" type="text" placeholder="Enter price" id="product-price"
@@ -34,23 +34,23 @@
             </div>
           </div>
           <div class="form-group row">
-            <label for="product-category" class="col-xs-2 col-form-label">Category</label>
-            <div class="col-xs-10">
+            <label for="product-category" class="col-xs-4 col-md-2 col-xl-2 col-form-label">Category</label>
+            <div class="col-xs-8 col-md-10 col-xl-10">
               <select id="product-category" class="form-control" formControlName="category">
                 <option *ngFor="let category of categories;" [ngValue]="category">{{category?.name}}</option>
               </select>
             </div>
           </div>
           <div class="form-group row">
-            <label for="product-description" class="col-xs-2 col-form-label">Description</label>
-            <div class="col-xs-10">
+            <label for="product-description" class="col-xs-4 col-md-2 col-xl-2 col-form-label">Description</label>
+            <div class="col-xs-8 col-md-10 col-xl-10">
               <textarea class="form-control" id="product-description" rows="3"
                         placeholder="Enter description" formControlName="description"></textarea>
             </div>
           </div>
         </div>
         <!--right column-->
-        <div class="col-xl-6 col-xl-6">
+        <div class="col-xl-6">
           <div align="center" class="form-group row">
             <img height="205px" width="205px"
                  [src]="imageSrc"

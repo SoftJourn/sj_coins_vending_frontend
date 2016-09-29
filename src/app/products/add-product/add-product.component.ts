@@ -14,18 +14,20 @@ import {FormValidationStyles} from "../../shared/form-validation-styles";
   styleUrls: ['./add-product.component.scss']
 })
 export class AddProductComponent implements OnInit {
+
   public categories: Category[];
   public product: Product;
   form: FormGroup;
   formStyles: FormValidationStyles;
-  private imageFile: File = null;
-  private formData: FormData = new FormData();
-
   imageLoaded: boolean = false;
   loaded: boolean = false;
-  private defaultImageSrc = '/assets/images/default-product-350x350.jpg';
   imageSrc: string;
   imageName: string = '';
+
+  private img;
+  private imageFile: File = null;
+  private formData: FormData = null;
+  private defaultImageSrc = '/assets/images/default-product-350x350.jpg';
 
   constructor(private categoryService: CategoryService,
               private productService: ProductService,
@@ -46,7 +48,7 @@ export class AddProductComponent implements OnInit {
     this.form = new FormGroup({
       name: new FormControl('', [Validators.required,
         Validators.maxLength(50),
-        Validators.pattern('^[a-zA-Z0-9\u0400-\u04FF]+[ a-zA-Z0-9\u0400-\u04FF]*[a-zA-Z0-9\u0400-\u04FF]+')
+        Validators.pattern('^[a-zA-Z0-9\u0400-\u04FF]+[ a-zA-Z0-9\u0400-\u04FF,-]*[a-zA-Z0-9\u0400-\u04FF,-]+')
       ]),
       price: new FormControl('', [Validators.required,
         Validators.maxLength(5),
@@ -81,12 +83,13 @@ export class AddProductComponent implements OnInit {
             this.imageFile = null;
             this.imageSrc = this.defaultImageSrc;
             this.imageName = '';
+            this.formData = null;
             this.form.reset({
               name: '',
               price: '',
               description: '',
               category: this.categories[0]
-            })
+            });
           }
         );
     }
@@ -99,25 +102,35 @@ export class AddProductComponent implements OnInit {
     this.imageFile = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0];
     var pattern = /image\/(?:jpeg|png|jpg|apng|svg|bmp)/;
     var reader = new FileReader();
-    // check image pattern
-    if (!this.imageFile.type.match(pattern)) {
-      this.notificationService.error('Error', 'This file format not supported!');
-    }
-    // check image size
-    else if (this.imageFile.size > 1024 * 256) {
-      this.notificationService.error('Error', 'This image size is too big!');
-    }
-    // check image dimensions
-    else if (this.validImageDimensions(this.imageFile)) {
-      this.notificationService.error('Error', 'Image dimensions is too big, try to use 205*205px');
-    }
-    else {
-      this.loaded = false;
-      this.formData.append('file', this.imageFile, this.imageFile.name);
-      reader.onload = this._handleReaderLoaded.bind(this);
-      reader.readAsDataURL(this.imageFile);
-      this.imageName = this.imageFile.name;
-    }
+    this.validImageDimensions(this.imageFile).then(resolve => {
+      // check image pattern
+      if (!this.imageFile.type.match(pattern)) {
+        this.notificationService.error('Error', 'This file format not supported!');
+        e.target.value = null;
+      }
+      // check image size
+      else if (this.imageFile.size > 1024 * 256) {
+        this.notificationService.error('Error', 'This image size is too big!');
+        e.target.value = null;
+      }
+      // check image dimensions
+      else if (resolve) {
+        this.notificationService.error('Error', 'Image dimensions is too big, try to use 205*205px');
+        e.target.value = null;
+      }
+      else {
+        this.loaded = false;
+        this.formData = new FormData();
+        this.formData.append('file', this.imageFile, this.imageFile.name);
+        reader.onload = this._handleReaderLoaded.bind(this);
+        reader.readAsDataURL(this.imageFile);
+        this.imageName = this.imageFile.name;
+        e.target.value = null;
+      }
+    }, reject => {
+      this.notificationService.error('Error', reject);
+      e.target.value = null;
+    });
   }
 
   public handleImageLoad() {
@@ -128,6 +141,7 @@ export class AddProductComponent implements OnInit {
     this.imageFile = null;
     this.imageSrc = this.defaultImageSrc;
     this.imageName = '';
+    this.formData = null;
     this.form.reset({
       name: '',
       price: '',
@@ -142,10 +156,15 @@ export class AddProductComponent implements OnInit {
     this.loaded = true;
   }
 
-  private validImageDimensions(image: File): boolean {
-    var img = new Image();
-    img.src = window.URL.createObjectURL(image);
-    return img.width >= 205 || img.height >= 205
+  private validImageDimensions(image: File): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.img = new Image();
+      this.img.onload = ()=> {
+        resolve(this.img.width >= 205 || this.img.height >= 205);
+        reject('Image was not uploaded, try again!');
+      };
+      this.img.src = window.URL.createObjectURL(image);
+    });
   }
 
 }
