@@ -4,7 +4,11 @@ import { CommonModule } from "@angular/common";
 import { ReactiveFormsModule } from "@angular/forms";
 import { HttpModule } from "@angular/http";
 import { AppComponent } from "./app.component";
-import { MdInputModule, MdButtonModule, MdIconModule, OverlayModule, MdCardModule } from "@angular/material";
+import { routing, appRoutingProviders } from "./app.routing";
+import { MdInputModule } from "@angular/material/input";
+import { MdButtonModule } from "@angular/material/button";
+import { MdIconModule } from "@angular/material/icon";
+import { OverlayModule } from "@angular/material/core";
 import { MainInfoComponent } from "./main-info/main-info.component";
 import { LoginComponent } from "./login/login.component";
 import { TopNavComponent } from "./shared/top-nav/top-nav.component";
@@ -21,12 +25,12 @@ import { TokenService } from "./shared/services/token.service";
 import { AccountService } from "./shared/services/account.service";
 import { HttpService } from "./shared/services/http.service";
 import { UsersMangerComponent } from "./users/users.component";
+import { MdCardModule } from "@angular/material/card";
 import { MachineSizePipe } from "./machines/machine-item/machine-size.pipe";
 import { ProductService } from "./shared/services/product.service";
 import { SimpleNotificationsModule } from "angular2-notifications";
 import { LdapUsersService } from "./shared/services/ldap.users.service";
 import { AdminUsersService } from "./shared/services/admin.users.service";
-import { VendingAdminRoutingModule } from "./app-routing.module";
 
 
 @NgModule({
@@ -54,7 +58,7 @@ import { VendingAdminRoutingModule } from "./app-routing.module";
     BrowserModule,
     CommonModule,
     ReactiveFormsModule,
-    VendingAdminRoutingModule,
+    routing,
     MdInputModule,
     MdButtonModule,
     MdIconModule,
@@ -69,6 +73,7 @@ import { VendingAdminRoutingModule } from "./app-routing.module";
     TokenService,
     HttpService,
     AccountService,
+    appRoutingProviders,
     MachineService,
     DashboardService,
     CategoryService,

@@ -27,13 +27,3 @@ md-input {
   width: 270px;
 }
 
-/* Temporary fix for broken md-hint from angular2-material library */
-md-hint {
-  position: absolute;
-  font-size: 75%;
-  bottom: -0.5em;
-
-  &.md-right {
-    right: 0;
-  }
-}

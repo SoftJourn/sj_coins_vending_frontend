@@ -3,7 +3,7 @@
 import { TestBed, async } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 
-describe('App: ConfigurationTrackingSystem', () => {
+describe('App: VendingAdmin', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [
