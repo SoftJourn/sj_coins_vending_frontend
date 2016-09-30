@@ -12,6 +12,8 @@ import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { ProductService } from "../../shared/services/product.service";
 import { Product } from "../../shared/entity/product";
+import { NotificationsService } from "angular2-notifications";
+import { AppProperties } from "../../shared/app.properties";
 
 @Component({
   selector: 'fill-machine',
@@ -43,7 +45,8 @@ export class FillMachineComponent implements OnInit {
   constructor(
     private machineService: MachineService,
     private productService: ProductService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private notificationService: NotificationsService
   ) { }
 
   ngOnInit() {
@@ -61,15 +64,15 @@ export class FillMachineComponent implements OnInit {
     );
 
     this.form = new FormGroup({
-      cellId: new FormControl('', Validators.required),
+      field: new FormControl('', Validators.required),
       product: new FormControl('', Validators.required),
       count: new FormControl('', [
         Validators.required,
-        Validators.pattern('[1-9][0-9]*')
+        Validators.pattern('^[1-9]$|^[1][0-9]{1}$')
       ])
     });
 
-    this.form.get('cellId').valueChanges
+    this.form.get('field').valueChanges
       .subscribe((field: Field) => {
         if (field != null) {
           this.selectedCardId = field.internalId;
@@ -83,7 +86,7 @@ export class FillMachineComponent implements OnInit {
     this.selectedCardId = field.internalId;
     this.selectedRowId = rowId;
     this.cellFormState = 'active';
-    this.form.controls['cellId'].patchValue(field, {onlySelf: true});
+    this.form.controls['field'].patchValue(field, {onlySelf: true});
   }
 
   applyCellFormState(rowId: number): string {
@@ -103,7 +106,18 @@ export class FillMachineComponent implements OnInit {
   }
 
   submit(): void {
-    this.cancel();
+    this.machineService.updateField(this.machine.id, this.form.value)
+      .subscribe(
+        updatedField => {
+          this.cancel();
+          this.notificationService.success("Added", "Product added successfully");
+          this.populateField(updatedField);
+        }
+      );
+  }
+
+  private populateField(field: Field): void {
+    this.form.get('field').patchValue(field);
   }
 
   cancel(): void {
@@ -111,5 +125,9 @@ export class FillMachineComponent implements OnInit {
     this.selectedCardId = '';
     this.cellFormState = 'inactive';
     this.form.reset();
+  }
+
+  createImageUrl(product: Product): string {
+    return `${AppProperties.API_VENDING_ENDPOINT}/${product.imageUrl}`;
   }
 }

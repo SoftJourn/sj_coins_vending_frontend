@@ -16,7 +16,8 @@
                  (click)="toggleState(field, row.id)"
                  [@selectDeselectCard]="applyCardState(field.internalId)">
               <div>
-                <i class="fa fa-plus-circle fa-3x" aria-hidden="true"></i>
+                <i class="fa fa-plus-circle fa-3x" *ngIf="field?.product == null"></i>
+                <img [src]="createImageUrl(field.product)" class="img-fluid" *ngIf="field?.product != null">
               </div>
             </div>
           </div>
@@ -27,7 +28,7 @@
                 <div class="form-group row">
                   <label for="cell-id" class="col-sm-2 col-form-label">Cell ID</label>
                   <div class="col-sm-10">
-                    <select class="form-control" id="cell-id" formControlName="cellId">
+                    <select class="form-control" id="cell-id" formControlName="field">
                       <option *ngFor="let field of row.fields"
                               [ngValue]="field">
                         {{field.internalId}}

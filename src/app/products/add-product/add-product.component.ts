@@ -122,8 +122,7 @@ export class AddProductComponent implements OnInit {
         this.notificationService.error('Error', 'Image dimensions is too big, try to use 205*205px');
         e.target.value = null;
         this.cleanImageData();
-      }
-      else {
+      } else {
         this.loaded = false;
         this.formData = new FormData();
         this.formData.append('file', this.imageFile, this.imageFile.name);
