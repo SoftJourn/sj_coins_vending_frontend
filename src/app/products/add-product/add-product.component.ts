@@ -85,10 +85,7 @@ export class AddProductComponent implements OnInit {
             }
           },
           () => {
-            this.imageFile = null;
-            this.imageSrc = this.defaultImageSrc;
-            this.imageName = '';
-            this.formData = null;
+            this.cleanImageData();
             this.form.reset({
               name: '',
               price: '',
@@ -111,29 +108,33 @@ export class AddProductComponent implements OnInit {
       // check image pattern
       if (!this.imageFile.type.match(pattern)) {
         this.notificationService.error('Error', 'This file format not supported!');
+        this.cleanImageData();
         e.target.value = null;
       }
       // check image size
       else if (this.imageFile.size > 1024 * 256) {
         this.notificationService.error('Error', 'This image size is too big!');
+        this.cleanImageData();
         e.target.value = null;
       }
       // check image dimensions
       else if (resolve) {
         this.notificationService.error('Error', 'Image dimensions is too big, try to use 205*205px');
         e.target.value = null;
+        this.cleanImageData();
       }
       else {
-      this.loaded = false;
-      this.formData = new FormData();
-      this.formData.append('file', this.imageFile, this.imageFile.name);
-      reader.onload = this._handleReaderLoaded.bind(this);
-      reader.readAsDataURL(this.imageFile);
-      this.imageName = this.imageFile.name;
-      e.target.value = null;
+        this.loaded = false;
+        this.formData = new FormData();
+        this.formData.append('file', this.imageFile, this.imageFile.name);
+        reader.onload = this._handleReaderLoaded.bind(this);
+        reader.readAsDataURL(this.imageFile);
+        this.imageName = this.imageFile.name;
+        e.target.value = null;
       }
     }, reject => {
       this.notificationService.error('Error', reject);
+      this.cleanImageData();
       e.target.value = null;
     });
   }
@@ -143,10 +144,7 @@ export class AddProductComponent implements OnInit {
   }
 
   public reset(): void {
-    this.imageFile = null;
-    this.imageSrc = this.defaultImageSrc;
-    this.imageName = '';
-    this.formData = null;
+    this.cleanImageData();
     this.form.reset({
       name: '',
       price: '',
@@ -170,6 +168,13 @@ export class AddProductComponent implements OnInit {
       };
       this.img.src = window.URL.createObjectURL(image);
     });
+  }
+
+  private cleanImageData(): void {
+    this.imageFile = null;
+    this.imageSrc = this.defaultImageSrc;
+    this.imageName = '';
+    this.formData = null;
   }
 
 }
