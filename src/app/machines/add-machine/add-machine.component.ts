@@ -39,7 +39,7 @@ export class AddMachineComponent implements OnInit {
       rowsNumbering: new FormControl('ALPHABETICAL', Validators.required),
       columnsCount: new FormControl('', [
         Validators.required,
-        Validators.pattern('^[1-9]$|^[1][0-5]{0,1}$')
+        Validators.pattern('^[1-9]$|^[1][0-9]{0,1}$')
       ]),
       columnsNumbering: new FormControl('NUMERICAL', Validators.required)
     });
