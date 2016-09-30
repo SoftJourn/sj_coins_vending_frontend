@@ -71,12 +71,17 @@ export class AddProductComponent implements OnInit {
           () => {
           },
           error => {
-            var errorDetail: ErrorDetail = JSON.parse(error._body);
-            if (errorDetail.code == 1062) {
-              this.notificationService.error('Error', 'Such product name exists!');
+            if (error.status == 415) {
+              this.notificationService.error('Error', 'This file format not supported!');
             }
             else {
-              this.notificationService.error('Error', errorDetail.detail);
+              var errorDetail: ErrorDetail = JSON.parse(error._body);
+              if (errorDetail.code == 1062) {
+                this.notificationService.error('Error', 'Such product name exists!');
+              }
+              else {
+                this.notificationService.error('Error', errorDetail.detail);
+              }
             }
           },
           () => {
@@ -119,13 +124,13 @@ export class AddProductComponent implements OnInit {
         e.target.value = null;
       }
       else {
-        this.loaded = false;
-        this.formData = new FormData();
-        this.formData.append('file', this.imageFile, this.imageFile.name);
-        reader.onload = this._handleReaderLoaded.bind(this);
-        reader.readAsDataURL(this.imageFile);
-        this.imageName = this.imageFile.name;
-        e.target.value = null;
+      this.loaded = false;
+      this.formData = new FormData();
+      this.formData.append('file', this.imageFile, this.imageFile.name);
+      reader.onload = this._handleReaderLoaded.bind(this);
+      reader.readAsDataURL(this.imageFile);
+      this.imageName = this.imageFile.name;
+      e.target.value = null;
       }
     }, reject => {
       this.notificationService.error('Error', reject);
