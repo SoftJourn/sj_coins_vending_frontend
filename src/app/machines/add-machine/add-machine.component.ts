@@ -3,6 +3,7 @@ import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { MachineService } from "../../shared/services/machine.service";
 import { NotificationsService } from "angular2-notifications";
 import { FormValidationStyles } from "../../shared/form-validation-styles";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'add-machine',
@@ -15,7 +16,8 @@ export class AddMachineComponent implements OnInit {
 
   constructor(
     private machineService: MachineService,
-    private notificationService: NotificationsService
+    private notificationService: NotificationsService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -53,12 +55,12 @@ export class AddMachineComponent implements OnInit {
       error => {},
       () => {
         this.notificationService.success('Create', 'Machine has been created successfully');
-        this.clear()
+        this.resetForm()
       }
     );
   }
 
-  clear() {
+  private resetForm() {
     this.form.reset({
       name: '',
       erisAccount: '',
@@ -67,5 +69,9 @@ export class AddMachineComponent implements OnInit {
       columnsCount: '',
       columnsNumbering: 'NUMERICAL'
     });
+  }
+
+  cancel(): void {
+    this.router.navigate(['/main/machines']);
   }
 }

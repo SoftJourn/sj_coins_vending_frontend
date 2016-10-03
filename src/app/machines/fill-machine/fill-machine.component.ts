@@ -94,7 +94,16 @@ export class FillMachineComponent implements OnInit {
     this.selectedCardId = field.internalId;
     this.selectedRowId = rowId;
     this.cellFormState = 'active';
-    this.form.controls['field'].patchValue(field, {onlySelf: true});
+    this.form.get('field').patchValue(field, {onlySelf: true});
+
+    if (field.product != null) {
+      let product = this.products.find(product => product.id === field.product.id);
+      this.form.get('product').patchValue(product, {onlySelf: true});
+      this.form.get('count').patchValue(field.count, {onlySelf: true});
+    } else {
+      this.form.get('product').patchValue('', {onlySelf: true});
+      this.form.get('count').patchValue('', {onlySelf: true});
+    }
   }
 
   applyCellFormState(rowId: number): string {
