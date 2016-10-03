@@ -27,8 +27,16 @@ import { AppProperties } from "../../shared/app.properties";
       transition('active => inactive', animate('300ms ease-out')),
     ]),
     trigger('selectDeselectCard', [
-      state('inactive', style({'background-color': 'white'})),
-      state('active',   style({'background-color': 'grey'})),
+      state('inactive', style({
+        '-webkit-box-shadow': '0px 0px 0px 0px rgba(5,168,255,1)',
+        '-moz-box-shadow': '0px 0px 0px 0px rgba(5,168,255,1)',
+        'box-shadow': '0px 0px 0px 0px rgba(5,168,255,1)'
+      })),
+      state('active',   style({
+        '-webkit-box-shadow': '0px 0px 25px 5px rgba(5,168,255,1)',
+        '-moz-box-shadow': '0px 0px 25px 5px rgba(5,168,255,1)',
+        'box-shadow': '0px 0px 25px 5px rgba(5,168,255,1)'
+      })),
       transition('inactive => active', animate('200ms ease-in')),
       transition('active => inactive', animate('200ms ease-out')),
     ])
@@ -107,17 +115,12 @@ export class FillMachineComponent implements OnInit {
 
   submit(): void {
     this.machineService.updateField(this.machine.id, this.form.value)
-      .subscribe(
-        updatedField => {
-          this.cancel();
-          this.notificationService.success("Added", "Product added successfully");
-          this.populateField(updatedField);
-        }
-      );
-  }
-
-  private populateField(field: Field): void {
-    this.form.get('field').patchValue(field);
+      .flatMap(updatedField => this.machineService.findOne(this.machine.id))
+      .subscribe(machine => {
+        this.machine = machine;
+        this.notificationService.success("Added", "Product added successfully");
+      });
+    this.cancel();
   }
 
   cancel(): void {
