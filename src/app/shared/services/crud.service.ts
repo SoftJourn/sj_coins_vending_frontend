@@ -31,4 +31,9 @@ export abstract class CrudService<T> {
     return this.httpService.delete(url)
       .flatMap(response => Observable.empty())
   }
+  public update(id: number | string, entity: T): Observable<T> {
+    let url = `${this.getUrl()}/${id}`;
+    return this.httpService.post(url, entity, MediaType.APPLICATION_JSON)
+        .map(response => response.json(), error => error.json());
+  }
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Product } from "../../shared/entity/product";
 import { AppProperties } from "../../shared/app.properties";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'product-item',
@@ -12,7 +13,7 @@ export class ProductItemComponent implements OnInit {
   @Output() onDelete = new EventEmitter<number>();
   imageUrl: string;
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
     if (this.product.imageUrl != null) {
@@ -24,5 +25,8 @@ export class ProductItemComponent implements OnInit {
 
   deleteProduct(): void {
     this.onDelete.emit(this.product.id);
+  }
+  onEditProduct() {
+    this.router.navigate(['/main/products', this.product.id, 'edit'])
   }
 }

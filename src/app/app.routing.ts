@@ -9,6 +9,7 @@ import { MachinesComponent, AddMachineComponent, FillMachineComponent } from "./
 import { CategoriesComponent, AddCategoryComponent } from "./categories/";
 import { UsersMangerComponent } from "./users/users.component";
 import { ModuleWithProviders } from "@angular/core";
+import { EditProductComponent } from "./products/edit-product/edit-product.component";
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'main' },
@@ -21,7 +22,8 @@ const routes: Routes = [
     { path: 'machines/fill/:id', component: FillMachineComponent, canActivate: [AuthGuard] },
     { path: 'categories', component: CategoriesComponent, canActivate: [AuthGuard] },
     { path: 'categories/add', component: AddCategoryComponent, canActivate: [AuthGuard] },
-    { path: 'users', component: UsersMangerComponent, canActivate: [AuthGuard]}
+    { path: 'users', component: UsersMangerComponent, canActivate: [AuthGuard]},
+    { path: 'products/:id/edit', component: EditProductComponent, canActivate: [AuthGuard] }
   ]},
   { path: 'login', component: LoginComponent }
 ];

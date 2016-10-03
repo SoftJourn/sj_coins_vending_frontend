@@ -1,7 +1,7 @@
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { ReactiveFormsModule } from "@angular/forms";
+import { ReactiveFormsModule,FormsModule } from "@angular/forms";
 import { HttpModule } from "@angular/http";
 import { AppComponent } from "./app.component";
 import { routing, appRoutingProviders } from "./app.routing";
@@ -31,6 +31,7 @@ import { ProductService } from "./shared/services/product.service";
 import { SimpleNotificationsModule } from "angular2-notifications";
 import { LdapUsersService } from "./shared/services/ldap.users.service";
 import { AdminUsersService } from "./shared/services/admin.users.service";
+import { EditProductComponent } from './products/edit-product/edit-product.component';
 
 
 @NgModule({
@@ -52,7 +53,8 @@ import { AdminUsersService } from "./shared/services/admin.users.service";
     AddCategoryComponent,
     UsersMangerComponent,
     AddCategoryComponent,
-    MachineSizePipe
+    MachineSizePipe,
+    EditProductComponent
   ],
   imports: [
     BrowserModule,
@@ -67,7 +69,8 @@ import { AdminUsersService } from "./shared/services/admin.users.service";
     HttpModule,
     Ng2BootstrapModule,
     ButtonsModule,
-    SimpleNotificationsModule
+    SimpleNotificationsModule,
+    FormsModule
   ],
   providers: [
     TokenService,
