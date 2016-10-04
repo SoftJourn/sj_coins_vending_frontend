@@ -24,7 +24,8 @@ export class MachineService extends CrudService<Machine> {
     let field = new Field(
       dto.field.id,
       dto.field.internalId,
-      dto.count, dto.product
+      dto.count,
+      dto.product
     );
 
     return this.httpService.post(url, field, MediaType.APPLICATION_JSON)

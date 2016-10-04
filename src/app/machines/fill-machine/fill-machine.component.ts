@@ -84,6 +84,15 @@ export class FillMachineComponent implements OnInit {
       .subscribe((field: Field) => {
         if (field != null) {
           this.selectedCardId = field.internalId;
+
+          if (field.product != null) {
+            let product = this.products.find(product => product.id === field.product.id);
+            this.form.get('product').patchValue(product, {onlySelf: true});
+            this.form.get('count').patchValue(field.count, {onlySelf: true});
+          } else {
+            this.form.get('product').patchValue('', {onlySelf: true});
+            this.form.get('count').patchValue('', {onlySelf: true});
+          }
         } else {
           this.selectedCardId = '';
         }
@@ -130,6 +139,35 @@ export class FillMachineComponent implements OnInit {
         this.notificationService.success("Added", "Product added successfully");
       });
     this.cancel();
+  }
+
+  clearCell() {
+    let dto = {
+      field: this.form.get('field').value,
+      product: null,
+      count: 0
+    };
+
+    this.machineService.updateField(this.machine.id, dto)
+      .flatMap(updatedField => this.machineService.findOne(this.machine.id))
+      .subscribe(machine => {
+        this.machine = machine;
+
+        let currentField = this.machine
+          .rows.find(row => row.id === this.selectedRowId)
+          .fields.find(field => field.id === dto.field.id);
+
+        this.form.patchValue(
+          {
+            field: currentField,
+            product: '',
+            count: ''
+          },
+          {onlySelf: true}
+        );
+
+        this.notificationService.success("Removed", "Product has been removed from cell");
+      });
   }
 
   cancel(): void {

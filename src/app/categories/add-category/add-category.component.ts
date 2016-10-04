@@ -16,10 +16,11 @@ export class AddCategoryComponent implements OnInit {
   form: FormGroup;
   formStyles: FormValidationStyles;
 
-  constructor(private categoryService: CategoryService,
-              private notificationService: NotificationsService,
-              private router: Router) {
-  }
+  constructor(
+    private categoryService: CategoryService,
+    private notificationService: NotificationsService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.buildForm();
