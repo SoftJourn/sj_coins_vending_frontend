@@ -32,7 +32,7 @@ import { SimpleNotificationsModule } from "angular2-notifications";
 import { LdapUsersService } from "./shared/services/ldap.users.service";
 import { AdminUsersService } from "./shared/services/admin.users.service";
 import { EditProductComponent } from './products/edit-product/edit-product.component';
-
+import { ImageUploadService } from './shared/services/image-upload.service';
 
 @NgModule({
   declarations: [
@@ -82,7 +82,8 @@ import { EditProductComponent } from './products/edit-product/edit-product.compo
     CategoryService,
     ProductService,
     LdapUsersService,
-    AdminUsersService
+    AdminUsersService,
+    ImageUploadService
   ],
   bootstrap: [AppComponent]
 })
