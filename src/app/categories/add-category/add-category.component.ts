@@ -5,6 +5,7 @@ import {CategoryService} from "../../shared/services/category.service";
 import {NotificationsService} from "angular2-notifications/components";
 import {ErrorDetail} from "../../shared/entity/error-detail";
 import { FormValidationStyles } from "../../shared/form-validation-styles";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'add-category',
@@ -16,7 +17,8 @@ export class AddCategoryComponent implements OnInit {
   formStyles: FormValidationStyles;
 
   constructor(private categoryService: CategoryService,
-              private notificationService: NotificationsService) {
+              private notificationService: NotificationsService,
+              private router: Router) {
   }
 
   ngOnInit() {
@@ -53,4 +55,9 @@ export class AddCategoryComponent implements OnInit {
           }
         });
   }
+
+  cancel(): void {
+    this.router.navigate(['/main/categories']);
+  }
+
 }
