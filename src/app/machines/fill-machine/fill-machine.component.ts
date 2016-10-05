@@ -14,6 +14,7 @@ import { ProductService } from "../../shared/services/product.service";
 import { Product } from "../../shared/entity/product";
 import { NotificationsService } from "angular2-notifications";
 import { AppProperties } from "../../shared/app.properties";
+import { FormValidationStyles } from "../../shared/form-validation-styles";
 
 @Component({
   selector: 'fill-machine',
@@ -49,6 +50,7 @@ export class FillMachineComponent implements OnInit {
   machine: Machine;
   products: Product[];
   form: FormGroup;
+  formStyles: FormValidationStyles;
 
   constructor(
     private machineService: MachineService,
@@ -113,6 +115,8 @@ export class FillMachineComponent implements OnInit {
       this.form.get('product').patchValue('', {onlySelf: true});
       this.form.get('count').patchValue('', {onlySelf: true});
     }
+
+    this.form.updateValueAndValidity({onlySelf: true});
   }
 
   applyCellFormState(rowId: number): string {
@@ -179,5 +183,14 @@ export class FillMachineComponent implements OnInit {
 
   createImageUrl(product: Product): string {
     return `${AppProperties.API_VENDING_ENDPOINT}/${product.imageUrl}`;
+  }
+
+  isClearCellDisabled() {
+    return !!(this.form.get('field').value
+      && this.form.get('field').value.product == null);
+  }
+
+  isFormValid() {
+    return !!(this.form.valid && !this.form.pristine);
   }
 }
