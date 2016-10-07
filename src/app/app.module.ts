@@ -33,6 +33,8 @@ import { LdapUsersService } from "./shared/services/ldap.users.service";
 import { AdminUsersService } from "./shared/services/admin.users.service";
 import { EditProductComponent } from './products/edit-product/edit-product.component';
 import { ImageUploadService } from './shared/services/image-upload.service';
+import { PurchasesComponent } from './purchases/purchases.component';
+import {PurchaseService} from "./shared/services/purchase.service";
 
 @NgModule({
   declarations: [
@@ -54,7 +56,8 @@ import { ImageUploadService } from './shared/services/image-upload.service';
     UsersMangerComponent,
     AddCategoryComponent,
     MachineSizePipe,
-    EditProductComponent
+    EditProductComponent,
+    PurchasesComponent
   ],
   imports: [
     BrowserModule,
@@ -83,7 +86,8 @@ import { ImageUploadService } from './shared/services/image-upload.service';
     ProductService,
     LdapUsersService,
     AdminUsersService,
-    ImageUploadService
+    ImageUploadService,
+    PurchaseService
   ],
   bootstrap: [AppComponent]
 })
