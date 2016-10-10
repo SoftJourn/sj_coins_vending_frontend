@@ -1,98 +1,93 @@
-import { Component, OnInit ,trigger,
-  state,
-  style,
-  transition,
-  animate} from "@angular/core";
+import { Component, OnInit, trigger, state, style, transition, animate } from "@angular/core";
 import { Account } from "../shared/entity/account";
 import { AdminUsersService } from "../shared/services/admin.users.service";
-import { LdapUsersService } from "../shared/services/ldap.users.service";
+import { NotificationsService } from "angular2-notifications/lib/notifications.service";
 
+
+const mediaWindowSize = 600;
 
 @Component({
   selector: 'users-list',
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss'],
   animations: [
-    trigger('heroState',[
-      state('inactive',style({
-
+    trigger('heroState', [
+      state('inactive', style({
+        opacity:0,
+        'z-index': 100
       })),
-      state('active',style({
-        width: '227px',
-        height: '372px',
-
-        'margin-left': '-44px',
-        'margin-top': '-80px'
+      state('active', style({
+        opacity:1,
+        'z-index': 1000
       })),
-      //transition('active => inactive', ),
+
       transition('inactive => active', [
-        animate('100ms ease-out')
+        animate('1000ms ease-out')
 
       ])
     ])
   ]
 })
-export class UsersMangerComponent implements OnInit {
-  public ladpUsers: Account[];
-  public adminUsers: Account[];
-  public selectedModule: Account;
-  public superUserState: string;
-  public superUserSrc:string;
+export class UsersComponent implements OnInit {
 
-  constructor(
-    private adminUserService: AdminUsersService,
-    private ladpUserService: LdapUsersService
-  ) {}
+
+  public adminUsers: Account[];
+  private superUserState: string;
+  private superUserSrc: string;
+  private addIconState: boolean;
+  private addFormIsVisible:boolean=false;
+
+
+  constructor(private adminUserService: AdminUsersService,
+              private notificationService: NotificationsService
+              ) {
+  }
 
   ngOnInit(): any {
     this.getAdminUsers();
-    this.getLdapUsers();
-    this.superUserState="inactive";
-    this.superUserSrc="../../assets/images/Super_Logo.png";
+    this.superUserState = "inactive";
+    this.superUserSrc = "../../assets/images/superman-logo.png";
+    this.addIconState = false;
   }
 
-  private getAdminUsers(){
+  public getAdminUsers() {
     this.adminUserService.findAll().subscribe(response => {
-      this.adminUsers=response;
+      this.adminUsers = response;
     });
   }
-  private getLdapUsers(){
-    this.ladpUserService.findAll().subscribe(response =>{
-      this.ladpUsers=response;
-    });
-  }
-  public addAdminUser(){
-    this.adminUserService.save(this.selectedModule)
-      .subscribe(response => this.getAdminUsers());
-  }
+
 
   public deleteUser(ldapName: string) {
     this.adminUserService.delete(ldapName)
       .subscribe(
-        next => {},
-        error=> {},
+        next => {
+        },
+        error=> {
+          this.notificationService.error("Delete", error._body)
+        },
         () => {
+          this.notificationService.success('Delete', 'User has been removed from ADMIN successfully');
           this.getAdminUsers();
-      });
+        });
   }
 
-  public flySuperman(){
-    if(this.superUserState=="inactive"){
-      this.superUserSrc="../../assets/images/SUPER_ADMIN.png";
-      this.superUserState="active";
-
-    }
-    else{
-      this.superUserSrc="../../assets/images/Super_Logo.png";
-      this.superUserState="inactive";
-    }
-
+  public flySuperman(state:string) {
+    if (window.innerWidth < mediaWindowSize)
+      return;
+    this.superUserState = state;
   }
 
-  public getRole(authorities : string) : string {
-    let regex =/.*ROLE_/;
-
-    return authorities.replace(regex,'');
+  public spinPlusIcon() {
+    this.addIconState = !this.addIconState;
   }
 
+  public getRole(authorities: string): string {
+    let regex = /.*ROLE_/;
+    let withOutRole = authorities.replace(regex, '');
+    return withOutRole.replace(/_/, ' ');
+  }
+
+  public  changeFormVisibility(visibility: boolean) {
+    this.addFormIsVisible = visibility;
+  }
 }

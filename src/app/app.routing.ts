@@ -7,10 +7,10 @@ import { AddProductComponent } from "./products/add-product/add-product.componen
 import { DashboardComponent } from "./dashboard/dashboard.component";
 import { MachinesComponent, AddMachineComponent, FillMachineComponent } from "./machines/";
 import { CategoriesComponent, AddCategoryComponent } from "./categories/";
-import { UsersMangerComponent } from "./users/users.component";
 import { ModuleWithProviders } from "@angular/core";
 import { EditProductComponent } from "./products/edit-product/edit-product.component";
-import {PurchasesComponent} from "./purchases/purchases.component";
+import { PurchasesComponent } from "./purchases/purchases.component";
+import { UsersComponent } from "./users/users.component";
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'main' },
@@ -23,7 +23,7 @@ const routes: Routes = [
     { path: 'machines/fill/:id', component: FillMachineComponent, canActivate: [AuthGuard] },
     { path: 'categories', component: CategoriesComponent, canActivate: [AuthGuard] },
     { path: 'categories/add', component: AddCategoryComponent, canActivate: [AuthGuard] },
-    { path: 'users', component: UsersMangerComponent, canActivate: [AuthGuard]},
+    { path: 'users', component: UsersComponent, canActivate: [AuthGuard]},
     { path: 'products/:id/edit', component: EditProductComponent, canActivate: [AuthGuard] },
     { path: 'purchases', component: PurchasesComponent, canActivate: [AuthGuard] }
   ]},
