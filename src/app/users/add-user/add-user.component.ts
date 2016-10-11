@@ -28,13 +28,13 @@ export class AddUserComponent implements OnInit {
 
   @Input() isVisible : boolean = true;
   @Output() isVisibleChange = new EventEmitter<boolean>();
+  @Output() adminListChange=new EventEmitter<boolean>();
   visibility = 'hidden';
 
   constructor(
     private adminUserService: AdminUsersService,
     private ladpUserService: LdapUsersService,
-    private notificationService: NotificationsService,
-    private userComponent: UsersComponent) {
+    private notificationService: NotificationsService) {
   }
 
   ngOnInit() {
@@ -57,7 +57,7 @@ export class AddUserComponent implements OnInit {
     this.adminUserService.save(this.selectedModule)
       .subscribe(response=>{
           this.notificationService.success('Add','User has been added successfully');
-          this.userComponent.getAdminUsers();
+          this.adminListChange.emit(true);
       },
       error=>{
         this.notificationService.error('Error',error._body);

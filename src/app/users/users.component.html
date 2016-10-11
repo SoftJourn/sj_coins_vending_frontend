@@ -5,16 +5,16 @@
     </div>
 
     <div class="col-xs-4 col-md-4 col-xl-4 header-buttons-container">
-      <button class="btn btn-success" (mouseover)='spinPlusIcon()' (mouseout)='spinPlusIcon()' (click)="changeFormVisibility(!addFormIsVisible)">
+      <button class="btn btn-success" (mouseover)='addMenu.spinPlusIcon()' (mouseout)='addMenu.spinPlusIcon()' (click)="addMenu.changeVisibility(!addMenu.visible)">
         <i #plus class="fa fa-plus btn-icon rotate"
-           [ngClass]="{'add-icon-active':addIconState,'add-icon-inactive':!addIconState}"></i>Add
+           [ngClass]="{'add-icon-active':addMenu.iconState,'add-icon-inactive':!addMenu.iconState}"></i>Add
       </button>
     </div>
   </div>
 </div>
 <hr>
 <div class="container-fluid">
-  <add-user [(isVisible)]="addFormIsVisible"></add-user>
+  <add-user [(isVisible)]='addMenu.visible' (adminListChange)='syncAdminUsers()'></add-user>
   <div class="row" >
 
     <table class="table table-hover ">
@@ -40,8 +40,8 @@
             <i class="fa fa-trash btn-icon"></i><span class="button-text">Delete</span>
           </button>
           <div *ngIf="getRole(user.authorities)=='SUPER ADMIN'">
-            <img id="superman" [@heroState]="superUserState" (dblclick)="flySuperman('inactive')" src="../../assets/images/superman.png" />
-            <img id="superman-logo" (dblclick)="flySuperman('active')" src="../../assets/images/superman-logo.png" />
+            <img id="superman" [@heroState]="superman.state" (dblclick)="superman.fly('inactive')" src="../../assets/images/superman.png" />
+            <img id="superman-logo" (dblclick)="superman.fly('active')" src="../../assets/images/superman-logo.png" />
           </div>
         </td>
       </tr>

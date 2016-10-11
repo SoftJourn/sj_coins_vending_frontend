@@ -19,7 +19,6 @@ $rotate:180deg;
   left: 50%;
   position: absolute;
   transform: translate(-50%,-50%);
-
   margin-top: 94px;
   margin-left: 18px;
 }
@@ -65,4 +64,7 @@ td,th{
 
 .table td img{
   padding: 0;
+}
+table{
+  margin-bottom: 250px;
 }

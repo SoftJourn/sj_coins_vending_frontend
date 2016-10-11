@@ -13,49 +13,39 @@ const mediaWindowSize = 600;
   animations: [
     trigger('heroState', [
       state('inactive', style({
-        opacity:0,
-        'z-index': 100
+        opacity: 0,
+        'z-index': -100
       })),
       state('active', style({
-        opacity:1,
+        opacity: 1,
         'z-index': 1000
       })),
 
       transition('inactive => active', [
         animate('1000ms ease-out')
-
       ])
     ])
   ]
 })
 export class UsersComponent implements OnInit {
 
-
   public adminUsers: Account[];
-  private superUserState: string;
-  private superUserSrc: string;
-  private addIconState: boolean;
-  private addFormIsVisible:boolean=false;
-
+  public superman: SuperUser = new SuperUser();
+  public addMenu: AddMenu = new AddMenu();
 
   constructor(private adminUserService: AdminUsersService,
-              private notificationService: NotificationsService
-              ) {
+              private notificationService: NotificationsService) {
   }
 
   ngOnInit(): any {
-    this.getAdminUsers();
-    this.superUserState = "inactive";
-    this.superUserSrc = "../../assets/images/superman-logo.png";
-    this.addIconState = false;
+    this.syncAdminUsers();
   }
 
-  public getAdminUsers() {
+  public syncAdminUsers() {
     this.adminUserService.findAll().subscribe(response => {
       this.adminUsers = response;
     });
   }
-
 
   public deleteUser(ldapName: string) {
     this.adminUserService.delete(ldapName)
@@ -67,18 +57,8 @@ export class UsersComponent implements OnInit {
         },
         () => {
           this.notificationService.success('Delete', 'User has been removed from ADMIN successfully');
-          this.getAdminUsers();
+          this.syncAdminUsers();
         });
-  }
-
-  public flySuperman(state:string) {
-    if (window.innerWidth < mediaWindowSize)
-      return;
-    this.superUserState = state;
-  }
-
-  public spinPlusIcon() {
-    this.addIconState = !this.addIconState;
   }
 
   public getRole(authorities: string): string {
@@ -87,7 +67,31 @@ export class UsersComponent implements OnInit {
     return withOutRole.replace(/_/, ' ');
   }
 
-  public  changeFormVisibility(visibility: boolean) {
-    this.addFormIsVisible = visibility;
+}
+
+class SuperUser {
+  private state: string;
+
+  public fly(state: string) {
+    if (window.innerWidth < mediaWindowSize)
+      return;
+    this.state = state;
+  }
+
+  constructor() {
+    this.state = "inactive";
+  }
+}
+
+class AddMenu {
+  iconState: boolean = false;
+  visible: boolean = false;
+
+  public spinPlusIcon() {
+    this.iconState = !this.iconState;
+  }
+
+  public changeVisibility(visibility: boolean) {
+    this.visible = visibility;
   }
 }
