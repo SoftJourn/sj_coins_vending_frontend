@@ -22,7 +22,7 @@ export abstract class CrudService<T> {
 
   public save(entity: T): Observable<T> {
     return this.httpService.post(this.getUrl(), entity, MediaType.APPLICATION_JSON)
-      .map(response => response.json(), error => error.json());
+      .map(response => response.json());
   }
 
   public delete(id: number | string): Observable<void> {
@@ -34,6 +34,6 @@ export abstract class CrudService<T> {
   public update(id: number | string, entity: T): Observable<T> {
     let url = `${this.getUrl()}/${id}`;
     return this.httpService.post(url, entity, MediaType.APPLICATION_JSON)
-        .map(response => response.json(), error => error.json());
+        .map(response => response.json());
   }
 }

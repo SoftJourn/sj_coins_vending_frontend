@@ -1,11 +1,4 @@
-import {
-  Component,
-  OnInit,
-  style,
-  state,
-  animate,
-  transition,
-  trigger } from "@angular/core";
+import { Component, OnInit, style, state, animate, transition, trigger } from "@angular/core";
 import { MachineService } from "../../shared/services/machine.service";
 import { Machine, Field } from "../shared/machine";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
@@ -51,6 +44,7 @@ export class FillMachineComponent implements OnInit {
   products: Product[];
   form: FormGroup;
   formStyles: FormValidationStyles;
+  changedFields: Field[] = [];
 
   constructor(
     private machineService: MachineService,
@@ -87,14 +81,20 @@ export class FillMachineComponent implements OnInit {
         if (field != null) {
           this.selectedCardId = field.internalId;
 
+          let productControl = this.form.get('product');
+          let countControl = this.form.get('count');
+
           if (field.product != null) {
             let product = this.products.find(product => product.id === field.product.id);
-            this.form.get('product').patchValue(product, {onlySelf: true});
-            this.form.get('count').patchValue(field.count, {onlySelf: true});
+            productControl.patchValue(product);
+            countControl.patchValue(field.count);
           } else {
-            this.form.get('product').patchValue('', {onlySelf: true});
-            this.form.get('count').patchValue('', {onlySelf: true});
+            productControl.patchValue('');
+            countControl.patchValue('');
           }
+
+          this.form.markAsPristine();
+          this.form.markAsUntouched();
         } else {
           this.selectedCardId = '';
         }
@@ -107,16 +107,21 @@ export class FillMachineComponent implements OnInit {
     this.cellFormState = 'active';
     this.form.get('field').patchValue(field, {onlySelf: true});
 
+    let productControl = this.form.get('product');
+    let countControl = this.form.get('count');
+
     if (field.product != null) {
       let product = this.products.find(product => product.id === field.product.id);
-      this.form.get('product').patchValue(product, {onlySelf: true});
-      this.form.get('count').patchValue(field.count, {onlySelf: true});
+      productControl.patchValue(product);
+      countControl.patchValue(field.count);
     } else {
-      this.form.get('product').patchValue('', {onlySelf: true});
-      this.form.get('count').patchValue('', {onlySelf: true});
+      productControl.patchValue('');
+      countControl.patchValue('');
     }
 
-    this.form.updateValueAndValidity({onlySelf: true});
+    this.form.markAsPristine();
+    this.form.markAsUntouched();
+    this.form.updateValueAndValidity();
   }
 
   applyCellFormState(rowId: number): string {
@@ -136,42 +141,36 @@ export class FillMachineComponent implements OnInit {
   }
 
   submit(): void {
-    this.machineService.updateField(this.machine.id, this.form.value)
-      .flatMap(updatedField => this.machineService.findOne(this.machine.id))
-      .subscribe(machine => {
-        this.machine = machine;
-        this.notificationService.success("Added", "Product added successfully");
-      });
+    let fieldControl = this.form.get('field');
+    let field: Field = fieldControl.value;
+    field.product = this.form.get('product').value;
+    field.count = this.form.get('count').value;
+    this.changedFields.push(field);
+
     this.cancel();
   }
 
   clearCell() {
-    let dto = {
-      field: this.form.get('field').value,
-      product: null,
-      count: 0
-    };
+    let fieldControl = this.form.get('field');
+    let field: Field = fieldControl.value;
+    field.product = null;
+    field.count = 0;
 
-    this.machineService.updateField(this.machine.id, dto)
-      .flatMap(updatedField => this.machineService.findOne(this.machine.id))
-      .subscribe(machine => {
-        this.machine = machine;
+    this.form.patchValue(
+      {
+        field: field,
+        product: '',
+        count: ''
+      }
+    );
 
-        let currentField = this.machine
-          .rows.find(row => row.id === this.selectedRowId)
-          .fields.find(field => field.id === dto.field.id);
+    let changedField = this.changedFields.find(f => f.id === field.id);
 
-        this.form.patchValue(
-          {
-            field: currentField,
-            product: '',
-            count: ''
-          },
-          {onlySelf: true}
-        );
-
-        this.notificationService.success("Removed", "Product has been removed from cell");
-      });
+    if (changedField) {
+      changedField = field;
+    } else {
+      this.changedFields.push(field);
+    }
   }
 
   cancel(): void {
@@ -192,5 +191,16 @@ export class FillMachineComponent implements OnInit {
 
   isFormValid() {
     return !!(this.form.valid && !this.form.pristine);
+  }
+
+  applyChanges(): void {
+    this.machineService.fillMachine(this.machine)
+      .subscribe(
+        machine => {
+          this.changedFields = [];
+          this.machine = machine;
+          this.notificationService.success('Success', 'Machine filled successfully');
+        }
+      );
   }
 }

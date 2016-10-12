@@ -4,6 +4,8 @@ import { MachineService } from "../../shared/services/machine.service";
 import { NotificationsService } from "angular2-notifications";
 import { FormValidationStyles } from "../../shared/form-validation-styles";
 import { Router } from "@angular/router";
+import { Response } from "@angular/http";
+import { ErrorDetail } from "../../shared/entity/error-detail";
 
 @Component({
   selector: 'add-machine',
@@ -30,10 +32,6 @@ export class AddMachineComponent implements OnInit {
         Validators.required,
         Validators.pattern('^[a-zA-Z0-9\u0400-\u04FF]+[ a-zA-Z0-9\u0400-\u04FF]*[a-zA-Z0-9\u0400-\u04FF]$')
       ]),
-      address: new FormControl('', [
-        Validators.required,
-        Validators.pattern('[a-zA-Z0-9]+')
-      ]),
       rowsCount: new FormControl('', [
         Validators.required,
         Validators.pattern('^[1-9]$|^[1][0-9]{0,1}$')
@@ -52,7 +50,14 @@ export class AddMachineComponent implements OnInit {
   submit() {
     this.machineService.save(this.form.value).subscribe(
       () => {},
-      error => {},
+      (error: Response) => {
+        let errorDetail: ErrorDetail = error.json();
+        if (errorDetail.code === 1062) {
+          this.notificationService.error('Error', 'Machine with such name exists!');
+        } else {
+          this.notificationService.error('Error', errorDetail.detail);
+        }
+      },
       () => {
         this.notificationService.success('Create', 'Machine has been created successfully');
         this.resetForm()
@@ -63,7 +68,6 @@ export class AddMachineComponent implements OnInit {
   private resetForm() {
     this.form.reset({
       name: '',
-      erisAccount: '',
       rowsCount: '',
       rowsNumbering: 'ALPHABETICAL',
       columnsCount: '',

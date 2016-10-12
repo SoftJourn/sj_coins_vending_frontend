@@ -5,7 +5,6 @@ export class Machine {
   constructor(
     public id: number,
     public name: string,
-    public address: string,
     public rows: Row[],
     public size: MachineSize
   ) {}
@@ -25,6 +24,7 @@ export class Field {
   constructor(
     public id: number,
     public internalId: string,
+    public position: number,
     public count = 0,
     public product: Product
   ) {}

@@ -6,6 +6,7 @@ import {NotificationsService} from "angular2-notifications/components";
 import {ErrorDetail} from "../../shared/entity/error-detail";
 import { FormValidationStyles } from "../../shared/form-validation-styles";
 import { Router } from "@angular/router";
+import { Response } from "@angular/http";
 
 @Component({
   selector: 'add-category',
@@ -40,14 +41,15 @@ export class AddCategoryComponent implements OnInit {
   submit() {
     let category = new Category(this.form.get('name').value);
     this.categoryService.save(category)
-      .subscribe(category => {
+      .subscribe(
+        category => {
           this.notificationService.success('Create', 'Category was created successfully');
           this.form.reset({
             name: ''
           });
         },
-        error => {
-          var errorDetail: ErrorDetail = JSON.parse(error._body);
+        (error: Response) => {
+          let errorDetail: ErrorDetail = error.json();
           if (errorDetail.code == 1062) {
             this.notificationService.error('Error', 'Such category name exists!');
           }

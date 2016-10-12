@@ -68,7 +68,7 @@ export class ImageUploadService {
         return new Promise((resolve, reject) => {
             this.img = new Image();
             this.img.onload = ()=> {
-                resolve(this.img.width >= 205 || this.img.height >= 205);
+                resolve(this.img.width > 205 || this.img.height > 205);
                 reject('Image was not uploaded, try again!');
             };
             this.img.src = window.URL.createObjectURL(image);

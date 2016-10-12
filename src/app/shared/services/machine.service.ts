@@ -18,17 +18,8 @@ export class MachineService extends CrudService<Machine> {
     return `${AppProperties.API_VENDING_ENDPOINT}/vending`;
   }
 
-  public updateField(machineId: number, dto: UpdateFieldDTO): Observable<Field> {
-    let url = `${this.getUrl()}/${machineId}/fields/${dto.field.id}`;
-
-    let field = new Field(
-      dto.field.id,
-      dto.field.internalId,
-      dto.count,
-      dto.product
-    );
-
-    return this.httpService.post(url, field, MediaType.APPLICATION_JSON)
+  public fillMachine(machine: Machine): Observable<Machine> {
+    return this.httpService.put(this.getUrl(), machine, MediaType.APPLICATION_JSON)
       .map(response => response.json());
   }
 }
