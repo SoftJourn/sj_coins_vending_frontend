@@ -4,45 +4,78 @@
       <h2>Purchases</h2>
     </div>
     <div class="col-xs-4 col-md-4 col-xl-4 header-buttons-container">
-      <button class="btn btn-success">
-        <i class="fa fa-plus btn-icon"></i>Add filter
+      <button class="btn btn-success" (click)="showFilter()">
+        <i class="fa fa-filter btn-icon"></i>Filter
       </button>
     </div>
   </div>
 </div>
 <hr>
 <div class="container-fluid">
-  <div class="row">
-    <div class="col-xl-3"></div>
-    <div class="col-xl-6">
-      <div class="card card-block card-outline-success">
-        <form class="form-inline">
-          <div class="row col-xs-12 col-md-12 col-xl-12">
-            <div class="form-group row">
-              <label for="machines" class="col-xs-5 col-sm-5 col-xl-5 col-form-label">Machines</label>
-              <div class="col-xs-7 col-sm-7 col-xl-7">
-                <select id="machines" class="form-control">
-                  <option *ngFor="let machine of machines;">{{machine?.name}}</option>
-                </select>
-              </div>
+  <div class="row" [hidden]="hideFilter">
+    <div class="card card-block card-outline-success">
+      <form (ngSubmit)="submit()" class="form" [formGroup]="form"
+            style="float: none; margin-left: auto; margin-right: auto;">
+        <div class="col-xl-2">
+          <div class="form-group">
+            <label for="machines" class="col-xs-4 col-sm-4 col-xl-4 col-form-label">Machines</label>
+            <div class="col-xs-8 col-sm-8 col-xl-8">
+              <select id="machines" class="form-control" formControlName="machine">
+                <option value="-1">All</option>
+                <option *ngFor="let machine of machines;" [ngValue]="machine.id">{{machine?.name}}</option>
+              </select>
             </div>
-            <div class="form-group row">
-              <label for="date" class="col-xs-3 col-sm-3 col-xl-3 col-form-label">Date</label>
-              <div class="col-xs-8 col-sm-8 col-xl-8">
-                <select id="date" class="form-control">
-                  <option>Today</option>
-                  <option>Last week</option>
-                  <option>Last month</option>
-                  <option>Start-Due</option>
-                </select>
-              </div>
-            </div>
-            <button type="submit" class="btn btn-success">Filter</button>
           </div>
-        </form>
-      </div>
+        </div>
+        <div class="col-xl-2">
+          <div class="form-group">
+            <label for="date" class="col-xs-4 col-sm-4 col-xl-4 col-form-label">Date</label>
+            <div class="col-xs-8 col-sm-8 col-xl-8">
+              <select id="date" class="form-control" formControlName="type">
+                <option value="Any">Any</option>
+                <option value="Today">Today</option>
+                <option value="Last week">Last week</option>
+                <option value="Last month">Last month</option>
+                <option value="Start-Due">Start-Due</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3" [hidden]="hideStartDue">
+          <div class="form-group">
+            <label for="start" class="col-xs-4 col-sm-4 col-xl-2 col-form-label">Start</label>
+            <div class="col-xs-8 col-sm-8 col-xl-9">
+              <div class="input-group">
+                <input class="form-control" name="dp" formControlName="start" ngbDatepicker
+                       #d="ngbDatepicker" id="start" [maxDate]="maxDate" (ngModelChange)="changeStart($event)" >
+                <div class="input-group-addon" (click)="d.toggle()">
+                  <i class="fa fa-calendar fa-lg"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3" [hidden]="hideStartDue">
+          <div class="form-group">
+            <label for="due" class="col-xs-4 col-sm-4 col-xl-2 col-form-label">Due</label>
+            <div class="col-xs-8 col-sm-8 col-xl-9">
+              <div class="input-group">
+                <input class="form-control" name="dp" formControlName="due" ngbDatepicker
+                       #n="ngbDatepicker" id="due" [minDate]="minDate" (ngModelChange)="changeDue($event)">
+                <div class="input-group-addon" (click)="n.toggle()">
+                  <i class="fa fa-calendar fa-lg"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-2">
+          <div class="form-group">
+            <button type="submit" class="btn btn-success">Submit</button>
+          </div>
+        </div>
+      </form>
     </div>
-    <div class="col-xl-3"></div>
   </div>
   <div class="row">
     <div class="col-xs-12 col-md-12 col-xl-12">
@@ -66,6 +99,16 @@
         </tr>
         </tbody>
       </table>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-4 col-md-4 col-xl-4">
+    </div>
+    <div class="col-xs-4 col-md-4 col-xl-4">
+      <ngb-pagination [collectionSize]="page.totalElements" [maxSize]="5" [rotate]="true" [pageSize]="page.size"
+                      [boundaryLinks]="true" (pageChange)="changePage($event)"></ngb-pagination>
+    </div>
+    <div class="col-xs-4 col-md-4 col-xl-4">
     </div>
   </div>
 </div>

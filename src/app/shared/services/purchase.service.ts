@@ -3,6 +3,8 @@ import {HttpService} from "./http.service";
 import {AppProperties} from "../app.properties";
 import {Observable} from "rxjs";
 import {Purchase} from "../entity/purchase";
+import {PurchaseFilter} from "../../purchases/shared/purchase-filter";
+import {PurchasePage} from "../../purchases/shared/purchase-page";
 
 @Injectable()
 export class PurchaseService {
@@ -14,9 +16,15 @@ export class PurchaseService {
     return `${AppProperties.API_VENDING_ENDPOINT}/purchases`;
   }
 
-  public findAll(machinseId: number): Observable<Purchase[]> {
-    return this.httpService.get(this.getUrl()+'/'+machinseId+'?page=0&size=10')
+  public findAll(): Observable<Purchase[]> {
+    return this.httpService.get(this.getUrl() + '?page=0&size=10')
       .map(response => response.json());
+  }
+
+  public findAllByFilter(filter: PurchaseFilter, page: number): Observable<PurchasePage> {
+    return this.httpService.post(this.getUrl() + '/filter?page=' + (page - 1) + '&size=10', filter).map(response => {
+      return response.json()
+    });
   }
 
 }
