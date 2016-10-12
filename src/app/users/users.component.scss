@@ -1,3 +1,5 @@
+$rotate:180deg;
+
 #new-admin{
   right: 110px;
   height: 37px;
@@ -6,8 +8,63 @@
   color: #ffffff;
 }
 #superman-logo{
-  margin-left: 23px;
-  margin-top: -6px;
-  position: fixed;
+  left: 50%;
+  top: 50%;
+  position: absolute;
+  transform: translate(-50%,-50%);
+  z-index: 500;
+}
+#superman{
+  top: 50%;
+  left: 50%;
+  position: absolute;
+  transform: translate(-50%,-50%);
+  margin-top: 94px;
+  margin-left: 18px;
 }
 
+.relative{
+  position: relative;
+}
+
+.add-icon-active{
+  -webkit-transform: rotate($rotate);
+  transform: rotate($rotate);
+  -ms-transform: rotate($rotate);
+}
+.add-icon-inactive{
+  -webkit-transform: rotate(-$rotate);
+  transform: rotate(-$rotate);
+  -ms-transform: rotate(-$rotate);
+}
+
+.rotate{
+  -webkit-transition: all 1s ease-in-out;
+  transition: all 1s ease-in-out;
+}
+@media (max-width: 600px) {
+  th.collapsible,td.collapsible{
+      display: none;
+  }
+}
+@media (max-width: 380px) {
+
+  button.collapsible{
+    width:45px;
+  }
+  button > .button-text{
+    display: none;
+  }
+
+}
+
+td,th{
+  text-align: center;
+}
+
+.table td img{
+  padding: 0;
+}
+table{
+  margin-bottom: 250px;
+}

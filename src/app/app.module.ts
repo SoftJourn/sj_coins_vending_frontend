@@ -24,7 +24,7 @@ import { CategoryService } from "./shared/services/category.service";
 import { TokenService } from "./shared/services/token.service";
 import { AccountService } from "./shared/services/account.service";
 import { HttpService } from "./shared/services/http.service";
-import { UsersMangerComponent } from "./users/users.component";
+import { UsersComponent } from "./users/users.component";
 import { MdCardModule } from "@angular/material/card";
 import { MachineSizePipe } from "./machines/machine-item/machine-size.pipe";
 import { ProductService } from "./shared/services/product.service";
@@ -32,7 +32,11 @@ import { SimpleNotificationsModule } from "angular2-notifications";
 import { LdapUsersService } from "./shared/services/ldap.users.service";
 import { AdminUsersService } from "./shared/services/admin.users.service";
 import { EditProductComponent } from './products/edit-product/edit-product.component';
+import { AddUserComponent } from './users/add-user/add-user.component';
+
 import { ImageUploadService } from './shared/services/image-upload.service';
+import { PurchasesComponent } from './purchases/purchases.component';
+import {PurchaseService} from "./shared/services/purchase.service";
 
 @NgModule({
   declarations: [
@@ -51,10 +55,13 @@ import { ImageUploadService } from './shared/services/image-upload.service';
     FillMachineComponent,
     CategoriesComponent,
     AddCategoryComponent,
-    UsersMangerComponent,
+    UsersComponent,
     AddCategoryComponent,
     MachineSizePipe,
-    EditProductComponent
+    EditProductComponent,
+    AddUserComponent,
+    EditProductComponent,
+    PurchasesComponent
   ],
   imports: [
     BrowserModule,
@@ -83,7 +90,8 @@ import { ImageUploadService } from './shared/services/image-upload.service';
     ProductService,
     LdapUsersService,
     AdminUsersService,
-    ImageUploadService
+    ImageUploadService,
+    PurchaseService
   ],
   bootstrap: [AppComponent]
 })
