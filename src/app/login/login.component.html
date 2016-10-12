@@ -35,7 +35,9 @@
       </div>
       <div class="row">
         <div class="col-xs-12 col-lg-12 login-button-container">
-          <button md-raised-button class="login-btn" type="submit" [disabled]="!form.valid">Login</button>
+          <button md-raised-button class="login-btn" type="submit" disableRipple="true" [disabled]="!form.valid">
+            Login
+          </button>
         </div>
       </div>
     </form>
