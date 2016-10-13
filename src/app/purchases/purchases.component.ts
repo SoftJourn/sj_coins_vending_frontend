@@ -52,11 +52,12 @@ export class PurchasesComponent implements OnInit {
 
     this.form.get('type').valueChanges.subscribe(change => {
         if (change === 'Start-Due') {
-          this.showStartDue()
+          this.showStartDue();
         }
         else {
-          this.toHideStartDue()
-          this.buildForm();
+          this.toHideStartDue();
+          this.form.get('start').patchValue('');
+          this.form.get('due').patchValue('');
         }
       }
     )
@@ -101,12 +102,10 @@ export class PurchasesComponent implements OnInit {
   }
 
   changeStart($event) {
-    console.log($event);
     this.minDate = $event;
   }
 
   changeDue($event) {
-    console.log($event);
     this.maxDate = $event;
   }
 
