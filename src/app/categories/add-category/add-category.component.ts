@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit, EventEmitter, trigger, state, style, transition, animate } from '@angular/core';
 import {FormGroup, FormControl, Validators} from "@angular/forms";
 import {Category} from "../../shared/entity/category";
 import {CategoryService} from "../../shared/services/category.service";
@@ -7,15 +7,30 @@ import {ErrorDetail} from "../../shared/entity/error-detail";
 import { FormValidationStyles } from "../../shared/form-validation-styles";
 import { Router } from "@angular/router";
 import { Response } from "@angular/http";
+import { Output, Input } from "@angular/core/src/metadata/directives";
 
 @Component({
   selector: 'add-category',
   templateUrl: './add-category.component.html',
-  styleUrls: ['./add-category.component.scss']
+  styleUrls: ['./add-category.component.scss'],
+  animations:[
+    trigger('menuState',[
+      state('shown',style({
+        display:'block'
+      })),
+      state('hidden',style({
+        display:'none',
+      })),
+      transition('shown <=> hidden',[animate('100ms ease-out')])
+    ])
+  ]
 })
 export class AddCategoryComponent implements OnInit {
   form: FormGroup;
   formStyles: FormValidationStyles;
+  @Input() isVisible : boolean = false;
+  @Output() isVisibleChange = new EventEmitter<boolean>();
+  visibility = 'hidden';
 
   constructor(
     private categoryService: CategoryService,
@@ -25,6 +40,10 @@ export class AddCategoryComponent implements OnInit {
 
   ngOnInit() {
     this.buildForm();
+  }
+
+  ngOnChanges(){
+    this.visibility = this.isVisible ? 'shown' : 'hidden';
   }
 
   private buildForm(): void {
@@ -60,7 +79,8 @@ export class AddCategoryComponent implements OnInit {
   }
 
   cancel(): void {
-    this.router.navigate(['/main/categories']);
+    this.isVisible=false;
+    this.isVisibleChange.emit(this.isVisible);
   }
 
 }

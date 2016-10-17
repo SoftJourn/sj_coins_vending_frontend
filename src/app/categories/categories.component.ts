@@ -1,8 +1,9 @@
-import {Component, OnInit} from "@angular/core";
-import {CategoryService} from "../shared/services/category.service";
-import {Category} from "../shared/entity/category";
-import {NotificationsService} from "angular2-notifications";
-import {ErrorDetail} from "../shared/entity/error-detail";
+import { Component, OnInit } from "@angular/core";
+import { CategoryService } from "../shared/services/category.service";
+import { Category } from "../shared/entity/category";
+import { NotificationsService } from "angular2-notifications";
+import { ErrorDetail } from "../shared/entity/error-detail";
+import { AddMenu } from "../shared/entity/add-menu";
 
 @Component({
   selector: 'categories-list',
@@ -11,6 +12,7 @@ import {ErrorDetail} from "../shared/entity/error-detail";
 })
 export class CategoriesComponent implements OnInit {
   public categories: Category[];
+  public addMenu: AddMenu = new AddMenu();
 
   constructor(private categoryService: CategoryService,
               private notificationService: NotificationsService) {
@@ -45,5 +47,6 @@ export class CategoriesComponent implements OnInit {
       }
     );
   }
-
 }
+
+

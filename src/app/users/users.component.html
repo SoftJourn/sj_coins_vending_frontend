@@ -7,7 +7,7 @@
     <div class="col-xs-4 col-md-4 col-xl-4 header-buttons-container">
       <button class="btn btn-success" (mouseover)='addMenu.spinPlusIcon()' (mouseout)='addMenu.spinPlusIcon()' (click)="addMenu.changeVisibility(!addMenu.visible)">
         <i #plus class="fa fa-plus btn-icon rotate"
-           [ngClass]="{'add-icon-active':addMenu.iconState,'add-icon-inactive':!addMenu.iconState}"></i>Add
+           [ngClass]="{'add-icon-active':addMenu.iconState,'add-icon-inactive':!addMenu.iconState}"></i>{{addMenu.getMenuButtonName()}}
       </button>
     </div>
   </div>
@@ -35,9 +35,12 @@
         <td>{{user.fullName}}</td>
         <td>{{getRole(user.authorities)}}</td>
         <td class="relative">
+          <button *ngIf="getRole(user.authorities)!='SUPER ADMIN'" class="btn btn-success">
+            <i class="fa fa-pencil-square"></i>
+          </button>
           <button *ngIf="getRole(user.authorities)!='SUPER ADMIN'" type="button" class="btn btn-danger collapsible"
                   (click)="deleteUser(user.ldapName)">
-            <i class="fa fa-trash btn-icon"></i><span class="button-text">Delete</span>
+            <i class="fa fa-trash "></i>
           </button>
           <div *ngIf="getRole(user.authorities)=='SUPER ADMIN'">
             <img id="superman" [@heroState]="superman.state" (dblclick)="superman.fly('inactive')" src="../../assets/images/superman.png" />

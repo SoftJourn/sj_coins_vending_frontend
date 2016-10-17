@@ -10,61 +10,68 @@ import { Input } from "@angular/core/src/metadata/directives";
   selector: 'add-user',
   templateUrl: './add-user.component.html',
   styleUrls: ['./add-user.component.scss'],
-  animations:[
-    trigger('addUserState',[
-      state('shown',style({
-        display:'block'
+  animations: [
+    trigger('addUserState', [
+      state('shown', style({
+        display: 'block'
       })),
-      state('hidden',style({
-        display:'none',
+      state('hidden', style({
+        display: 'none',
       })),
-      transition('shown <=> hidden',[animate('100ms ease-out')])
+      transition('shown <=> hidden', [animate('100ms ease-out')])
     ])
   ]
 })
 export class AddUserComponent implements OnInit {
   public ldapUsers: Account[];
+  public participants: Account[]=this.ldapUsers;
   public selectedModule: Account;
 
-  @Input() isVisible : boolean = true;
+  // @Input()
+  // set adminUsers(admins: Account[]){
+  //     for(let i=0;i<admins.length;i++){
+  //       this.participants=this.participants.filter((e)=>{return e.ldapName.match(admins[i].ldapName)});
+  //     }
+  // }
+  @Input() isVisible: boolean = false;
   @Output() isVisibleChange = new EventEmitter<boolean>();
-  @Output() adminListChange=new EventEmitter<boolean>();
+  @Output() adminListChange = new EventEmitter<boolean>();
   visibility = 'hidden';
 
-  constructor(
-    private adminUserService: AdminUsersService,
-    private ladpUserService: LdapUsersService,
-    private notificationService: NotificationsService) {
+  constructor(private adminUserService: AdminUsersService,
+              private ladpUserService: LdapUsersService,
+              private notificationService: NotificationsService) {
   }
 
   ngOnInit() {
     this.getLdapUsers();
   }
-  ngOnChanges(){
+
+  ngOnChanges() {
     this.visibility = this.isVisible ? 'shown' : 'hidden';
   }
 
-  private getLdapUsers(){
-    this.ladpUserService.findAll().subscribe(response =>{
-      this.ldapUsers=response;
+  private getLdapUsers() {
+    this.ladpUserService.findAll().subscribe(response => {
+      this.ldapUsers = response;
       if (this.ldapUsers.length > 0) {
         this.selectedModule = this.ldapUsers[0];
       }
     });
   }
 
-  public addAdminUser(){
+  public addAdminUser() {
     this.adminUserService.save(this.selectedModule)
-      .subscribe(response=>{
-          this.notificationService.success('Add','User has been added successfully');
+      .subscribe(response=> {
+          this.notificationService.success('Add', 'User has been added successfully');
           this.adminListChange.emit(true);
-      },
-      error=>{
-        this.notificationService.error('Error',error._body);
-      });
+        },
+        error=> {
+          this.notificationService.error('Error', error._body);
+        });
   }
 
-  public hideAddUserComponent(){
+  public hideAddUserComponent() {
     this.isVisible = false;
     this.isVisibleChange.emit(this.isVisible);
   }

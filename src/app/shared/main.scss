@@ -620,3 +620,21 @@ li.nav-item {
     transform: rotate(360deg);
   }
 }
+
+$rotate:180deg;
+
+.add-icon-active{
+  -webkit-transform: rotate($rotate);
+  transform: rotate($rotate);
+  -ms-transform: rotate($rotate);
+}
+.add-icon-inactive{
+  -webkit-transform: rotate(-$rotate);
+  transform: rotate(-$rotate);
+  -ms-transform: rotate(-$rotate);
+}
+
+.rotate{
+  -webkit-transition: all 1s ease-in-out;
+  transition: all 1s ease-in-out;
+}

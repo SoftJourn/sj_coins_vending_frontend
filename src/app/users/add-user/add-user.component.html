@@ -4,10 +4,18 @@
     <div class="col-xl-6">
       <div class="card card-block" >
         <div class="inline-centering">
-          <label for="new-admin">LDAP user</label>
-          <select id="new-admin" [(ngModel)]="selectedModule" name="new-admin" class="">
+          <label for="new-admin">LDAP user
+            <select id="new-admin" [(ngModel)]="selectedModule" name="new-admin" class="">
             <option *ngFor="let user of ldapUsers" [ngValue]="user">{{user.ldapName}}</option>
-          </select>
+            </select>
+          </label>
+          <br>
+          <label for="inventory-manager">
+            Inventory Manager <input id="inventory-manager"type="checkbox"/>
+          </label>
+          <div class="checkbox">
+            <label>Billing Manger <input type="checkbox"/></label>
+          </div>
         </div>
         <br>
         <div class="col-sm-12 form-buttons-container without-padding center-content">

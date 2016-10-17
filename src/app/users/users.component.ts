@@ -2,6 +2,7 @@ import { Component, OnInit, trigger, state, style, transition, animate } from "@
 import { Account } from "../shared/entity/account";
 import { AdminUsersService } from "../shared/services/admin.users.service";
 import { NotificationsService } from "angular2-notifications/lib/notifications.service";
+import { AddMenu } from "../shared/entity/add-menu";
 
 
 const mediaWindowSize = 600;
@@ -51,15 +52,19 @@ export class UsersComponent implements OnInit {
     this.adminUserService.delete(ldapName)
       .subscribe(
         next => {
+          this.notificationService.success('Delete', 'User has been removed from ADMIN successfully');
         },
         error=> {
           this.notificationService.error("Delete", error._body)
         },
         () => {
-          this.notificationService.success('Delete', 'User has been removed from ADMIN successfully');
           this.syncAdminUsers();
         });
   }
+
+  public editUser(user:Account){
+    this.adminUserService.update(user.ldapName,user).subscribe(next=>{},error=>{},()=>{});
+  }l
 
   public getRole(authorities: string): string {
     let regex = /.*ROLE_/;
@@ -80,18 +85,5 @@ class SuperUser {
 
   constructor() {
     this.state = "inactive";
-  }
-}
-
-class AddMenu {
-  iconState: boolean = false;
-  visible: boolean = false;
-
-  public spinPlusIcon() {
-    this.iconState = !this.iconState;
-  }
-
-  public changeVisibility(visibility: boolean) {
-    this.visible = visibility;
   }
 }

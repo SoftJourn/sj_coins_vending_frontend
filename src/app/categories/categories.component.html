@@ -4,14 +4,16 @@
       <h2>Categories</h2>
     </div>
     <div class="col-xs-4 col-md-4 col-xl-4 header-buttons-container">
-      <button class="btn btn-success" [routerLink]="['/main/categories/add']">
-        <i class="fa fa-plus btn-icon"></i>Create
+      <button class="btn btn-success" (mouseover)='addMenu.spinPlusIcon()' (mouseout)='addMenu.spinPlusIcon()'  (click)="addMenu.changeVisibility(!addMenu.visible)" >
+        <i class="fa fa-plus btn-icon rotate"
+           [ngClass]="{'add-icon-active':addMenu.iconState,'add-icon-inactive':!addMenu.iconState}"></i>{{addMenu.getMenuButtonName()}}
       </button>
     </div>
   </div>
 </div>
 <hr>
 <div class="container-fluid">
+  <add-category [(isVisible)]='addMenu.visible'></add-category>
   <div class="row">
     <div class="col-xl-4"></div>
     <div class="col-xl-4">

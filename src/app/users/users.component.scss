@@ -1,5 +1,3 @@
-$rotate:180deg;
-
 #new-admin{
   right: 110px;
   height: 37px;
@@ -27,21 +25,6 @@ $rotate:180deg;
   position: relative;
 }
 
-.add-icon-active{
-  -webkit-transform: rotate($rotate);
-  transform: rotate($rotate);
-  -ms-transform: rotate($rotate);
-}
-.add-icon-inactive{
-  -webkit-transform: rotate(-$rotate);
-  transform: rotate(-$rotate);
-  -ms-transform: rotate(-$rotate);
-}
-
-.rotate{
-  -webkit-transition: all 1s ease-in-out;
-  transition: all 1s ease-in-out;
-}
 @media (max-width: 600px) {
   th.collapsible,td.collapsible{
       display: none;
