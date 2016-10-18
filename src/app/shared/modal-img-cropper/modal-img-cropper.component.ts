@@ -1,5 +1,5 @@
 import {
-    Component, OnInit, Input, Output, OnChanges, EventEmitter,
+    Component, Input, Output, EventEmitter,
     trigger, state, style, animate, transition, ViewChild, Type,
     AnimationTransitionEvent
 } from '@angular/core';
@@ -22,7 +22,7 @@ import {ImageUploadService} from "../../shared/services/image-upload.service";
         ])
     ]
 })
-export class ModalImgCropperComponent extends Type implements OnChanges, OnInit {
+export class ModalImgCropperComponent extends Type {
 
     data: any;
     cropperSettings: CropperSettings;
@@ -56,30 +56,19 @@ export class ModalImgCropperComponent extends Type implements OnChanges, OnInit 
 
         this.cropperSettings.minWidth = 100;
         this.cropperSettings.minHeight = 100;
-
+        this.cropperSettings.allowedFilesRegex = /image\/(?:jpeg|png|jpg|apng|svg|bmp)/;
         this.cropperSettings.cropperDrawSettings.strokeColor = 'rgba(0,0,0,1)';
         this.cropperSettings.cropperDrawSettings.strokeWidth = 2;
         this.cropperSettings.noFileInput = true;
         this.data = {};
-
     }
-
 
     animationDone(event: AnimationTransitionEvent) {
         let image = new Image();
         image.src = this.cropper_img;
-         if (this.cropper_img && this.cropper) {
+        if (this.cropper_img && this.cropper) {
             this.cropper.setImage(image);
-         }
-    }
-
-    ngOnChanges() {
-
-    }
-
-
-    ngOnInit() {
-
+        }
     }
 
     setImageData() {

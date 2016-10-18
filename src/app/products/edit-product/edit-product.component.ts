@@ -170,14 +170,12 @@ export class EditProductComponent implements OnInit {
             (img) => {
                 this.imagForCropper = img.src;
                 this.imgName = img.name;
+                this.showDialog = !this.showDialog;
             },
             (err) => {
                 console.log(err);
             }
         );
-        this.showDialog = !this.showDialog;
     }
 
-    public closeModal() {
-    }
 }

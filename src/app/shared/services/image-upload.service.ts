@@ -24,7 +24,7 @@ export class ImageUploadService {
             self.imageFile = $event.dataTransfer ? $event.dataTransfer.files[0] : $event.target.files[0];
             var pattern = /image\/(?:jpeg|png|jpg|apng|svg|bmp)/;
             var myReader: FileReader = new FileReader();
-
+            // check image pattern
             if (!self.imageFile.type.match(pattern)) {
                 self.notificationService.error('Error', 'This file format not supported!');
                 self.cleanImageData();
@@ -32,6 +32,13 @@ export class ImageUploadService {
 
                 subscriber.error('This file format not supported!');
             }
+            // check image size
+            else if ( self.imageFile.size > 1024 * 256) {
+                self.notificationService.error('Error', 'This image size is too big!');
+                self.cleanImageData();
+                $event.target.value = null;
+            }
+            // check image dimensions
             else {
                 self.loaded = false;
 
@@ -44,13 +51,7 @@ export class ImageUploadService {
                 myReader.readAsDataURL(self.imageFile);
                 $event.target.value = null;
             }
-
         });
-
-    }
-
-    public handleInputChange(e) {
-        //
     }
 
     public handleImageLoad() {
