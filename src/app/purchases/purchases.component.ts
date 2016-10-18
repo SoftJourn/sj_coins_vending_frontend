@@ -23,8 +23,11 @@ export class PurchasesComponent implements OnInit {
   public machines: Machine[];
 
   form: FormGroup;
+  pageForm: FormGroup;
   hideFilter: boolean = true;
   hideStartDue: boolean = true;
+
+  pageSize: number = 10;
 
   minDate: NgbDateStruct;
   maxDate: NgbDateStruct;
@@ -37,8 +40,9 @@ export class PurchasesComponent implements OnInit {
 
   ngOnInit() {
     this.buildForm();
+    this.buildPageSizeForm();
     let filter = this.toPurchaseFilter(this.form);
-    this.purchaseService.findAllByFilter(filter, 1)
+    this.purchaseService.findAllByFilter(filter, 1, this.pageSize)
       .subscribe(page => {
         this.page = page;
         this.purchases = this.page.content;
@@ -60,7 +64,13 @@ export class PurchasesComponent implements OnInit {
           this.form.get('due').patchValue('');
         }
       }
-    )
+    );
+
+    this.pageForm.get('pageSize').valueChanges.subscribe(change => {
+      this.pageSize = change;
+      this.fetch(1, this.pageSize);
+    });
+
   }
 
   private buildForm(): void {
@@ -69,6 +79,12 @@ export class PurchasesComponent implements OnInit {
       type: new FormControl('Any'),
       start: new FormControl(''),
       due: new FormControl('')
+    });
+  }
+
+  private buildPageSizeForm(): void {
+    this.pageForm = new FormGroup({
+      pageSize: new FormControl('10')
     });
   }
 
@@ -84,8 +100,17 @@ export class PurchasesComponent implements OnInit {
     this.hideStartDue = true;
   }
 
-  submit() {
-    this.fetch(1);
+  onSubmit(): void {
+    this.fetch(1, this.pageSize);
+  }
+
+  onCancel(): void {
+    this.form.get('machine').patchValue('-1');
+    this.form.get('type').patchValue('Any');
+    this.form.get('start').patchValue('');
+    this.form.get('due').patchValue('');
+    this.fetch(1, this.pageSize);
+    this.showFilter();
   }
 
   toPurchaseFilter(form: FormGroup): PurchaseFilter {
@@ -98,7 +123,7 @@ export class PurchasesComponent implements OnInit {
   }
 
   changePage($event) {
-    this.fetch($event);
+    this.fetch($event, this.pageSize);
   }
 
   changeStart($event) {
@@ -109,9 +134,9 @@ export class PurchasesComponent implements OnInit {
     this.maxDate = $event;
   }
 
-  fetch(page: number): void {
+  fetch(page: number, size: number): void {
     let filter = this.toPurchaseFilter(this.form);
-    this.purchaseService.findAllByFilter(filter, page)
+    this.purchaseService.findAllByFilter(filter, page, size)
       .subscribe(page => {
         this.page = page;
         this.purchases = this.page.content;

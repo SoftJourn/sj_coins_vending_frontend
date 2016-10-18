@@ -98,7 +98,7 @@ export class EditProductComponent implements OnInit {
                     var blob = this.imageUpload.dataURItoBlob(this.imageUpload.imageSrc);
                     this.imageUpload.formData = new FormData();
                     this.imageUpload.formData.append('file', blob, this.imageUpload.imageFile.name);
-                    return this.productService.updateImage(product.id, this.imageUpload.formData);
+                    return this.productService.updateImage(this.productIndex, this.imageUpload.formData)
                 })
                 .subscribe(
                     () => {

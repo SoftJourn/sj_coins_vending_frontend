@@ -43,7 +43,7 @@ export class AddCategoryComponent implements OnInit {
     this.categoryService.save(category)
       .subscribe(
         category => {
-          this.notificationService.success('Create', 'Category was created successfully');
+          this.notificationService.success('Create', 'Category has been created successfully');
           this.form.reset({
             name: ''
           });

@@ -40,7 +40,7 @@ export class ProductsComponent implements OnInit {
         this.productService.findAll().subscribe(
           products => {
             this.products = products;
-            this.notificationService.success('Success', 'Product was deleted successfully!');
+            this.notificationService.success('Success', 'Product has been deleted successfully!');
           }
         )
       }
