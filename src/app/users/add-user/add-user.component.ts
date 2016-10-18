@@ -1,38 +1,36 @@
-import { Component, OnInit, trigger, state, style, animate, transition, Output, EventEmitter } from "@angular/core";
-import { Account } from "../../shared/entity/account";
-import { LdapUsersService } from "../../shared/services/ldap.users.service";
-import { AdminUsersService } from "../../shared/services/admin.users.service";
-import { NotificationsService } from "angular2-notifications/components";
-import { UsersComponent } from "../users.component";
-import { Input } from "@angular/core/src/metadata/directives";
+import {Component, OnInit, trigger, state, style, animate, transition, Output, EventEmitter} from "@angular/core";
+import {Account} from "../../shared/entity/account";
+import {LdapUsersService} from "../../shared/services/ldap.users.service";
+import {AdminUsersService} from "../../shared/services/admin.users.service";
+import {NotificationsService} from "angular2-notifications/components";
+import {Input} from "@angular/core/src/metadata/directives";
 
 @Component({
   selector: 'add-user',
   templateUrl: './add-user.component.html',
   styleUrls: ['./add-user.component.scss'],
   animations: [
-    trigger('addUserState', [
-      state('shown', style({
-        display: 'block'
-      })),
-      state('hidden', style({
-        display: 'none',
-      })),
+    trigger('addUserState', [state('shown', style({display: 'block'})),
+      state('hidden', style({display: 'none',})),
       transition('shown <=> hidden', [animate('100ms ease-out')])
     ])
   ]
 })
 export class AddUserComponent implements OnInit {
   public ldapUsers: Account[];
-  public participants: Account[]=this.ldapUsers;
   public selectedModule: Account;
 
-  // @Input()
-  // set adminUsers(admins: Account[]){
-  //     for(let i=0;i<admins.length;i++){
-  //       this.participants=this.participants.filter((e)=>{return e.ldapName.match(admins[i].ldapName)});
-  //     }
-  // }
+  @Input()
+  set adminUsers(admins: Account[]) {
+    if (typeof admins != 'undefined') {
+      if (typeof this.ldapUsers == 'undefined') {
+        // this._adminUsers = admins;
+      } else {
+
+      }
+    }
+  }
+
   @Input() isVisible: boolean = false;
   @Output() isVisibleChange = new EventEmitter<boolean>();
   @Output() adminListChange = new EventEmitter<boolean>();
@@ -60,7 +58,18 @@ export class AddUserComponent implements OnInit {
     });
   }
 
+  private possibleAdminList(all:Account[],used:Account[]){
+    // all.map()
+    // for (let i = 0; i < admins.length; i++) {
+    //
+    //   let user = this.ldapUsers.filter(e=>e.ldapName==admins[i].ldapName)[0];
+    //   if (typeof user != "undefined")
+    //     this.ldapUsers.splice(this.ldapUsers.indexOf(user), 1);
+    // }
+  }
+
   public addAdminUser() {
+
     this.adminUserService.save(this.selectedModule)
       .subscribe(response=> {
           this.notificationService.success('Add', 'User has been added successfully');

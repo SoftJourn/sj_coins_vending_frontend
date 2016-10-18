@@ -51,3 +51,12 @@ td,th{
 table{
   margin-bottom: 250px;
 }
+.pointer-cursor{
+  cursor: pointer
+}
+@mixin shadow($horizontal-shift,$vertical-shift,$blur,$shadow-size,$color) {
+  -webkit-box-shadow: $horizontal-shift,$vertical-shift,$blur,$shadow-size,$color;
+  -moz-box-shadow: $horizontal-shift,$vertical-shift,$blur,$shadow-size,$color;
+  //No Explorer
+  box-shadow: $horizontal-shift,$vertical-shift,$blur,$shadow-size,$color;
+}

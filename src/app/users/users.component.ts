@@ -1,8 +1,8 @@
-import { Component, OnInit, trigger, state, style, transition, animate } from "@angular/core";
-import { Account } from "../shared/entity/account";
-import { AdminUsersService } from "../shared/services/admin.users.service";
-import { NotificationsService } from "angular2-notifications/lib/notifications.service";
-import { AddMenu } from "../shared/entity/add-menu";
+import {Component, OnInit, trigger, state, style, transition, animate} from "@angular/core";
+import {Account} from "../shared/entity/account";
+import {AdminUsersService} from "../shared/services/admin.users.service";
+import {NotificationsService} from "angular2-notifications/lib/notifications.service";
+import {AddMenu} from "../shared/entity/add-menu";
 
 
 const mediaWindowSize = 600;
@@ -13,18 +13,13 @@ const mediaWindowSize = 600;
   styleUrls: ['./users.component.scss'],
   animations: [
     trigger('heroState', [
-      state('inactive', style({
-        opacity: 0,
-        'z-index': -100
-      })),
-      state('active', style({
-        opacity: 1,
-        'z-index': 1000
-      })),
-
-      transition('inactive => active', [
-        animate('1000ms ease-out')
-      ])
+      state('inactive', style({opacity: 0, 'z-index': -100})),
+      state('active', style({opacity: 1, 'z-index': 1000})),
+      transition('inactive => active', [animate('1000ms ease-out')])
+    ]),
+    trigger('editMenuState', [
+      state('visible',style({display:'table-row'})),
+      state('hidden',style({display:'none'}))
     ])
   ]
 })
@@ -33,6 +28,7 @@ export class UsersComponent implements OnInit {
   public adminUsers: Account[];
   public superman: SuperUser = new SuperUser();
   public addMenu: AddMenu = new AddMenu();
+  public editMenu: EditMenu = new EditMenu();
 
   constructor(private adminUserService: AdminUsersService,
               private notificationService: NotificationsService) {
@@ -52,19 +48,22 @@ export class UsersComponent implements OnInit {
     this.adminUserService.delete(ldapName)
       .subscribe(
         next => {
-          this.notificationService.success('Delete', 'User has been removed from ADMIN successfully');
         },
         error=> {
-          this.notificationService.error("Delete", error._body)
+          this.notificationService.error("Delete", error._body);
         },
         () => {
+          this.notificationService.success('Delete', 'User ' + ldapName + ' has been removed successfully');
           this.syncAdminUsers();
         });
   }
 
-  public editUser(user:Account){
-    this.adminUserService.update(user.ldapName,user).subscribe(next=>{},error=>{},()=>{});
-  }l
+  public editUser(user: Account) {
+    this.adminUserService.update(user.ldapName, user).subscribe(next=> {
+    }, error=> {
+    }, ()=> {
+    });
+  }
 
   public getRole(authorities: string): string {
     let regex = /.*ROLE_/;
@@ -85,5 +84,28 @@ class SuperUser {
 
   constructor() {
     this.state = "inactive";
+  }
+}
+
+class EditMenu {
+
+  private _selectedRow:number;
+  public selectedRow(row: number){
+    if(this._selectedRow==row)
+      this._selectedRow=undefined;
+    else
+      this._selectedRow=row;
+  }
+  public getStateByRow(row: number) {
+      if(row==this._selectedRow){
+          return 'visible';
+      } else {
+        return 'hidden';
+      }
+  }
+  public activeRowClass(row:number){
+    if(row==this._selectedRow){
+      return 'visible';
+    }
   }
 }

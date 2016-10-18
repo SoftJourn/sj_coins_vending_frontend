@@ -13,7 +13,7 @@
 </div>
 <hr>
 <div class="container-fluid">
-  <add-category [(isVisible)]='addMenu.visible'></add-category>
+  <add-category [(isVisible)]='addMenu.visible' (categoryChange)='updateCategories()'></add-category>
   <div class="row">
     <div class="col-xl-4"></div>
     <div class="col-xl-4">

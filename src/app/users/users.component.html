@@ -5,7 +5,8 @@
     </div>
 
     <div class="col-xs-4 col-md-4 col-xl-4 header-buttons-container">
-      <button class="btn btn-success" (mouseover)='addMenu.spinPlusIcon()' (mouseout)='addMenu.spinPlusIcon()' (click)="addMenu.changeVisibility(!addMenu.visible)">
+      <button class="btn btn-success" (mouseover)='addMenu.spinPlusIcon()' (mouseout)='addMenu.spinPlusIcon()'
+              (click)="addMenu.changeVisibility(!addMenu.visible)">
         <i #plus class="fa fa-plus btn-icon rotate"
            [ngClass]="{'add-icon-active':addMenu.iconState,'add-icon-inactive':!addMenu.iconState}"></i>{{addMenu.getMenuButtonName()}}
       </button>
@@ -14,8 +15,8 @@
 </div>
 <hr>
 <div class="container-fluid">
-  <add-user [(isVisible)]='addMenu.visible' (adminListChange)='syncAdminUsers()'></add-user>
-  <div class="row" >
+  <add-user [adminUsers]='adminUsers' [(isVisible)]='addMenu.visible' (adminListChange)='syncAdminUsers()'></add-user>
+  <div class="row">
 
     <table class="table table-hover ">
       <thead class="thead-inverse">
@@ -29,25 +30,47 @@
       </thead>
       <tbody>
 
-      <tr *ngFor="let user of adminUsers; let i = index;">
-        <td class="collapsible" scope="row">{{i+1}}</td>
-        <td class="collapsible">{{user.ldapName}}</td>
-        <td>{{user.fullName}}</td>
-        <td>{{getRole(user.authorities)}}</td>
-        <td class="relative">
-          <button *ngIf="getRole(user.authorities)!='SUPER ADMIN'" class="btn btn-success">
-            <i class="fa fa-pencil-square"></i>
-          </button>
-          <button *ngIf="getRole(user.authorities)!='SUPER ADMIN'" type="button" class="btn btn-danger collapsible"
-                  (click)="deleteUser(user.ldapName)">
-            <i class="fa fa-trash "></i>
-          </button>
-          <div *ngIf="getRole(user.authorities)=='SUPER ADMIN'">
-            <img id="superman" [@heroState]="superman.state" (dblclick)="superman.fly('inactive')" src="../../assets/images/superman.png" />
-            <img id="superman-logo" (dblclick)="superman.fly('active')" src="../../assets/images/superman-logo.png" />
-          </div>
-        </td>
-      </tr>
+      <ng-container *ngFor="let user of adminUsers; let i = index;">
+        <tr title="Edit" (click)="editMenu.selectedRow(i)" class="pointer-cursor">
+          <td class="collapsible" scope="row">{{i+1}}</td>
+          <td class="collapsible">{{user.ldapName}}</td>
+          <td>{{user.fullName}}</td>
+          <td>{{getRole(user.authorities)}}</td>
+          <td class="relative">
+            <button *ngIf="getRole(user.authorities)!='SUPER ADMIN'" class="btn btn-success" (click)="editMenu.selectedRow(i)">
+              <i class="fa fa-pencil-square"></i> Edit
+            </button>
+            <div *ngIf="getRole(user.authorities)=='SUPER ADMIN'">
+              <img id="superman" [@heroState]="superman.state" (dblclick)="superman.fly('inactive')"
+                   src="../../assets/images/superman.png"/>
+              <img id="superman-logo" (dblclick)="superman.fly('active')" src="../../assets/images/superman-logo.png"/>
+            </div>
+          </td>
+        </tr>
+
+        <tr [@editMenuState]="editMenu.getStateByRow(i)" class="edit-row table-active">
+          <td class="collapsible"><!--Row number--></td>
+          <td class="collapsible"><!--LDAP--></td>
+          <td><!--Full Name-->{{user.fullName}}</td>
+          <td>
+            <!--Roles-->
+            <label>
+              Inventory Manager <input type="checkbox"/>
+            </label>
+            <div class="checkbox">
+              <label>Billing Manger <input type="checkbox"/></label>
+            </div>
+          </td>
+          <td>
+            <!--Actions-->
+            <button *ngIf="getRole(user.authorities)!='SUPER ADMIN'" type="button" class="btn btn-danger collapsible"
+                    (click)="deleteUser(user.ldapName)">
+              <i class="fa fa-trash "></i> Delete
+            </button>
+          </td>
+
+        </tr>
+      </ng-container>
 
       </tbody>
     </table>

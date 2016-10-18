@@ -18,7 +18,11 @@ export class CategoriesComponent implements OnInit {
               private notificationService: NotificationsService) {
   }
 
-  ngOnInit() {
+  ngOnInit(){
+    this.updateCategories();
+  }
+
+  private updateCategories(){
     this.categoryService.findAll().subscribe(
       categories => this.categories = categories
     );

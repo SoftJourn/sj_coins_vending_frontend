@@ -30,6 +30,7 @@ export class AddCategoryComponent implements OnInit {
   formStyles: FormValidationStyles;
   @Input() isVisible : boolean = false;
   @Output() isVisibleChange = new EventEmitter<boolean>();
+  @Output() categoryChange = new EventEmitter<boolean>();
   visibility = 'hidden';
 
   constructor(
@@ -66,6 +67,7 @@ export class AddCategoryComponent implements OnInit {
           this.form.reset({
             name: ''
           });
+          this.categoryChange.emit(true);
         },
         (error: Response) => {
           let errorDetail: ErrorDetail = error.json();
