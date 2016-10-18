@@ -59,7 +59,7 @@ export class AddProductComponent implements OnInit {
     if (this.imageUpload.imageFile != null) {
       this.productService.save(this.form.value)
         .flatMap((product: Product) => {
-          this.notificationService.success('Create', 'Product was created successfully');
+          this.notificationService.success('Create', 'Product has been created successfully');
           return this.productService.updateImage(product.id, this.imageUpload.formData)
         })
         .subscribe(

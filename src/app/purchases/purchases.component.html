@@ -13,68 +13,72 @@
 <hr>
 <div class="container-fluid">
   <div class="row" [hidden]="hideFilter">
-    <div class="card card-block card-outline-success">
-      <form (ngSubmit)="submit()" class="form" [formGroup]="form"
-            style="float: none; margin-left: auto; margin-right: auto;">
-        <div class="col-xl-2">
-          <div class="form-group">
-            <label for="machines" class="col-xs-4 col-sm-4 col-xl-4 col-form-label">Machines</label>
-            <div class="col-xs-8 col-sm-8 col-xl-8">
-              <select id="machines" class="form-control" formControlName="machine">
-                <option value="-1">All</option>
-                <option *ngFor="let machine of machines;" [ngValue]="machine.id">{{machine?.name}}</option>
-              </select>
+    <div class="col-xs-12 col-md-12 col-lg-12">
+      <div class="card card-block card-outline-success">
+        <form (ngSubmit)="onSubmit()" class="form" [formGroup]="form">
+          <div class="col-xl-2">
+            <div class="form-group">
+              <label for="machines" class="col-sm-3 col-form-label">Machines</label>
+              <div class="col-sm-9">
+                <select id="machines" class="form-control" formControlName="machine">
+                  <option value="-1">All</option>
+                  <option *ngFor="let machine of machines;" [ngValue]="machine.id">{{machine?.name}}</option>
+                </select>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="col-xl-2">
-          <div class="form-group">
-            <label for="date" class="col-xs-4 col-sm-4 col-xl-4 col-form-label">Date</label>
-            <div class="col-xs-8 col-sm-8 col-xl-8">
-              <select id="date" class="form-control" formControlName="type">
-                <option value="Any">Any</option>
-                <option value="Today">Today</option>
-                <option value="Last week">Last week</option>
-                <option value="Last month">Last month</option>
-                <option value="Start-Due">Start-Due</option>
-              </select>
+          <div class="col-xl-2">
+            <div class="form-group">
+              <label for="date" class="col-sm-3 col-form-label">Date</label>
+              <div class="col-sm-9">
+                <select id="date" class="form-control" formControlName="type">
+                  <option value="Any">Any</option>
+                  <option value="Today">Today</option>
+                  <option value="Last week">Last week</option>
+                  <option value="Last month">Last month</option>
+                  <option value="Start-Due">Start-Due</option>
+                </select>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="col-xl-3" [hidden]="hideStartDue">
-          <div class="form-group">
-            <label for="start" class="col-xs-4 col-sm-4 col-xl-2 col-form-label">Start</label>
-            <div class="col-xs-8 col-sm-8 col-xl-9">
-              <div class="input-group">
-                <input class="form-control" name="dp" formControlName="start" ngbDatepicker
-                       #d="ngbDatepicker" id="start" [maxDate]="maxDate" (ngModelChange)="changeStart($event)" >
-                <div class="input-group-addon" (click)="d.toggle()">
-                  <i class="fa fa-calendar fa-lg"></i>
+          <div class="col-xl-3" [hidden]="hideStartDue">
+            <div class="form-group">
+              <label for="start" class="col-sm-3 col-form-label">Start</label>
+              <div class="col-sm-9">
+                <div class="input-group">
+                  <input class="form-control" name="dp" formControlName="start" ngbDatepicker
+                         #d="ngbDatepicker" id="start" [maxDate]="maxDate" (ngModelChange)="changeStart($event)">
+                  <div class="input-group-addon" (click)="d.toggle()">
+                    <i class="fa fa-calendar fa-lg"></i>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="col-xl-3" [hidden]="hideStartDue">
-          <div class="form-group">
-            <label for="due" class="col-xs-4 col-sm-4 col-xl-2 col-form-label">Due</label>
-            <div class="col-xs-8 col-sm-8 col-xl-9">
-              <div class="input-group">
-                <input class="form-control" name="dp" formControlName="due" ngbDatepicker
-                       #n="ngbDatepicker" id="due" [minDate]="minDate" (ngModelChange)="changeDue($event)">
-                <div class="input-group-addon" (click)="n.toggle()">
-                  <i class="fa fa-calendar fa-lg"></i>
+          <div class="col-xl-3" [hidden]="hideStartDue">
+            <div class="form-group">
+              <label for="due" class="col-sm-3 col-form-label">Due</label>
+              <div class="col-sm-9">
+                <div class="input-group">
+                  <input class="form-control" name="dp" formControlName="due" ngbDatepicker
+                         #n="ngbDatepicker" id="due" [minDate]="minDate" (ngModelChange)="changeDue($event)">
+                  <div class="input-group-addon" (click)="n.toggle()">
+                    <i class="fa fa-calendar fa-lg"></i>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="col-xl-2">
-          <div class="form-group">
-            <button type="submit" class="btn btn-success">Submit</button>
+          <div class="col-xl-2">
+            <div class="col-xs-6 col-md-6 col-xl-6">
+              <button type="submit" class="btn btn-success">Submit</button>
+            </div>
+            <div class="col-xs-6 col-md-6 col-xl-6">
+              <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+            </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   </div>
   <div class="row">
@@ -91,24 +95,32 @@
         </thead>
         <tbody>
         <tr *ngFor="let purchase of purchases; let i = index">
-          <th scope="row">{{i+1}}</th>
+          <th scope="row">{{pageSize * page.number + i + 1}}</th>
           <td>{{purchase?.account}}</td>
           <td>{{purchase?.product}}</td>
           <td>{{purchase?.price}}</td>
-          <td>{{purchase?.date}}</td>
+          <td>{{purchase?.date | date:'medium'}}</td>
         </tr>
         </tbody>
       </table>
     </div>
   </div>
   <div class="row">
-    <div class="col-xs-4 col-md-4 col-xl-4">
-    </div>
-    <div class="col-xs-4 col-md-4 col-xl-4">
-      <ngb-pagination [collectionSize]="page.totalElements" [maxSize]="5" [rotate]="true" [pageSize]="page.size"
-                      [boundaryLinks]="true" (pageChange)="changePage($event)"></ngb-pagination>
-    </div>
-    <div class="col-xs-4 col-md-4 col-xl-4">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 horizontal-alignment">
+      <div class="col-xs-5 col-sm-3 col-md-2 col-lg-2 col-xl-1">
+        <form [formGroup]="pageForm">
+          <select id="size" class="form-control" style="height: 45px" formControlName="pageSize">
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+          </select>
+        </form>
+      </div>
+      <div class="col-xs-7 col-sm-9 col-md-10 col-lg-10 col-xl-5">
+        <ngb-pagination [collectionSize]="page.totalElements" [maxSize]="5" [page]="page.number+1" [rotate]="true"
+                        [pageSize]="page.size" (pageChange)="changePage($event)">
+        </ngb-pagination>
+      </div>
     </div>
   </div>
 </div>

@@ -90,7 +90,7 @@ export class EditProductComponent implements OnInit {
             this.productService.update(this.productIndex, this.form.value)
                 .flatMap((product: Product) => {
                     this.router.navigate(['/main/products'])
-                    this.notificationService.success('Update', 'Product was updated successfully');
+                    this.notificationService.success('Update', 'Product has been updated successfully');
                     return this.productService.updateImage(this.productIndex, this.imageUpload.formData)
                 })
                 .subscribe(
@@ -119,7 +119,7 @@ export class EditProductComponent implements OnInit {
                 .subscribe(
                     () => {
                         this.router.navigate(['/main/products'])
-                        this.notificationService.success('Update', 'Product was updated successfully');
+                        this.notificationService.success('Update', 'Product has been updated successfully');
                     },
                     error => {
                         if (error.status == 415) {

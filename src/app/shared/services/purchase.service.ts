@@ -21,8 +21,8 @@ export class PurchaseService {
       .map(response => response.json());
   }
 
-  public findAllByFilter(filter: PurchaseFilter, page: number): Observable<PurchasePage> {
-    return this.httpService.post(this.getUrl() + '/filter?page=' + (page - 1) + '&size=10', filter).map(response => {
+  public findAllByFilter(filter: PurchaseFilter, page: number, size: number): Observable<PurchasePage> {
+    return this.httpService.post(this.getUrl() + '/filter?page=' + (page - 1) + '&size=' + size, filter).map(response => {
       return response.json()
     });
   }
