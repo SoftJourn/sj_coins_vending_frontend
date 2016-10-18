@@ -4,7 +4,7 @@ This project was generated with [angular-cli](https://github.com/angular/angular
 
 For correct work all npm-packages need:
 
-'sudo npm install typings -g'
+`sudo npm install typings -g`
 
 
 ## Certificate issue on testing server
