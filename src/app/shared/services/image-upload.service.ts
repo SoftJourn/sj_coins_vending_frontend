@@ -32,13 +32,6 @@ export class ImageUploadService {
 
                 subscriber.error('This file format not supported!');
             }
-            // check image size
-            else if ( self.imageFile.size > 1024 * 256) {
-                self.notificationService.error('Error', 'This image size is too big!');
-                self.cleanImageData();
-                $event.target.value = null;
-            }
-            // check image dimensions
             else {
                 self.loaded = false;
 

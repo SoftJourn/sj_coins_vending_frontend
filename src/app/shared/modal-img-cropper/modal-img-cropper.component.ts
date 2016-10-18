@@ -5,6 +5,7 @@ import {
 } from '@angular/core';
 import {ImageCropperComponent, CropperSettings, Bounds} from 'ng2-img-cropper';
 import {ImageUploadService} from "../../shared/services/image-upload.service";
+import {NotificationsService} from "angular2-notifications/components";
 
 @Component({
     selector: 'app-modal-img-cropper',
@@ -35,7 +36,7 @@ export class ModalImgCropperComponent extends Type {
     @Output() setImageForSave: EventEmitter<any> = new EventEmitter;
     @Input() cropper_img;
 
-    constructor(private imageUpload: ImageUploadService) {
+    constructor(private imageUpload: ImageUploadService, private notificationService: NotificationsService) {
 
         super();
         var screenWidth = window.screen.availWidth;
@@ -72,10 +73,18 @@ export class ModalImgCropperComponent extends Type {
     }
 
     setImageData() {
-        this.setImageForSave.emit(this.data.image);
-        let image = new Image();
-        image.src = this.data.image;
-        this.close();
+        // check image size
+        let blob = this.imageUpload.dataURItoBlob(this.data.image);
+        if (blob.size > 1024 * 256) {
+            this.notificationService.error('Error', 'This image size is too big!');
+            this.close();
+        } else {
+            this.setImageForSave.emit(this.data.image);
+            let image = new Image();
+            image.src = this.data.image;
+            console.log(this.data);
+            this.close();
+        }
     }
 
     close() {

@@ -36,6 +36,7 @@ export class EditProductComponent implements OnInit {
                 private route: ActivatedRoute,
                 private router: Router,
                 private imageUpload: ImageUploadService) {
+
         this.imageUpload.imageName = null;
     }
 
@@ -59,6 +60,9 @@ export class EditProductComponent implements OnInit {
                                         this.form.get('category').patchValue(categories[i]);
                                     }
                                 }
+                            },
+                            error => {
+                                console.log(error);
                             });
                     },
                     error => {
@@ -153,11 +157,6 @@ export class EditProductComponent implements OnInit {
         this.router.navigate(['/main/products']);
     }
 
-    public getValue() {
-        if (this.imageUpload.imgFileForCroper) {
-            this.imagForCropper = this.imageUpload.imgFileForCroper;
-        }
-    }
 
     public setDataForImage(value: string) {
         this.imageUpload.handleImageLoad();
