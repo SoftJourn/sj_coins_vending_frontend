@@ -19,7 +19,8 @@
                 <input class="form-control" type="text" placeholder="Enter name" id="product-name"
                        formControlName="name"
                        [ngClass]="formStyles.getValidationIcon('name')">
-                <label [hidden]="formStyles.isValidOrPristine('name')" class="form-control-feedback pull-right">Enter
+                <label [hidden]="formStyles.isValidOrPristine('name')"
+                       class="form-control-feedback pull-right">Enter
                   valid
                   name!</label>
               </div>
@@ -32,7 +33,8 @@
                   <input class="form-control" type="text" placeholder="Enter price" id="product-price"
                          formControlName="price" [ngClass]="formStyles.getValidationIcon('price')">
                 </div>
-                <label [hidden]="formStyles.isValidOrPristine('price')" class="form-control-feedback pull-right">Enter
+                <label [hidden]="formStyles.isValidOrPristine('price')"
+                       class="form-control-feedback pull-right">Enter
                   valid
                   price!</label>
               </div>
@@ -41,7 +43,9 @@
               <label for="product-category" class="col-sm-2 col-form-label">Category</label>
               <div class="col-sm-10">
                 <select id="product-category" class="form-control" formControlName="category">
-                  <option *ngFor="let category of categories;" [ngValue]="category">{{category?.name}}</option>
+                  <option *ngFor="let category of categories;" [ngValue]="category">
+                    {{category?.name}}
+                  </option>
                 </select>
               </div>
             </div>
@@ -58,7 +62,6 @@
             <div align="center" class="form-group row">
               <img height="205px" width="205px"
                    [src]="imageUpload.imageSrc"
-                   (load)="handleImageLoad()"
                    [class.loaded]="imageUpload.imageLoaded">
             </div>
             <div class="form-group row">
@@ -68,7 +71,8 @@
                 <label class="input-group-btn">
                     <span class="btn btn-info">
                       <i class="fa fa-search btn-icon"></i>Browse
-                      <input type="file" style="display: none;" (change)="handleInputChange($event)" accept="image/*">
+                        <input type="file" style="display: none;" (change)=" handleInputChange($event)"
+                               accept="image/*">
                     </span>
                 </label>
               </div>
@@ -82,6 +86,12 @@
           </div>
         </div>
       </form>
+
+      <app-modal-img-cropper [(visible)]="showDialog" [cropper_img]="imagForCropper"
+                             (setImageForSave)="setDataForImage($event)" (visibleChange)="closeModal()">
+
+      </app-modal-img-cropper>
+
     </div>
   </div>
 </div>

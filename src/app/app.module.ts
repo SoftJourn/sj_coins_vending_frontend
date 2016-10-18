@@ -37,6 +37,8 @@ import { PurchasesComponent } from './purchases/purchases.component';
 import { PurchaseService } from "./shared/services/purchase.service";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { AddUserComponent } from "./users/add-user/add-user.component";
+import { ModalImgCropperComponent } from './shared/modal-img-cropper/modal-img-cropper.component';
+import {ImageCropperComponent} from 'ng2-img-cropper';
 
 @NgModule({
   declarations: [
@@ -61,7 +63,9 @@ import { AddUserComponent } from "./users/add-user/add-user.component";
     EditProductComponent,
     AddUserComponent,
     EditProductComponent,
-    PurchasesComponent
+    PurchasesComponent,
+    ModalImgCropperComponent,
+    ImageCropperComponent
   ],
   imports: [
     BrowserModule,
