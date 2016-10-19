@@ -68,44 +68,20 @@ export class FillMachineComponent implements OnInit {
     );
 
     this.form = new FormGroup({
-      field: new FormControl('', Validators.required),
+      fieldInternalId: new FormControl('', Validators.required),
       product: new FormControl('', Validators.required),
       count: new FormControl('', [
         Validators.required,
         Validators.pattern('^[1-9]$|^[1][0-9]{1}$')
       ])
     });
-
-    this.form.get('field').valueChanges
-      .subscribe((field: Field) => {
-        if (field != null) {
-          this.selectedCardId = field.internalId;
-
-          let productControl = this.form.get('product');
-          let countControl = this.form.get('count');
-
-          if (field.product != null) {
-            let product = this.products.find(product => product.id === field.product.id);
-            productControl.patchValue(product);
-            countControl.patchValue(field.count);
-          } else {
-            productControl.patchValue('');
-            countControl.patchValue('');
-          }
-
-          this.form.markAsPristine();
-          this.form.markAsUntouched();
-        } else {
-          this.selectedCardId = '';
-        }
-      });
   }
 
   toggleState(field: Field, rowId: number): void {
     this.selectedCardId = field.internalId;
     this.selectedRowId = rowId;
     this.cellFormState = 'active';
-    this.form.get('field').patchValue(field, {onlySelf: true});
+    this.form.get('fieldInternalId').patchValue(field.internalId, {onlySelf: true});
 
     let productControl = this.form.get('product');
     let countControl = this.form.get('count');
@@ -141,8 +117,13 @@ export class FillMachineComponent implements OnInit {
   }
 
   submit(): void {
-    let fieldControl = this.form.get('field');
-    let field: Field = fieldControl.value;
+    let fieldInternalId = this.form.get('fieldInternalId').value;
+    let field: Field = this.machine.rows
+      .map(row => row.fields)
+      .map(fields => fields.find(field => field.internalId === this.selectedCardId))
+      .filter(field => typeof field !== 'undefined' || field != null)
+      .find(field => field.internalId == this.selectedCardId);
+    field.internalId = fieldInternalId;
     field.product = this.form.get('product').value;
     field.count = this.form.get('count').value;
     this.changedFields.push(field);
@@ -151,8 +132,13 @@ export class FillMachineComponent implements OnInit {
   }
 
   clearCell() {
-    let fieldControl = this.form.get('field');
-    let field: Field = fieldControl.value;
+    let fieldInternalId = this.form.get('fieldInternalId').value;
+    let field: Field = this.machine.rows
+      .map(row => row.fields)
+      .map(fields => fields.find(field => field.internalId === this.selectedCardId))
+      .filter(field => typeof field !== 'undefined' || field != null)
+      .find(field => field.internalId === this.selectedCardId);
+    field.internalId = fieldInternalId;
     field.product = null;
     field.count = 0;
 
@@ -185,8 +171,8 @@ export class FillMachineComponent implements OnInit {
   }
 
   isClearCellDisabled() {
-    return !!(this.form.get('field').value
-      && this.form.get('field').value.product == null);
+    return !!(this.form.get('fieldInternalId').value
+      && this.form.get('fieldInternalId').value.product == null);
   }
 
   isFormValid() {

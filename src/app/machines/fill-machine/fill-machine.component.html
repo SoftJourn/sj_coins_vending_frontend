@@ -33,12 +33,7 @@
                 <div class="form-group row">
                   <label for="cell-id" class="col-sm-2 col-form-label">Cell ID</label>
                   <div class="col-sm-10">
-                    <select class="form-control" id="cell-id" formControlName="field">
-                      <option *ngFor="let field of row.fields"
-                              [ngValue]="field">
-                        {{field.internalId}}
-                      </option>
-                    </select>
+                    <input class="form-control" id="cell-id" formControlName="fieldInternalId" [value]="field?.internalId">
                   </div>
                 </div>
                 <div class="form-group row">
