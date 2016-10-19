@@ -3,7 +3,7 @@ import {Purchase} from "../shared/entity/purchase";
 import {PurchaseService} from "../shared/services/purchase.service";
 import {Machine} from "../machines/shared/machine";
 import {MachineService} from "../shared/services/machine.service";
-import {NgbDateParserFormatter, NgbDateStruct} from "@ng-bootstrap/ng-bootstrap";
+import {NgbDateParserFormatter, NgbDateStruct, NgbDatepickerConfig} from "@ng-bootstrap/ng-bootstrap";
 import {FormControl, FormGroup} from "@angular/forms";
 import {PurchaseFilter} from "../purchases/shared/purchase-filter";
 import {PurchasePage} from "./shared/purchase-page";
@@ -62,6 +62,8 @@ export class PurchasesComponent implements OnInit {
           this.toHideStartDue();
           this.form.get('start').patchValue('');
           this.form.get('due').patchValue('');
+          this.minDate = {year: 1900, month: 0, day: 1};
+          this.maxDate = {year: 2099, month: 11, day: 31};
         }
       }
     );
@@ -101,7 +103,15 @@ export class PurchasesComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.fetch(1, this.pageSize);
+    if (this.form.get('type').value === 'Start-Due') {
+      if (this.form.get('start').value == '' || this.form.get('due').value == '') {
+        this.notificationService.error('Error', 'Please set start and due dates');
+      } else {
+        this.fetch(1, this.pageSize);
+      }
+    } else {
+      this.fetch(1, this.pageSize);
+    }
   }
 
   onCancel(): void {
@@ -117,6 +127,7 @@ export class PurchasesComponent implements OnInit {
     let filter = new PurchaseFilter();
     filter.machineId = form.get('machine').value;
     filter.type = form.get('type').value;
+    filter.timeZoneOffSet = new Date().getTimezoneOffset();
     filter.start = this.parser.format(form.get('start').value);
     filter.due = this.parser.format(form.get('due').value);
     return filter;
