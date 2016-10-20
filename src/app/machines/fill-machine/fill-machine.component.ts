@@ -38,7 +38,7 @@ import { FormValidationStyles } from "../../shared/form-validation-styles";
 })
 export class FillMachineComponent implements OnInit {
   private cellFormState = 'inactive';
-  private selectedCardId = '';
+  private selectedField: Field = null;
   private selectedRowId = -1;
   machine: Machine;
   products: Product[];
@@ -78,7 +78,7 @@ export class FillMachineComponent implements OnInit {
   }
 
   toggleState(field: Field, rowId: number): void {
-    this.selectedCardId = field.internalId;
+    this.selectedField = field;
     this.selectedRowId = rowId;
     this.cellFormState = 'active';
     this.form.get('fieldInternalId').patchValue(field.internalId, {onlySelf: true});
@@ -109,7 +109,7 @@ export class FillMachineComponent implements OnInit {
   }
 
   applyCardState(cardId: string): string {
-    if (cardId === this.selectedCardId && this.cellFormState === 'active') {
+    if (this.selectedField && cardId === this.selectedField.internalId && this.cellFormState === 'active') {
       return 'active';
     } else {
       return 'inactive';
@@ -118,11 +118,7 @@ export class FillMachineComponent implements OnInit {
 
   submit(): void {
     let fieldInternalId = this.form.get('fieldInternalId').value;
-    let field: Field = this.machine.rows
-      .map(row => row.fields)
-      .map(fields => fields.find(field => field.internalId === this.selectedCardId))
-      .filter(field => typeof field !== 'undefined' || field != null)
-      .find(field => field.internalId == this.selectedCardId);
+    let field = this.selectedField;
     field.internalId = fieldInternalId;
     field.product = this.form.get('product').value;
     field.count = this.form.get('count').value;
@@ -133,18 +129,14 @@ export class FillMachineComponent implements OnInit {
 
   clearCell() {
     let fieldInternalId = this.form.get('fieldInternalId').value;
-    let field: Field = this.machine.rows
-      .map(row => row.fields)
-      .map(fields => fields.find(field => field.internalId === this.selectedCardId))
-      .filter(field => typeof field !== 'undefined' || field != null)
-      .find(field => field.internalId === this.selectedCardId);
+    let field = this.selectedField;
     field.internalId = fieldInternalId;
     field.product = null;
     field.count = 0;
 
     this.form.patchValue(
       {
-        field: field,
+        field: field.internalId,
         product: '',
         count: ''
       }
@@ -161,7 +153,7 @@ export class FillMachineComponent implements OnInit {
 
   cancel(): void {
     this.selectedRowId = -1;
-    this.selectedCardId = '';
+    this.selectedField = null;
     this.cellFormState = 'inactive';
     this.form.reset();
   }
@@ -171,8 +163,7 @@ export class FillMachineComponent implements OnInit {
   }
 
   isClearCellDisabled() {
-    return !!(this.form.get('fieldInternalId').value
-      && this.form.get('fieldInternalId').value.product == null);
+    return (this.selectedField && this.selectedField.product == null);
   }
 
   isFormValid() {
