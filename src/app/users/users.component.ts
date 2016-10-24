@@ -63,6 +63,7 @@ export class UsersComponent implements OnInit {
   }
 
   public applyChanges(user: Account) {
+    user.getAuthorities();
     this.adminUserService.update(user.ldapName, user).subscribe(next=> {
     }, error=> {
       this.editMenu.deselectRow();

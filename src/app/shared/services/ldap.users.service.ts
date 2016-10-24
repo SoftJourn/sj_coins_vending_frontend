@@ -9,7 +9,6 @@ export class LdapUsersService extends CrudService<Account>{
 
   constructor(protected httpService: HttpService){
     super(httpService,Account.prototype);
-    console.log(Account.prototype);
   }
 
   protected getUrl(): string {

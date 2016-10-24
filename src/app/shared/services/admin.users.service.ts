@@ -8,7 +8,7 @@ import {Account} from "../entity/account";
 export class AdminUsersService extends CrudService<Account>{
 
   constructor(protected httpService: HttpService){
-    super(httpService);
+    super(httpService,Account.prototype);
   }
 
   protected getUrl(): string {
