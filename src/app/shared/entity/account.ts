@@ -1,5 +1,7 @@
 export class Account {
-  private _role: string;
+
+  public billing?:boolean=false;
+  public inventory?:boolean=false;
 
   constructor(
     public ldapName: string,
@@ -8,8 +10,11 @@ export class Account {
     public authorities: string
   ) {}
 
-  public get role(): string {
-    let regex =/.*ROLE_/;
-    return this._role = this.authorities.replace(regex,'');
+  public getAuthorities(): string{
+    let result:Array<string>=[];
+    this.billing?result.push("Billing"):'';
+    this.inventory?result.push("Inventory"):'';
+    this.authorities=result.toString();
+    return this.authorities;
   }
 }

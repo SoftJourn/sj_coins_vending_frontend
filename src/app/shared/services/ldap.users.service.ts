@@ -8,7 +8,8 @@ import {Account} from "../entity/account";
 export class LdapUsersService extends CrudService<Account>{
 
   constructor(protected httpService: HttpService){
-    super(httpService);
+    super(httpService,Account.prototype);
+    console.log(Account.prototype);
   }
 
   protected getUrl(): string {

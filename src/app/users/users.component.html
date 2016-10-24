@@ -31,13 +31,13 @@
       <tbody>
 
       <ng-container *ngFor="let user of adminUsers; let i = index;">
-        <tr title="Edit" (click)="editMenu.selectedRow(i)" class="pointer-cursor">
+        <tr [ngClass]="editMenu.getClassByRow(i)" >
           <td class="collapsible" scope="row">{{i+1}}</td>
           <td class="collapsible">{{user.ldapName}}</td>
           <td>{{user.fullName}}</td>
-          <td>{{getRole(user.authorities)}}</td>
+          <td>         {{getRole(user.authorities)}}        </td>
           <td class="relative">
-            <button *ngIf="getRole(user.authorities)!='SUPER ADMIN'" class="btn btn-success" (click)="editMenu.selectedRow(i)">
+            <button *ngIf="getRole(user.authorities)!='SUPER ADMIN'" class="btn btn-secondary" (click)="editMenu.selectedRow(i)">
               <i class="fa fa-pencil-square"></i> Edit
             </button>
             <div *ngIf="getRole(user.authorities)=='SUPER ADMIN'">
@@ -48,25 +48,37 @@
           </td>
         </tr>
 
-        <tr [@editMenuState]="editMenu.getStateByRow(i)" class="edit-row table-active">
+        <tr *ngIf="getRole(user.authorities)!='SUPER ADMIN'" [@editMenuState]="editMenu.getStateByRow(i)"
+            class="edit-row table-active">
           <td class="collapsible"><!--Row number--></td>
           <td class="collapsible"><!--LDAP--></td>
-          <td><!--Full Name-->{{user.fullName}}</td>
-          <td>
+          <td><!--Full Name--><div>{{user.fullName}}</div></td>
+          <td class="text-xs-center" style="text-align: left">
             <!--Roles-->
-            <label>
-              Inventory Manager <input type="checkbox"/>
-            </label>
-            <div class="checkbox">
-              <label>Billing Manger <input type="checkbox"/></label>
+            <div>
+              <div class="text-xs-left d-inline-block">
+                <div class="checkbox">
+                  <label><input type="checkbox" [(ngModel)]="user.inventory"/> Inventory</label>
+                </div>
+                <div class="checkbox">
+                  <label><input type="checkbox" [(ngModel)]="user.billing"/> Billing</label>
+                </div>
+              </div>
             </div>
           </td>
           <td>
             <!--Actions-->
-            <button *ngIf="getRole(user.authorities)!='SUPER ADMIN'" type="button" class="btn btn-danger collapsible"
+            <div>
+              <button type="button" class="btn btn-danger collapsible block-interval-sm"
                     (click)="deleteUser(user.ldapName)">
-              <i class="fa fa-trash "></i> Delete
-            </button>
+                <i class="fa fa-trash"></i> Delete
+              </button>
+            </div>
+            <div>
+              <button type="button" class="btn btn-success block-interval-sm" (click)="applyChanges(user)">
+                <i class="fa fa-check-circle-o"></i> Apply
+              </button>
+            </div>
           </td>
 
         </tr>

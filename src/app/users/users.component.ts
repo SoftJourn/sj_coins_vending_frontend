@@ -18,8 +18,11 @@ const mediaWindowSize = 600;
       transition('inactive => active', [animate('1000ms ease-out')])
     ]),
     trigger('editMenuState', [
-      state('visible',style({display:'table-row'})),
-      state('hidden',style({display:'none'}))
+      state('visible', style({
+        display: 'table-row', 'max-height': '80px'
+      })),
+      state('hidden', style({display: 'none', 'max-height': '0px'})),
+      transition('visible<=>hidden', [animate('0.8s ease-in-out')])
     ])
   ]
 })
@@ -54,21 +57,28 @@ export class UsersComponent implements OnInit {
         },
         () => {
           this.notificationService.success('Delete', 'User ' + ldapName + ' has been removed successfully');
+          this.editMenu.deselectRow();
           this.syncAdminUsers();
         });
   }
 
-  public editUser(user: Account) {
+  public applyChanges(user: Account) {
     this.adminUserService.update(user.ldapName, user).subscribe(next=> {
     }, error=> {
+      this.editMenu.deselectRow();
     }, ()=> {
+      this.editMenu.deselectRow();
     });
   }
 
   public getRole(authorities: string): string {
     let regex = /.*ROLE_/;
-    let withOutRole = authorities.replace(regex, '');
+    let withOutRole = authorities?authorities.replace(regex, ''):'';
     return withOutRole.replace(/_/, ' ');
+  }
+
+  public setRole(authorities: string): string {
+      return "role";
   }
 
 }
@@ -92,16 +102,27 @@ class EditMenu {
   private _selectedRow:number;
   public selectedRow(row: number){
     if(this._selectedRow==row)
-      this._selectedRow=undefined;
+      this.deselectRow();
     else
       this._selectedRow=row;
   }
-  public getStateByRow(row: number) {
+
+  public deselectRow() {
+    this._selectedRow = undefined;
+  }
+
+  public getStateByRow(row: number): string {
       if(row==this._selectedRow){
           return 'visible';
       } else {
         return 'hidden';
       }
+  }
+
+  public getClassByRow(row: number): string {
+    if (row == this._selectedRow) {
+      return 'selected-row';
+    }
   }
   public activeRowClass(row:number){
     if(row==this._selectedRow){
