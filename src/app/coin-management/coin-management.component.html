@@ -8,47 +8,75 @@
 <hr>
 <div class="container-fluid">
   <div>
-    <div class="card card-primary card-inverse card-coins">
-      <div class="card-header card-primary">
-        <div class="row">
-          <div class="col-xs-3">
-            <i class="fa fa-shopping-basket fa-5x"></i>
-          </div>
-          <div class="col-xs-9 text-xs-right">
-            <div class="card-title-parameters"><h4>Products</h4></div>
-            <div><h5>3100</h5></div>
-            <div><h5>coins</h5></div>
+    <table class="table table-hover">
+      <thead class="thead-inverse">
+        <tr>
+          <th>#</th>
+          <th>Category</th>
+          <th>Amount, coins</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <th scope="row">1</th>
+        <td>Treasury</td>
+        <td>300</td>
+      </tr>
+      <tr>
+        <th scope="row">2</th>
+        <td>Products price</td>
+        <td>8600</td>
+      </tr>
+      <tr>
+        <th scope="row">3</th>
+        <td>Accounts coins</td>
+        <td>7000</td>
+      </tr>
+      <tr>
+        <th scope="row">4</th>
+        <td>Undistributed coins</td>
+        <td>1600</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="clearfix"></div>
+
+  <div class="row">
+    <div class="card card-block card-outline-success">
+      <form class="form-inline">
+        <div class="form-group">
+          <label class="sr-only" for="exampleInputAmount">Amount (in dollars)</label>
+          <div class="input-group">
+            <div class="input-group-addon"><i class="fa fa-lg fa-bitcoin"></i></div>
+            <input type="text" class="form-control" id="distributePrice" placeholder="Amount">
           </div>
         </div>
-      </div>
+        <button type="submit" class="btn btn-primary">Replenish accounts</button>
+      </form>
     </div>
-    <div class="card card-success card-inverse card-coins">
-      <div class="card-header card-success">
-        <div class="row">
-          <div class="col-xs-3">
-            <i class="fa fa-shopping-basket fa-5x"></i>
-          </div>
-          <div class="col-xs-9 text-xs-right">
-            <div class="card-title-parameters"><h4>People</h4></div>
-            <div><h5>2500</h5></div>
-            <div><h5>coins</h5></div>
+  </div>
+
+  <div class="row">
+    <div class="card card-block card-outline-success">
+      <form class="form-inline">
+        <div class="form-group">
+          <label class="sr-only" for="exampleInputAmount">Amount (in dollars)</label>
+          <select class="form-control" id="exampleInputAmount">
+            <option value="ovovchuk">Oleksandr Vovchuk</option>
+            <option value="vmoroz">Volodymyr Moroz</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="sr-only" for="exampleInputAmount">Amount (in dollars)</label>
+          <div class="input-group">
+            <div class="input-group-addon"><i class="fa fa-lg fa-bitcoin"></i></div>
+            <input type="text" class="form-control" id="exampleInputAmount" placeholder="Amount">
           </div>
         </div>
-      </div>
-    </div>
-    <div class="card card-info card-inverse card-coins">
-      <div class="card-header card-info">
-        <div class="row">
-          <div class="col-xs-3">
-            <i class="fa fa-shopping-basket fa-5x"></i>
-          </div>
-          <div class="col-xs-9 text-xs-right">
-            <div class="card-title-parameters"><h4>Change</h4></div>
-            <div><h5>1600</h5></div>
-            <div><h5>coins</h5></div>
-          </div>
-        </div>
-      </div>
+        <button type="submit" class="btn btn-primary">Transfer coins</button>
+      </form>
     </div>
   </div>
 </div>
