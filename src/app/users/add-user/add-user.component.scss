@@ -15,3 +15,10 @@ select{
 .center-content{
   text-align: center !important;
 }
+.dialog{
+  position: fixed;
+  width: 100%;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  opacity: 1;
+}

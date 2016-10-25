@@ -3,6 +3,8 @@ import {Account} from "../shared/entity/account";
 import {AdminUsersService} from "../shared/services/admin.users.service";
 import {NotificationsService} from "angular2-notifications/lib/notifications.service";
 import {AddMenu} from "../shared/entity/add-menu";
+import { ViewChild } from "@angular/core/src/metadata/di";
+import { AddUserComponent } from "./add-user/add-user.component";
 
 
 const mediaWindowSize = 600;
@@ -33,6 +35,8 @@ export class UsersComponent implements OnInit {
   public addMenu: AddMenu = new AddMenu();
   public editMenu: EditMenu = new EditMenu();
 
+  public selected: Account;
+
   constructor(private adminUserService: AdminUsersService,
               private notificationService: NotificationsService) {
   }
@@ -61,27 +65,10 @@ export class UsersComponent implements OnInit {
           this.syncAdminUsers();
         });
   }
-
-  public applyChanges(user: Account) {
-    user.getAuthorities();
-    this.adminUserService.update(user.ldapName, user).subscribe(next=> {
-    }, error=> {
-      this.editMenu.deselectRow();
-    }, ()=> {
-      this.editMenu.deselectRow();
-    });
+  public editUser(user:Account){
+    this.selected=user;
+    this.addMenu.changeVisibility(true);
   }
-
-  public getRole(authorities: string): string {
-    let regex = /.*ROLE_/;
-    let withOutRole = authorities?authorities.replace(regex, ''):'';
-    return withOutRole.replace(/_/, ' ');
-  }
-
-  public setRole(authorities: string): string {
-      return "role";
-  }
-
 }
 
 class SuperUser {

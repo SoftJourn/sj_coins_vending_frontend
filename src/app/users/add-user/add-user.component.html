@@ -1,23 +1,35 @@
-<div [@addUserState]="visibility" class="container">
+<div [@addUserState]="visibility" class="container dialog">
   <div class="row">
     <div class="col-xl-3"></div>
     <div class="col-xl-6">
       <div class="card card-block">
         <div class="inline-centering">
-          <div class="d-inline-block text-xs-left">
+
+          <form class="d-inline-block text-xs-left">
             <label for="new-admin">LDAP user
-              <select id="new-admin" [(ngModel)]="selectedModule" name="new-admin" class="">
+              <select id="new-admin" [(ngModel)]="selectedModule" [ngModelOptions]="{standalone: true}">
                 <option *ngFor="let user of ldapUsers" [ngValue]="user">{{user.ldapName}}</option>
               </select>
             </label>
             <br>
-            <div class="checkbox">
-              <label ><input type="checkbox"  [(ngModel)]="selectedModule.inventory"/> Inventory Manager</label>
-            </div>
-            <div class="checkbox">
-              <label><input type="checkbox" [(ngModel)]="selectedModule.billing"/> Billing Manger</label>
-            </div>
-          </div>
+            <ng-container *ngIf="selectedModule">
+              <div class="checkbox">
+                <label >
+                  <input  type="checkbox" [ngModel]="selectedModule.hasRole('Inventory')"
+                                (ngModelChange)="selectedModule.setRole('Inventory',$event)"
+                                [ngModelOptions]="{standalone: true}"/> Inventory Manager
+                </label>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input  type="checkbox" [ngModel]="selectedModule.hasRole('Billing')"
+                               (ngModelChange)="selectedModule.setRole('Billing',$event)"
+                               [ngModelOptions]="{standalone: true}"/> Billing Manger
+                </label>
+              </div>
+            </ng-container>
+          </form>
+
         </div>
         <br>
         <div class="col-sm-12 form-buttons-container without-padding center-content">

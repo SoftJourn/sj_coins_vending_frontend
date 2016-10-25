@@ -14,9 +14,10 @@
   </div>
 </div>
 <hr>
+<add-user [adminUsers]='adminUsers' [(isVisible)]='addMenu.visible' [selected]="selected" (adminListChange)='syncAdminUsers()'></add-user>
 <div class="container-fluid">
-  <add-user [adminUsers]='adminUsers' [(isVisible)]='addMenu.visible' (adminListChange)='syncAdminUsers()'></add-user>
-  <div class="row">
+
+  <div class="row" [ngClass]="{'blur-background': addMenu.visible}">
 
     <table class="table table-hover ">
       <thead class="thead-inverse">
@@ -35,52 +36,24 @@
           <td class="collapsible" scope="row">{{i+1}}</td>
           <td class="collapsible">{{user.ldapName}}</td>
           <td>{{user.fullName}}</td>
-          <td>         {{getRole(user.authorities)}}        </td>
+          <td>         {{user.getRole()}}        </td>
           <td class="relative">
-            <button *ngIf="getRole(user.authorities)!='SUPER ADMIN'" class="btn btn-secondary" (click)="editMenu.selectedRow(i)">
-              <i class="fa fa-pencil-square"></i> Edit
-            </button>
-            <div *ngIf="getRole(user.authorities)=='SUPER ADMIN'">
+            <div *ngIf="!user.isSuperUser()">
+              <button class="btn btn-secondary" (click)="editUser(user)">
+                <i class="fa fa-pencil-square"></i>
+              </button>
+              <button type="button" class="btn btn-danger collapsible block-interval-sm"
+                      (click)="deleteUser(user.ldapName)">
+                <i class="fa fa-trash"></i>
+              </button>
+            </div>
+            <div *ngIf="user.isSuperUser()">
               <img id="superman" [@heroState]="superman.state" (dblclick)="superman.fly('inactive')"
                    src="../../assets/images/superman.png"/>
-              <img id="superman-logo" (dblclick)="superman.fly('active')" src="../../assets/images/superman-logo.png"/>
+              <img id="superman-logo" (dblclick)="superman.fly('active')"
+                   src="../../assets/images/superman-logo.png"/>
             </div>
           </td>
-        </tr>
-
-        <tr *ngIf="getRole(user.authorities)!='SUPER ADMIN'" [@editMenuState]="editMenu.getStateByRow(i)"
-            class="edit-row table-active">
-          <td class="collapsible"><!--Row number--></td>
-          <td class="collapsible"><!--LDAP--></td>
-          <td><!--Full Name--><div>{{user.fullName}}</div></td>
-          <td class="text-xs-center" style="text-align: left">
-            <!--Roles-->
-            <div>
-              <div class="text-xs-left d-inline-block">
-                <div class="checkbox">
-                  <label><input type="checkbox" [(ngModel)]="user.inventory"/> Inventory</label>
-                </div>
-                <div class="checkbox">
-                  <label><input type="checkbox" [(ngModel)]="user.billing"/> Billing</label>
-                </div>
-              </div>
-            </div>
-          </td>
-          <td>
-            <!--Actions-->
-            <div>
-              <button type="button" class="btn btn-danger collapsible block-interval-sm"
-                    (click)="deleteUser(user.ldapName)">
-                <i class="fa fa-trash"></i> Delete
-              </button>
-            </div>
-            <div>
-              <button type="button" class="btn btn-success block-interval-sm" (click)="applyChanges(user)">
-                <i class="fa fa-check-circle-o"></i> Apply
-              </button>
-            </div>
-          </td>
-
         </tr>
       </ng-container>
 
