@@ -1,7 +1,7 @@
 <div class="container-fluid">
   <div class="col-xs-12 col-md-12 col-xl-12 row header-container">
     <div class="col-xs-8 col-md-8 col-xl-8">
-      <h2 class="page-header">Vending machine</h2>
+      <h2 class="page-header">{{machine?.name}}</h2>
     </div>
     <div class="col-xs-4 col-md-4 col-xl-4 header-buttons-container">
       <button class="btn btn-success" [disabled]="changedFields.length == 0" (click)="applyChanges()">
