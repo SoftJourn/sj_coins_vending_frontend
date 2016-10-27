@@ -38,8 +38,10 @@ import { PurchaseService } from "./shared/services/purchase.service";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { AddUserComponent } from "./users/add-user/add-user.component";
 import { ModalImgCropperComponent } from './shared/modal-img-cropper/modal-img-cropper.component';
-import {ImageCropperComponent} from 'ng2-img-cropper';
+import { ImageCropperComponent } from 'ng2-img-cropper';
 import { CoinManagementComponent } from './coin-management/coin-management.component';
+import { ModalModule } from "angular2-modal";
+import { BootstrapModalModule } from "angular2-modal/plugins/bootstrap";
 
 @NgModule({
   declarations: [
@@ -84,7 +86,9 @@ import { CoinManagementComponent } from './coin-management/coin-management.compo
     ButtonsModule,
     SimpleNotificationsModule,
     FormsModule,
-    NgbModule.forRoot()
+    NgbModule.forRoot(),
+    ModalModule.forRoot(),
+    BootstrapModalModule
   ],
   providers: [
     TokenService,

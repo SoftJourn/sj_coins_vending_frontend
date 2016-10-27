@@ -82,7 +82,6 @@ export class ModalImgCropperComponent extends Type {
             this.setImageForSave.emit(this.data.image);
             let image = new Image();
             image.src = this.data.image;
-            console.log(this.data);
             this.close();
         }
     }

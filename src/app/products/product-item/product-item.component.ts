@@ -1,7 +1,9 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewContainerRef } from '@angular/core';
 import { Product } from "../../shared/entity/product";
 import { AppProperties } from "../../shared/app.properties";
-import {Router} from "@angular/router";
+import { Router } from "@angular/router";
+import { Modal } from 'angular2-modal/plugins/bootstrap';
+import { Overlay } from "angular2-modal";
 
 @Component({
   selector: 'product-item',
@@ -13,7 +15,9 @@ export class ProductItemComponent implements OnInit {
   @Output() onDelete = new EventEmitter<number>();
   imageUrl: string;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, overlay: Overlay, vcRef: ViewContainerRef, public modal: Modal) {
+    overlay.defaultViewContainer = vcRef;
+  }
 
   ngOnInit() {
     if (this.product.imageUrl != null) {
@@ -24,8 +28,24 @@ export class ProductItemComponent implements OnInit {
   }
 
   deleteProduct(): void {
-    this.onDelete.emit(this.product.id);
+    this.modal.confirm()
+      .size('sm')
+      .isBlocking(true)
+      .showClose(true)
+      .keyboard(27)
+      .title('Delete product')
+      .body('Are you really want to delete this product?')
+      .okBtn('Yes')
+      .okBtnClass('btn btn-success modal-footer-confirm-btn')
+      .cancelBtn('Cancel')
+      .cancelBtnClass('btn btn-secondary modal-footer-confirm-btn')
+      .open().then((response)=> {
+      response.result.then(() => {
+        this.onDelete.emit(this.product.id);
+      });
+    });
   }
+
   onEditProduct() {
     this.router.navigate(['/main/products', this.product.id, 'edit'])
   }
