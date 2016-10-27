@@ -19,7 +19,7 @@
           <div class="col-xl-2">
             <div class="form-group">
               <label for="machines" class="col-sm-3 col-form-label">Machines</label>
-              <div class="col-sm-9">
+              <div class="col-sm-8">
                 <select id="machines" class="form-control" formControlName="machine">
                   <option value="-1">All</option>
                   <option *ngFor="let machine of machines;" [ngValue]="machine.id">{{machine?.name}}</option>
@@ -30,7 +30,7 @@
           <div class="col-xl-2">
             <div class="form-group">
               <label for="date" class="col-sm-3 col-form-label">Date</label>
-              <div class="col-sm-9">
+              <div class="col-sm-8">
                 <select id="date" class="form-control" formControlName="type">
                   <option value="Any">Any</option>
                   <option value="Today">Today</option>
@@ -44,7 +44,7 @@
           <div class="col-xl-3" [hidden]="hideStartDue">
             <div class="form-group">
               <label for="start" class="col-sm-3 col-form-label">Start</label>
-              <div class="col-sm-9">
+              <div class="col-sm-8">
                 <div class="input-group">
                   <input class="form-control" name="dp" formControlName="start" ngbDatepicker
                          #d="ngbDatepicker" id="start" [maxDate]="maxDate" (ngModelChange)="changeStart($event)">
@@ -58,7 +58,7 @@
           <div class="col-xl-3" [hidden]="hideStartDue">
             <div class="form-group">
               <label for="due" class="col-sm-3 col-form-label">Due</label>
-              <div class="col-sm-9">
+              <div class="col-sm-8">
                 <div class="input-group">
                   <input class="form-control" name="dp" formControlName="due" ngbDatepicker
                          #n="ngbDatepicker" id="due" [minDate]="minDate" (ngModelChange)="changeDue($event)">
