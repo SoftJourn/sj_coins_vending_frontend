@@ -42,6 +42,7 @@ import { ImageCropperComponent } from 'ng2-img-cropper';
 import { CoinManagementComponent } from './coin-management/coin-management.component';
 import { ModalModule } from "angular2-modal";
 import { BootstrapModalModule } from "angular2-modal/plugins/bootstrap";
+import { CoinService } from "./shared/services/coin.service";
 
 @NgModule({
   declarations: [
@@ -102,7 +103,8 @@ import { BootstrapModalModule } from "angular2-modal/plugins/bootstrap";
     LdapUsersService,
     AdminUsersService,
     ImageUploadService,
-    PurchaseService
+    PurchaseService,
+    CoinService
   ],
   bootstrap: [AppComponent]
 })
