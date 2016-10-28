@@ -39,6 +39,11 @@ button {
   text-align: right;
 }
 
+.header-divider {
+  clear: both;
+  display: flex;
+}
+
 .btn-icon {
   margin-right: 5px;
 }

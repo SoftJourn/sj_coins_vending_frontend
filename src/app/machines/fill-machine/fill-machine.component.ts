@@ -1,4 +1,7 @@
-import { Component, OnInit, style, state, animate, transition, trigger } from "@angular/core";
+import {
+  Component, OnInit, style, state, animate, transition, trigger, Renderer, AfterContentInit,
+  ViewChild, ElementRef
+} from "@angular/core";
 import { MachineService } from "../../shared/services/machine.service";
 import { Machine, Field } from "../shared/machine";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
@@ -8,6 +11,7 @@ import { Product } from "../../shared/entity/product";
 import { NotificationsService } from "angular2-notifications";
 import { AppProperties } from "../../shared/app.properties";
 import { FormValidationStyles } from "../../shared/form-validation-styles";
+import { BrowserDomAdapter } from "@angular/platform-browser/src/browser/browser_adapter";
 
 @Component({
   selector: 'fill-machine',
@@ -36,7 +40,7 @@ import { FormValidationStyles } from "../../shared/form-validation-styles";
     ])
   ]
 })
-export class FillMachineComponent implements OnInit {
+export class FillMachineComponent implements OnInit, AfterContentInit {
   private cellFormState = 'inactive';
   private selectedField: Field = null;
   private selectedRowId = -1;
@@ -45,12 +49,16 @@ export class FillMachineComponent implements OnInit {
   form: FormGroup;
   formStyles: FormValidationStyles;
   changedFields: Field[] = [];
+  @ViewChild('cellForm') cellFormElement: ElementRef;
+  domAdapter = new BrowserDomAdapter();
 
   constructor(
     private machineService: MachineService,
     private productService: ProductService,
     private route: ActivatedRoute,
-    private notificationService: NotificationsService
+    private notificationService: NotificationsService,
+    private renderer: Renderer,
+    private hostElement: ElementRef
   ) { }
 
   ngOnInit() {
@@ -77,6 +85,9 @@ export class FillMachineComponent implements OnInit {
     });
   }
 
+  ngAfterContentInit(): void {
+  }
+
   toggleState(field: Field, rowId: number): void {
     this.selectedField = field;
     this.selectedRowId = rowId;
@@ -98,10 +109,20 @@ export class FillMachineComponent implements OnInit {
     this.form.markAsPristine();
     this.form.markAsUntouched();
     this.form.updateValueAndValidity();
+
+    let rowElem: Element = this.renderer.selectRootElement('#row' + rowId);
+
+    if (rowElem.ownerDocument.body.clientWidth === 320) {
+      let cellElement = this.domAdapter.querySelector(this.hostElement.nativeElement, '#cell' + field.internalId);
+
+      this.renderer.attachViewAfter(cellElement, [this.cellFormElement.nativeElement])
+    } else {
+      this.renderer.attachViewAfter(rowElem, [this.cellFormElement.nativeElement]);
+    }
   }
 
   applyCellFormState(rowId: number): string {
-    if (this.selectedRowId == rowId) {
+    if (this.selectedField != null) {
       return 'active';
     } else {
       return 'inactive';
