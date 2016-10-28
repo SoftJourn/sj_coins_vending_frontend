@@ -1,10 +1,8 @@
-import {Component, OnInit, trigger, state, style, transition, animate} from "@angular/core";
-import {Account} from "../shared/entity/account";
-import {AdminUsersService} from "../shared/services/admin.users.service";
-import {NotificationsService} from "angular2-notifications/lib/notifications.service";
-import {AddMenu} from "../shared/entity/add-menu";
-import { ViewChild } from "@angular/core/src/metadata/di";
-import { AddUserComponent } from "./add-user/add-user.component";
+import { Component, OnInit, trigger, state, style, transition, animate } from "@angular/core";
+import { Account } from "../shared/entity/account";
+import { AdminUsersService } from "../shared/services/admin.users.service";
+import { NotificationsService } from "angular2-notifications/lib/notifications.service";
+import { AddMenu } from "../shared/entity/add-menu";
 
 
 const mediaWindowSize = 600;

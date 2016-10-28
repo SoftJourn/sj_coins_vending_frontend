@@ -5,6 +5,7 @@ import { AdminUsersService } from "../../shared/services/admin.users.service";
 import { NotificationsService } from "angular2-notifications/components";
 import { Input } from "@angular/core/src/metadata/directives";
 import { FormGroup, FormControl } from "@angular/forms";
+import { Role } from "../../shared/entity/role";
 
 @Component({
   selector: 'add-user',
@@ -19,7 +20,7 @@ import { FormGroup, FormControl } from "@angular/forms";
 })
 export class AddUserComponent implements OnInit {
   public ldapUsers: Account[];
-  public selectedModule: Account =new Account('','','','');
+  public selectedModule: Account =new Account('','','',[new Role('',false)]);
   public form:FormGroup;
 
   @Input() isVisible: boolean = false;
@@ -58,8 +59,8 @@ export class AddUserComponent implements OnInit {
   private buildForm(){
     this.form=new FormGroup({
       'drop-down': new FormControl(this.selectedModule),
-      'inventory': new FormControl(this.selectedModule.authorities.includes('Inventory')),
-      'billing': new FormControl(this.selectedModule.authorities.includes('Billing'))
+      // 'inventory': new FormControl(this.selectedModule.authorities.includes('Inventory')),
+      // 'billing': new FormControl(this.selectedModule.authorities.includes('Billing'))
     });
   }
 
