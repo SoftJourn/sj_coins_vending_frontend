@@ -7,9 +7,9 @@ export class CoinsAccount {
   ) {}
 }
 
-export const REGULAR = new AccountType('regular');
-export const MERCHANT = new AccountType('merchant');
-
 export class AccountType {
   constructor(public type: string) {}
 }
+
+export const REGULAR = new AccountType('regular');
+export const MERCHANT = new AccountType('merchant');

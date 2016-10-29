@@ -47,7 +47,7 @@
     <div class="card card-block card-outline-success">
       <form class="form-inline">
         <div class="form-group">
-          <label class="sr-only" for="exampleInputAmount">Amount (in dollars)</label>
+          <label class="sr-only" for="distributePrice">Amount (in dollars)</label>
           <div class="input-group">
             <div class="input-group-addon"><i class="fa fa-lg fa-bitcoin"></i></div>
             <input type="text" class="form-control" id="distributePrice" placeholder="Amount">
@@ -62,17 +62,16 @@
     <div class="card card-block card-outline-success">
       <form class="form-inline">
         <div class="form-group">
-          <label class="sr-only" for="exampleInputAmount">Amount (in dollars)</label>
-          <select class="form-control" id="exampleInputAmount">
-            <option value="ovovchuk">Oleksandr Vovchuk</option>
-            <option value="vmoroz">Volodymyr Moroz</option>
+          <label class="sr-only" for="account">Amount (in dollars)</label>
+          <select class="form-control" id="account">
+            <option value="{{account.ldapId}}" *ngFor="let account of accounts">{{account.fullName}}</option>
           </select>
         </div>
         <div class="form-group">
-          <label class="sr-only" for="exampleInputAmount">Amount (in dollars)</label>
+          <label class="sr-only" for="transferToAccount">Amount (in dollars)</label>
           <div class="input-group">
             <div class="input-group-addon"><i class="fa fa-lg fa-bitcoin"></i></div>
-            <input type="text" class="form-control" id="exampleInputAmount" placeholder="Amount">
+            <input type="text" class="form-control" id="transferToAccount" placeholder="Amount">
           </div>
         </div>
         <button type="submit" class="btn btn-primary">Transfer coins</button>

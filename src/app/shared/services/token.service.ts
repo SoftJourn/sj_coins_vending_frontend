@@ -29,13 +29,8 @@ export class TokenService {
   }
 
   public saveTokens(tokenResponse: string): void {
-    let tokesJson = JSON.parse(tokenResponse);
-    let expiresInMilis = (tokesJson['expires_in'] as number) * 1000;
-    tokesJson['expires_in'] = new Date(Date.now() + expiresInMilis).getTime();
-
-    var tokensStr = JSON.stringify(tokesJson);
-    localStorage.setItem(this.STORAGE_KEY, tokensStr);
-    this.populateFields(tokensStr);
+    localStorage.setItem(this.STORAGE_KEY, tokenResponse);
+    this.populateFields(tokenResponse);
   }
 
   private populateFields(tokenResponse: string) {
@@ -44,9 +39,15 @@ export class TokenService {
     this.accessToken = tokenRespJson['access_token'];
     this.refreshToken = tokenRespJson['refresh_token'];
     this.tokenType = tokenRespJson['token_type'];
-    this.expirationTime = new Date(tokenRespJson['expires_in']);
+    this.expirationTime = this.getExpirationTimeFromPayload(tokenRespJson['access_token']);
     this.scope = tokenRespJson['scope'];
     this.jti = tokenRespJson['jti'];
+  }
+
+  private getExpirationTimeFromPayload(accessToken: string): Date {
+    var payload = JSON.parse(atob(accessToken.split('.')[1]));
+
+    return new Date((payload['exp'] - 30) * 1000);
   }
 
   public getAccessToken(credentials?: UsernamePasswordCredentials): Observable<string> {
@@ -97,6 +98,8 @@ export class TokenService {
 
   public isAccessTokenExpired(): boolean {
     let now = new Date();
+
+    console.log(this.expirationTime);
 
     return !!(this.expirationTime
                 && now.getTime() > this.expirationTime.getTime());
