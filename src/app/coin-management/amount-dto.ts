@@ -1,4 +1,6 @@
 export class AmountDto {
-  public amount: number;
-  public comment: string;
+  constructor(
+    public amount: number,
+    public comment: string
+  ) {}
 }

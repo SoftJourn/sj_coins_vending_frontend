@@ -44,37 +44,68 @@
   <div class="clearfix"></div>
 
   <div class="row">
-    <div class="card card-block card-outline-success">
-      <form class="form-inline">
-        <div class="form-group">
+    <div class="card card-block" [ngClass]="replenishFormStyles.getCardOutlineClass()">
+      <form class="form-inline" (ngSubmit)="replenishAccounts()" [formGroup]="replenishForm">
+        <div class="form-group" [ngClass]="replenishFormStyles.getValidationClass('amount')">
           <label class="sr-only" for="distributePrice">Amount (in dollars)</label>
           <div class="input-group">
             <div class="input-group-addon"><i class="fa fa-lg fa-bitcoin"></i></div>
-            <input type="text" class="form-control" id="distributePrice" placeholder="Amount">
+            <input type="text" class="form-control" id="distributePrice" placeholder="Amount"
+                   formControlName="amount" [ngClass]="replenishFormStyles.getValidationIcon('amount')">
           </div>
         </div>
-        <button type="submit" class="btn btn-primary">Replenish accounts</button>
+        <button type="submit" class="btn btn-success" [disabled]="!isFormValid(replenishForm)">
+          Replenish accounts
+        </button>
+        <div class="row validation-msg" *ngIf="!replenishFormStyles.isValidOrPristine('amount')" >
+          <i class="fa fa-lg fa-exclamation-triangle"></i>
+          <label>Enter valid amount!</label>
+        </div>
       </form>
     </div>
   </div>
 
   <div class="row">
     <div class="card card-block card-outline-success">
-      <form class="form-inline">
+      <form class="form-inline" (ngSubmit)="withdrawToTreasury()" [formGroup]="withdrawForm">
         <div class="form-group">
-          <label class="sr-only" for="account">Amount (in dollars)</label>
-          <select class="form-control" id="account">
-            <option value="{{account.ldapId}}" *ngFor="let account of accounts">{{account.fullName}}</option>
+          <label class="sr-only" for="merchant">Amount (in coins)</label>
+          <select class="form-control" id="merchant" formControlName="merchant">
+            <option *ngFor="let account of merchantAccounts" [ngValue]="account">{{account.fullName}}</option>
           </select>
         </div>
+        <button type="submit" class="btn btn-success"
+                [disabled]="merchantsAmount <= 0 && !isFormValid(withdrawForm)">
+          Withdraw to treasury
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="card card-block" [ngClass]="transferFormStyles.getCardOutlineClass()">
+      <form class="form-inline" (ngSubmit)="transferToAccount()" [formGroup]="transferForm">
         <div class="form-group">
-          <label class="sr-only" for="transferToAccount">Amount (in dollars)</label>
+          <label class="sr-only" for="account">Amount (in coins)</label>
+          <select class="form-control" id="account" formControlName="account">
+            <option *ngFor="let account of regularAccounts" [ngValue]="account">{{account.fullName}}</option>
+          </select>
+        </div>
+        <div class="form-group" [ngClass]="transferFormStyles.getValidationClass('amount')">
+          <label class="sr-only" for="transferAmount">Amount (in coins)</label>
           <div class="input-group">
             <div class="input-group-addon"><i class="fa fa-lg fa-bitcoin"></i></div>
-            <input type="text" class="form-control" id="transferToAccount" placeholder="Amount">
+            <input type="text" class="form-control" id="transferAmount" placeholder="Amount"
+                   formControlName="amount" [ngClass]="transferFormStyles.getValidationIcon('amount')">
           </div>
         </div>
-        <button type="submit" class="btn btn-primary">Transfer coins</button>
+        <button type="submit" class="btn btn-success" [disabled]="!isFormValid(transferForm)">
+          Transfer coins
+        </button>
+        <div class="row validation-msg" *ngIf="!transferFormStyles.isValidOrPristine('amount')">
+          <i class="fa fa-lg fa-exclamation-triangle"></i>
+          <label>Enter valid amount!</label>
+        </div>
       </form>
     </div>
   </div>

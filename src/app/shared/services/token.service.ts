@@ -99,8 +99,6 @@ export class TokenService {
   public isAccessTokenExpired(): boolean {
     let now = new Date();
 
-    console.log(this.expirationTime);
-
     return !!(this.expirationTime
                 && now.getTime() > this.expirationTime.getTime());
   }
