@@ -1,31 +1,31 @@
 <button class="btn btn-default" id="toggle-sidebar" type="button" (click)="eventCalled()">
   &#9776;
 </button>
-<nav class="sidebar" [ngClass]="{sidebarPushRight: isActive}">
+<nav class="sidebar" [ngClass]="{'sidebarPushRight': isActive}">
   <ul class="list-group">
     <a [routerLink]="['/main']" routerLinkActive="router-link-active"
-       [routerLinkActiveOptions]="{exact: true}" class="list-group-item">
+       [routerLinkActiveOptions]="{exact: true}" (click)="hide()" class="list-group-item">
       <i class="fa fa-th fa-lg"></i>Dashboard
     </a>
     <a [routerLink]="['/main/products']"
        routerLinkActive="router-link-active"
-       [routerLinkActiveOptions]="{exact: true}" class="list-group-item">
+       [routerLinkActiveOptions]="{exact: true}" class="list-group-item" (click)="hide()">
       <span><i class="fa fa-shopping-basket fa-lg"></i>Products</span>
     </a>
     <a [routerLink]="['/main/machines']" routerLinkActive="router-link-active"
-       [routerLinkActiveOptions]="{exact: true}" class="list-group-item">
+       [routerLinkActiveOptions]="{exact: true}" class="list-group-item" (click)="hide()">
       <span><i class="fa fa-cogs fa-lg"></i>Vending machines</span>
     </a>
     <a [routerLink]="['/main/coins']" routerLinkActive="router-link-active"
-       [routerLinkActiveOptions]="{exact: true}" class="list-group-item">
+       [routerLinkActiveOptions]="{exact: true}" class="list-group-item" (click)="hide()">
       <span><i class="fa fa-money fa-lg"></i>Coins management</span>
     </a>
     <a [routerLink]="['/main/categories']" routerLinkActive="router-link-active"
-       [routerLinkActiveOptions]="{exact: true}" class="list-group-item">
+       [routerLinkActiveOptions]="{exact: true}" class="list-group-item" (click)="hide()">
       <span><i class="fa fa-tags fa-lg"></i>Categories</span>
     </a>
     <a [routerLink]="['/main/users']" routerLinkActive="router-link-active"
-       [routerLinkActiveOptions]="{exact: true}" class="list-group-item">
+       [routerLinkActiveOptions]="{exact: true}" class="list-group-item" (click)="hide()">
       <span><i class="fa fa-users fa-lg"></i>Users</span>
     </a>
     <a class="list-group-item log-out" (click)="logout()">

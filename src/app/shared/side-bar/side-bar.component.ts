@@ -12,10 +12,9 @@ export class SideBarComponent implements OnInit {
   isActive = false;
   showMenu: string = '0';
 
-  constructor(
-    private accountService: AccountService,
-    private router: Router
-  ) {}
+  constructor(private accountService: AccountService,
+              private router: Router) {
+  }
 
   ngOnInit() {
   }
@@ -38,6 +37,10 @@ export class SideBarComponent implements OnInit {
     } else {
       return 'hide';
     }
+  }
+
+  hide() {
+    this.isActive = !this.isActive;
   }
 
   logout() {
