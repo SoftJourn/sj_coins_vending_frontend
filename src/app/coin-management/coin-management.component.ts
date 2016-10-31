@@ -4,6 +4,8 @@ import { CoinService } from "../shared/services/coin.service";
 import { NotificationsService } from "angular2-notifications";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { FormValidationStyles } from "../shared/form-validation-styles";
+import { Observable } from "rxjs";
+import { AmountDto } from "./amount-dto";
 
 @Component({
   selector: 'app-coin-management',
@@ -63,28 +65,25 @@ export class CoinManagementComponent implements OnInit {
 
   private loadData(): void {
     this.coinService.getAccountsByType(REGULAR)
+      .flatMap(accounts => {
+        this.regularAccounts = accounts;
+        this.accountsAmount = this.regularAccounts.reduce((prev, curr) => prev + curr.amount, 0);
+        this.transferForm.get('account').patchValue(this.regularAccounts[0], {onlySelf: true});
+
+        return this.coinService.getAccountsByType(MERCHANT);
+      })
+      .flatMap(accounts => {
+        this.merchantAccounts = accounts;
+        this.merchantsAmount = this.merchantAccounts.reduce((prev, curr) => prev + curr.amount, 0);
+        this.withdrawForm.get('merchant').patchValue(this.merchantAccounts[0]);
+
+        return this.coinService.getTreasuryAmount();
+      })
       .subscribe(
-        accounts => {
-          this.regularAccounts = accounts;
-          this.accountsAmount = this.regularAccounts.reduce((prev, curr) => prev + curr.amount, 0);
-          this.transferForm.get('account').patchValue(this.regularAccounts[0], {onlySelf: true});
+        (amountDto: AmountDto) => {
+          this.treasuryAmount = amountDto.amount;
         },
-        error => this.notificationService.error('Error', 'Error appeared during load accounts')
-      );
-
-    this.coinService.getAccountsByType(MERCHANT)
-      .subscribe(
-        accounts => {
-          this.merchantAccounts = accounts;
-          this.merchantsAmount = this.merchantAccounts.reduce((prev, curr) => prev + curr.amount, 0);
-          this.withdrawForm.get('merchant').patchValue(this.merchantAccounts[0]);
-        }
-      );
-
-    this.coinService.getTreasuryAmount()
-      .subscribe(
-        amountDto => this.treasuryAmount = amountDto.amount,
-        error => this.notificationService.error('Error', 'Error appeared during load treasury amount')
+        error => this.notificationService.error('Error', 'Error appeared during loading data from coins server')
       );
 
     this.coinService.getProductsPrice()
