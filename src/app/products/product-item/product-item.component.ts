@@ -34,7 +34,7 @@ export class ProductItemComponent implements OnInit {
       .showClose(true)
       .keyboard(27)
       .title('Delete product')
-      .body('Are you really want to delete this product?')
+      .body('Do you really want to delete this product?')
       .okBtn('Yes')
       .okBtnClass('btn btn-success modal-footer-confirm-btn')
       .cancelBtn('Cancel')

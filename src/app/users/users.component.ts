@@ -1,8 +1,10 @@
-import { Component, OnInit, trigger, state, style, transition, animate } from "@angular/core";
+import { Component, OnInit, trigger, state, style, transition, animate, ViewContainerRef } from "@angular/core";
 import { Account } from "../shared/entity/account";
 import { AdminUsersService } from "../shared/services/admin.users.service";
 import { NotificationsService } from "angular2-notifications/lib/notifications.service";
 import { AddMenu } from "../shared/entity/add-menu";
+import { Overlay } from "angular2-modal";
+import { Modal } from 'angular2-modal/plugins/bootstrap';
 
 
 const mediaWindowSize = 600;
@@ -36,7 +38,9 @@ export class UsersComponent implements OnInit {
   public selected: Account;
 
   constructor(private adminUserService: AdminUsersService,
-              private notificationService: NotificationsService) {
+              private notificationService: NotificationsService,
+              overlay: Overlay, vcRef: ViewContainerRef, public modal: Modal) {
+    overlay.defaultViewContainer = vcRef;
   }
 
   ngOnInit(): any {
@@ -50,21 +54,37 @@ export class UsersComponent implements OnInit {
   }
 
   public deleteUser(ldapName: string) {
-    this.adminUserService.delete(ldapName)
-      .subscribe(
-        next => {
-        },
-        error=> {
-          this.notificationService.error("Delete", error._body);
-        },
-        () => {
-          this.notificationService.success('Delete', 'User ' + ldapName + ' has been removed successfully');
-          this.editMenu.deselectRow();
-          this.syncAdminUsers();
-        });
+    this.modal.confirm()
+      .size('sm')
+      .isBlocking(true)
+      .showClose(true)
+      .keyboard(27)
+      .title('Delete category')
+      .body('Do you really want to delete this user?')
+      .okBtn('Yes')
+      .okBtnClass('btn btn-success modal-footer-confirm-btn')
+      .cancelBtn('Cancel')
+      .cancelBtnClass('btn btn-secondary modal-footer-confirm-btn')
+      .open().then((response)=> {
+      response.result.then(() => {
+        this.adminUserService.delete(ldapName)
+          .subscribe(
+            next => {
+            },
+            error=> {
+              this.notificationService.error("Delete", error._body);
+            },
+            () => {
+              this.notificationService.success('Delete', 'User ' + ldapName + ' has been removed successfully');
+              this.editMenu.deselectRow();
+              this.syncAdminUsers();
+            });
+      })
+    });
   }
-  public editUser(user:Account){
-    this.selected=user;
+
+  public editUser(user: Account) {
+    this.selected = user;
     this.addMenu.changeVisibility(true);
   }
 }
@@ -85,12 +105,13 @@ class SuperUser {
 
 class EditMenu {
 
-  private _selectedRow:number;
-  public selectedRow(row: number){
-    if(this._selectedRow==row)
+  private _selectedRow: number;
+
+  public selectedRow(row: number) {
+    if (this._selectedRow == row)
       this.deselectRow();
     else
-      this._selectedRow=row;
+      this._selectedRow = row;
   }
 
   public deselectRow() {
@@ -98,11 +119,11 @@ class EditMenu {
   }
 
   public getStateByRow(row: number): string {
-      if(row==this._selectedRow){
-          return 'visible';
-      } else {
-        return 'hidden';
-      }
+    if (row == this._selectedRow) {
+      return 'visible';
+    } else {
+      return 'hidden';
+    }
   }
 
   public getClassByRow(row: number): string {
@@ -110,8 +131,9 @@ class EditMenu {
       return 'selected-row';
     }
   }
-  public activeRowClass(row:number){
-    if(row==this._selectedRow){
+
+  public activeRowClass(row: number) {
+    if (row == this._selectedRow) {
       return 'visible';
     }
   }

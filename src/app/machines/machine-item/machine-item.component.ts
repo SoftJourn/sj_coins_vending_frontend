@@ -26,7 +26,7 @@ export class MachineItemComponent implements OnInit {
       .showClose(true)
       .keyboard(27)
       .title('Delete machine')
-      .body('Are you really want to delete this vending machine?')
+      .body('Do you really want to delete this vending machine?')
       .okBtn('Yes')
       .okBtnClass('btn btn-success modal-footer-confirm-btn')
       .cancelBtn('Cancel')
