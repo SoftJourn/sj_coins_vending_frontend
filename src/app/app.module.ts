@@ -37,6 +37,12 @@ import { PurchasesComponent } from './purchases/purchases.component';
 import { PurchaseService } from "./shared/services/purchase.service";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { AddUserComponent } from "./users/add-user/add-user.component";
+import { ModalImgCropperComponent } from './shared/modal-img-cropper/modal-img-cropper.component';
+import { ImageCropperComponent } from 'ng2-img-cropper';
+import { CoinManagementComponent } from './coin-management/coin-management.component';
+import { ModalModule } from "angular2-modal";
+import { BootstrapModalModule } from "angular2-modal/plugins/bootstrap";
+import { CoinService } from "./shared/services/coin.service";
 
 @NgModule({
   declarations: [
@@ -61,7 +67,10 @@ import { AddUserComponent } from "./users/add-user/add-user.component";
     EditProductComponent,
     AddUserComponent,
     EditProductComponent,
-    PurchasesComponent
+    PurchasesComponent,
+    ModalImgCropperComponent,
+    ImageCropperComponent,
+    CoinManagementComponent
   ],
   imports: [
     BrowserModule,
@@ -78,7 +87,9 @@ import { AddUserComponent } from "./users/add-user/add-user.component";
     ButtonsModule,
     SimpleNotificationsModule,
     FormsModule,
-    NgbModule.forRoot()
+    NgbModule.forRoot(),
+    ModalModule.forRoot(),
+    BootstrapModalModule
   ],
   providers: [
     TokenService,
@@ -92,7 +103,8 @@ import { AddUserComponent } from "./users/add-user/add-user.component";
     LdapUsersService,
     AdminUsersService,
     ImageUploadService,
-    PurchaseService
+    PurchaseService,
+    CoinService
   ],
   bootstrap: [AppComponent]
 })

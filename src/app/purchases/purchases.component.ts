@@ -3,7 +3,7 @@ import {Purchase} from "../shared/entity/purchase";
 import {PurchaseService} from "../shared/services/purchase.service";
 import {Machine} from "../machines/shared/machine";
 import {MachineService} from "../shared/services/machine.service";
-import {NgbDateParserFormatter, NgbDateStruct} from "@ng-bootstrap/ng-bootstrap";
+import {NgbDateParserFormatter, NgbDateStruct, NgbDatepickerConfig} from "@ng-bootstrap/ng-bootstrap";
 import {FormControl, FormGroup} from "@angular/forms";
 import {PurchaseFilter} from "../purchases/shared/purchase-filter";
 import {PurchasePage} from "./shared/purchase-page";
@@ -23,8 +23,11 @@ export class PurchasesComponent implements OnInit {
   public machines: Machine[];
 
   form: FormGroup;
+  pageForm: FormGroup;
   hideFilter: boolean = true;
   hideStartDue: boolean = true;
+
+  pageSize: number = 10;
 
   minDate: NgbDateStruct;
   maxDate: NgbDateStruct;
@@ -37,8 +40,9 @@ export class PurchasesComponent implements OnInit {
 
   ngOnInit() {
     this.buildForm();
+    this.buildPageSizeForm();
     let filter = this.toPurchaseFilter(this.form);
-    this.purchaseService.findAllByFilter(filter, 1)
+    this.purchaseService.findAllByFilter(filter, 1, this.pageSize)
       .subscribe(page => {
         this.page = page;
         this.purchases = this.page.content;
@@ -58,9 +62,17 @@ export class PurchasesComponent implements OnInit {
           this.toHideStartDue();
           this.form.get('start').patchValue('');
           this.form.get('due').patchValue('');
+          this.minDate = {year: 1900, month: 0, day: 1};
+          this.maxDate = {year: 2099, month: 11, day: 31};
         }
       }
-    )
+    );
+
+    this.pageForm.get('pageSize').valueChanges.subscribe(change => {
+      this.pageSize = change;
+      this.fetch(1, this.pageSize);
+    });
+
   }
 
   private buildForm(): void {
@@ -69,6 +81,12 @@ export class PurchasesComponent implements OnInit {
       type: new FormControl('Any'),
       start: new FormControl(''),
       due: new FormControl('')
+    });
+  }
+
+  private buildPageSizeForm(): void {
+    this.pageForm = new FormGroup({
+      pageSize: new FormControl('10')
     });
   }
 
@@ -84,21 +102,39 @@ export class PurchasesComponent implements OnInit {
     this.hideStartDue = true;
   }
 
-  submit() {
-    this.fetch(1);
+  onSubmit(): void {
+    if (this.form.get('type').value === 'Start-Due') {
+      if (this.form.get('start').value == '' || this.form.get('due').value == '') {
+        this.notificationService.error('Error', 'Please set start and due dates');
+      } else {
+        this.fetch(1, this.pageSize);
+      }
+    } else {
+      this.fetch(1, this.pageSize);
+    }
+  }
+
+  onCancel(): void {
+    this.form.get('machine').patchValue('-1');
+    this.form.get('type').patchValue('Any');
+    this.form.get('start').patchValue('');
+    this.form.get('due').patchValue('');
+    this.fetch(1, this.pageSize);
+    this.showFilter();
   }
 
   toPurchaseFilter(form: FormGroup): PurchaseFilter {
     let filter = new PurchaseFilter();
     filter.machineId = form.get('machine').value;
     filter.type = form.get('type').value;
+    filter.timeZoneOffSet = new Date().getTimezoneOffset();
     filter.start = this.parser.format(form.get('start').value);
     filter.due = this.parser.format(form.get('due').value);
     return filter;
   }
 
   changePage($event) {
-    this.fetch($event);
+    this.fetch($event, this.pageSize);
   }
 
   changeStart($event) {
@@ -109,9 +145,9 @@ export class PurchasesComponent implements OnInit {
     this.maxDate = $event;
   }
 
-  fetch(page: number): void {
+  fetch(page: number, size: number): void {
     let filter = this.toPurchaseFilter(this.form);
-    this.purchaseService.findAllByFilter(filter, page)
+    this.purchaseService.findAllByFilter(filter, page, size)
       .subscribe(page => {
         this.page = page;
         this.purchases = this.page.content;

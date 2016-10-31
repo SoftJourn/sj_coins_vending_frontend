@@ -1,0 +1,112 @@
+<div class="container-fluid">
+  <div class="col-xs-12 col-md-12 col-xl-12 row header-container">
+    <div class="col-xs-8 col-md-8 col-xl-8">
+      <h2>Coins management</h2>
+    </div>
+  </div>
+</div>
+<hr>
+<div class="container-fluid">
+  <div>
+    <table class="table table-hover">
+      <thead class="thead-inverse">
+        <tr>
+          <th>#</th>
+          <th>Category</th>
+          <th>Amount, coins</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <th scope="row">1</th>
+        <td>Treasury</td>
+        <td>{{treasuryAmount}}</td>
+      </tr>
+      <tr>
+        <th scope="row">2</th>
+        <td>Products price</td>
+        <td>{{productsPrice}}</td>
+      </tr>
+      <tr>
+        <th scope="row">3</th>
+        <td>Accounts coins</td>
+        <td>{{accountsAmount}}</td>
+      </tr>
+      <tr>
+        <th scope="row">4</th>
+        <td>VMs coins</td>
+        <td>{{merchantsAmount}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="clearfix"></div>
+
+  <div class="row">
+    <div class="card card-block" [ngClass]="replenishFormStyles.getCardOutlineClass()">
+      <form class="form-inline" (ngSubmit)="replenishAccounts()" [formGroup]="replenishForm">
+        <div class="form-group" [ngClass]="replenishFormStyles.getValidationClass('amount')">
+          <label class="sr-only" for="distributePrice">Amount (in dollars)</label>
+          <div class="input-group">
+            <div class="input-group-addon"><i class="fa fa-lg fa-bitcoin"></i></div>
+            <input type="text" class="form-control" id="distributePrice" placeholder="Amount"
+                   formControlName="amount" [ngClass]="replenishFormStyles.getValidationIcon('amount')">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-success" [disabled]="!isFormValid(replenishForm)">
+          Replenish accounts
+        </button>
+        <div class="row validation-msg" *ngIf="!replenishFormStyles.isValidOrPristine('amount')" >
+          <i class="fa fa-lg fa-exclamation-triangle"></i>
+          <label>Enter valid amount!</label>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="card card-block card-outline-success">
+      <form class="form-inline" (ngSubmit)="withdrawToTreasury()" [formGroup]="withdrawForm">
+        <div class="form-group">
+          <label class="sr-only" for="merchant">Amount (in coins)</label>
+          <select class="form-control" id="merchant" formControlName="merchant">
+            <option *ngFor="let account of merchantAccounts" [ngValue]="account">{{account.fullName}}</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-success"
+                [disabled]="merchantsAmount <= 0 && !isFormValid(withdrawForm)">
+          Withdraw to treasury
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="card card-block" [ngClass]="transferFormStyles.getCardOutlineClass()">
+      <form class="form-inline" (ngSubmit)="transferToAccount()" [formGroup]="transferForm">
+        <div class="form-group">
+          <label class="sr-only" for="account">Amount (in coins)</label>
+          <select class="form-control" id="account" formControlName="account">
+            <option *ngFor="let account of regularAccounts" [ngValue]="account">{{account.fullName}}</option>
+          </select>
+        </div>
+        <div class="form-group" [ngClass]="transferFormStyles.getValidationClass('amount')">
+          <label class="sr-only" for="transferAmount">Amount (in coins)</label>
+          <div class="input-group">
+            <div class="input-group-addon"><i class="fa fa-lg fa-bitcoin"></i></div>
+            <input type="text" class="form-control" id="transferAmount" placeholder="Amount"
+                   formControlName="amount" [ngClass]="transferFormStyles.getValidationIcon('amount')">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-success" [disabled]="!isFormValid(transferForm)">
+          Transfer coins
+        </button>
+        <div class="row validation-msg" *ngIf="!transferFormStyles.isValidOrPristine('amount')">
+          <i class="fa fa-lg fa-exclamation-triangle"></i>
+          <label>Enter valid amount!</label>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

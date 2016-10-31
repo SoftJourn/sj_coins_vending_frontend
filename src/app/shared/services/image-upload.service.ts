@@ -1,56 +1,49 @@
 import {Injectable} from '@angular/core';
 import {NotificationsService} from "angular2-notifications/components";
+import {Observable} from "rxjs";
 
 @Injectable()
 export class ImageUploadService {
 
+
     private loaded: boolean = false;
-    private imageName: string = '';
-    private img;
+    public imageName: string = null;
     public defaultImageSrc = '/assets/images/default-product-350x350.jpg';
     public formData: FormData = null;
-    public imageSrc: string;
+    public imageSrc: string = null;
     public imageFile: File = null;
     public imageLoaded: boolean = false;
+    public imgFileForCroper = null;
 
     constructor(private notificationService: NotificationsService) {
     }
 
-    public handleInputChange(e) {
-        this.imageFile = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0];
-        var pattern = /image\/(?:jpeg|png|jpg|apng|svg|bmp)/;
-        var reader = new FileReader();
-        this.validImageDimensions(this.imageFile).then(resolve => {
+    public fileChangeListener($event) {
+        let self = this;
+        return Observable.create(function (subscriber) {
+            self.imageFile = $event.dataTransfer ? $event.dataTransfer.files[0] : $event.target.files[0];
+            var pattern = /image\/(?:jpeg|png|jpg|apng|svg|bmp)/;
+            var myReader: FileReader = new FileReader();
             // check image pattern
-            if (!this.imageFile.type.match(pattern)) {
-                this.notificationService.error('Error', 'This file format not supported!');
-                this.cleanImageData();
-                e.target.value = null;
+            if (!self.imageFile.type.match(pattern)) {
+                self.notificationService.error('Error', 'This file format not supported!');
+                self.cleanImageData();
+                $event.target.value = null;
+
+                subscriber.error('This file format not supported!');
             }
-            // check image size
-            else if (this.imageFile.size > 1024 * 256) {
-                this.notificationService.error('Error', 'This image size is too big!');
-                this.cleanImageData();
-                e.target.value = null;
+            else {
+                self.loaded = false;
+
+                myReader.onloadend = function (e) {
+                    let src = self._handleReaderLoaded(e);
+                    let name = self.imageFile.name;
+                    subscriber.next({'src': src, 'name': name});
+                    subscriber.complete();
+                };
+                myReader.readAsDataURL(self.imageFile);
+                $event.target.value = null;
             }
-            // check image dimensions
-            else if (resolve) {
-                this.notificationService.error('Error', 'Image dimensions is too big, try to use 205*205px');
-                e.target.value = null;
-                this.cleanImageData();
-            } else {
-                this.loaded = false;
-                this.formData = new FormData();
-                this.formData.append('file', this.imageFile, this.imageFile.name);
-                reader.onload = this._handleReaderLoaded.bind(this);
-                reader.readAsDataURL(this.imageFile);
-                this.imageName = this.imageFile.name;
-                e.target.value = null;
-            }
-        }, reject => {
-            this.notificationService.error('Error', reject);
-            this.cleanImageData();
-            e.target.value = null;
         });
     }
 
@@ -58,26 +51,26 @@ export class ImageUploadService {
         this.imageLoaded = true;
     }
 
-    private _handleReaderLoaded(e) {
-        var reader = e.target;
-        this.imageSrc = reader.result;
-        this.loaded = true;
+    public dataURItoBlob(dataURI) {
+        var binary = atob(dataURI.split(',')[1]);
+        var array = [];
+        for (var i = 0; i < binary.length; i++) {
+            array.push(binary.charCodeAt(i));
+        }
+        return new Blob([new Uint8Array(array)], {type: 'image/jpeg'});
     }
 
-    private validImageDimensions(image: File): Promise<boolean> {
-        return new Promise((resolve, reject) => {
-            this.img = new Image();
-            this.img.onload = ()=> {
-                resolve(this.img.width > 205 || this.img.height > 205);
-                reject('Image was not uploaded, try again!');
-            };
-            this.img.src = window.URL.createObjectURL(image);
-        });
+    private _handleReaderLoaded(e) {
+        var reader = e.target;
+        this.imgFileForCroper = reader.result;
+        this.loaded = true;
+
+        return this.imgFileForCroper;
     }
 
     public cleanImageData(): void {
         this.imageFile = null;
-        this.imageName = '';
+        this.imageName = null;
         this.formData = null;
     }
 }

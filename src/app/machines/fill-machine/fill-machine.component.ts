@@ -1,4 +1,7 @@
-import { Component, OnInit, style, state, animate, transition, trigger } from "@angular/core";
+import {
+  Component, OnInit, style, state, animate, transition, trigger, Renderer, AfterContentInit,
+  ViewChild, ElementRef
+} from "@angular/core";
 import { MachineService } from "../../shared/services/machine.service";
 import { Machine, Field } from "../shared/machine";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
@@ -8,6 +11,7 @@ import { Product } from "../../shared/entity/product";
 import { NotificationsService } from "angular2-notifications";
 import { AppProperties } from "../../shared/app.properties";
 import { FormValidationStyles } from "../../shared/form-validation-styles";
+import { BrowserDomAdapter } from "@angular/platform-browser/src/browser/browser_adapter";
 
 @Component({
   selector: 'fill-machine',
@@ -36,21 +40,25 @@ import { FormValidationStyles } from "../../shared/form-validation-styles";
     ])
   ]
 })
-export class FillMachineComponent implements OnInit {
+export class FillMachineComponent implements OnInit, AfterContentInit {
   private cellFormState = 'inactive';
-  private selectedCardId = '';
+  private selectedField: Field = null;
   private selectedRowId = -1;
   machine: Machine;
   products: Product[];
   form: FormGroup;
   formStyles: FormValidationStyles;
   changedFields: Field[] = [];
+  @ViewChild('cellForm') cellFormElement: ElementRef;
+  domAdapter = new BrowserDomAdapter();
 
   constructor(
     private machineService: MachineService,
     private productService: ProductService,
     private route: ActivatedRoute,
-    private notificationService: NotificationsService
+    private notificationService: NotificationsService,
+    private renderer: Renderer,
+    private hostElement: ElementRef
   ) { }
 
   ngOnInit() {
@@ -68,44 +76,23 @@ export class FillMachineComponent implements OnInit {
     );
 
     this.form = new FormGroup({
-      field: new FormControl('', Validators.required),
+      fieldInternalId: new FormControl('', Validators.required),
       product: new FormControl('', Validators.required),
       count: new FormControl('', [
         Validators.required,
         Validators.pattern('^[1-9]$|^[1][0-9]{1}$')
       ])
     });
+  }
 
-    this.form.get('field').valueChanges
-      .subscribe((field: Field) => {
-        if (field != null) {
-          this.selectedCardId = field.internalId;
-
-          let productControl = this.form.get('product');
-          let countControl = this.form.get('count');
-
-          if (field.product != null) {
-            let product = this.products.find(product => product.id === field.product.id);
-            productControl.patchValue(product);
-            countControl.patchValue(field.count);
-          } else {
-            productControl.patchValue('');
-            countControl.patchValue('');
-          }
-
-          this.form.markAsPristine();
-          this.form.markAsUntouched();
-        } else {
-          this.selectedCardId = '';
-        }
-      });
+  ngAfterContentInit(): void {
   }
 
   toggleState(field: Field, rowId: number): void {
-    this.selectedCardId = field.internalId;
+    this.selectedField = field;
     this.selectedRowId = rowId;
     this.cellFormState = 'active';
-    this.form.get('field').patchValue(field, {onlySelf: true});
+    this.form.get('fieldInternalId').patchValue(field.internalId, {onlySelf: true});
 
     let productControl = this.form.get('product');
     let countControl = this.form.get('count');
@@ -122,10 +109,20 @@ export class FillMachineComponent implements OnInit {
     this.form.markAsPristine();
     this.form.markAsUntouched();
     this.form.updateValueAndValidity();
+
+    let rowElem: Element = this.renderer.selectRootElement('#row' + rowId);
+
+    if (rowElem.ownerDocument.body.clientWidth === 320) {
+      let cellElement = this.domAdapter.querySelector(this.hostElement.nativeElement, '#cell' + field.internalId);
+
+      this.renderer.attachViewAfter(cellElement, [this.cellFormElement.nativeElement])
+    } else {
+      this.renderer.attachViewAfter(rowElem, [this.cellFormElement.nativeElement]);
+    }
   }
 
   applyCellFormState(rowId: number): string {
-    if (this.selectedRowId == rowId) {
+    if (this.selectedField != null) {
       return 'active';
     } else {
       return 'inactive';
@@ -133,7 +130,7 @@ export class FillMachineComponent implements OnInit {
   }
 
   applyCardState(cardId: string): string {
-    if (cardId === this.selectedCardId && this.cellFormState === 'active') {
+    if (this.selectedField && cardId === this.selectedField.internalId && this.cellFormState === 'active') {
       return 'active';
     } else {
       return 'inactive';
@@ -141,8 +138,9 @@ export class FillMachineComponent implements OnInit {
   }
 
   submit(): void {
-    let fieldControl = this.form.get('field');
-    let field: Field = fieldControl.value;
+    let fieldInternalId = this.form.get('fieldInternalId').value;
+    let field = this.selectedField;
+    field.internalId = fieldInternalId;
     field.product = this.form.get('product').value;
     field.count = this.form.get('count').value;
     this.changedFields.push(field);
@@ -151,14 +149,15 @@ export class FillMachineComponent implements OnInit {
   }
 
   clearCell() {
-    let fieldControl = this.form.get('field');
-    let field: Field = fieldControl.value;
+    let fieldInternalId = this.form.get('fieldInternalId').value;
+    let field = this.selectedField;
+    field.internalId = fieldInternalId;
     field.product = null;
     field.count = 0;
 
     this.form.patchValue(
       {
-        field: field,
+        field: field.internalId,
         product: '',
         count: ''
       }
@@ -175,7 +174,7 @@ export class FillMachineComponent implements OnInit {
 
   cancel(): void {
     this.selectedRowId = -1;
-    this.selectedCardId = '';
+    this.selectedField = null;
     this.cellFormState = 'inactive';
     this.form.reset();
   }
@@ -185,8 +184,7 @@ export class FillMachineComponent implements OnInit {
   }
 
   isClearCellDisabled() {
-    return !!(this.form.get('field').value
-      && this.form.get('field').value.product == null);
+    return (this.selectedField && this.selectedField.product == null);
   }
 
   isFormValid() {
