@@ -34,7 +34,7 @@ export class AddMachineComponent implements OnInit {
       ]),
       url: new FormControl('', [
         Validators.required,
-        Validators.pattern('https?:\\/\\/(www\\.)?([-a-zA-Z0-9@:%._+~#=]{2,256}\\.[a-z]{2,6}|[0-9]{3}\\.[0-9]{3}\\.[0-9]{3}\\.[0-9]{3})\\b([-a-zA-Z0-9@:%_+.~#?&/=]*)')
+        Validators.pattern('https?:\\/\\/(www\\.)?([-a-zA-Z0-9@:%._+~#=]{2,256}\\.[a-z]{2,6}|[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})\\b([-a-zA-Z0-9@:%_+.~#?&/=]*)')
       ]),
       rowsCount: new FormControl('', [
         Validators.required,

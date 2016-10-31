@@ -25,6 +25,8 @@ export class CoinManagementComponent implements OnInit {
   withdrawForm: FormGroup;
   transferForm: FormGroup;
 
+  withdrawBtnState = true;
+
   replenishFormStyles: FormValidationStyles;
   transferFormStyles: FormValidationStyles;
 
@@ -52,6 +54,11 @@ export class CoinManagementComponent implements OnInit {
       merchant: new FormControl('', Validators.required)
     });
 
+    this.withdrawForm.get('merchant').valueChanges
+      .subscribe(
+        (account: CoinsAccount) => this.withdrawBtnState = this.isSubmitButtonEnabled(account.amount, this.withdrawForm)
+      );
+
     this.transferForm = new FormGroup({
       account: new FormControl('', Validators.required),
       amount: new FormControl('', [
@@ -76,6 +83,7 @@ export class CoinManagementComponent implements OnInit {
         this.merchantAccounts = accounts;
         this.merchantsAmount = this.merchantAccounts.reduce((prev, curr) => prev + curr.amount, 0);
         this.withdrawForm.get('merchant').patchValue(this.merchantAccounts[0]);
+        this.withdrawBtnState = !(this.merchantAccounts[0].amount > 0 && this.withdrawForm.value);
 
         return this.coinService.getTreasuryAmount();
       })
@@ -93,7 +101,15 @@ export class CoinManagementComponent implements OnInit {
       );
   }
 
-  isFormValid(form: FormGroup): boolean {
+  isSubmitButtonEnabled(checkAmount: number, form: FormGroup): boolean {
+    if (checkAmount > 0) {
+      return !this.isFormValid(form);
+    } else {
+      return true;
+    }
+  }
+
+  private isFormValid(form: FormGroup): boolean {
     return !!(form.valid && !form.pristine);
   }
 
