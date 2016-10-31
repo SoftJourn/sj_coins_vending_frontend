@@ -14,19 +14,35 @@ export class Account {
     return this.authorities.some(r => r.authority == role);
   }
 
-  public setRole(role: Role) {
+  public setRole(roleName: string, active: boolean) {
     if (typeof this.authorities == 'undefined' || this.authorities == null)
       this.authorities = [];
-    this.authorities.push(role);
+
+    let index=-1;
+
+    for(let i=0;i<this.authorities.length;i++){
+      if(this.authorities[i].authority==roleName){
+        index=i;
+        break;
+      }
+    }
+    if(active && index < 0){
+      this.authorities.push(new Role(roleName,false));
+    }
+    if(!active && index > -1){
+      this.authorities.splice(index,1);
+    }
   }
 
   public isSuperUser(): boolean {
-    // this.authorities.returnreturn
-    // if (this.authorities == Account.SUPER_USER)
-    //   return true;
-    // else
-    //   return false;
-    return false;
+    let isSuper=false;
+    for(let i=0;i<this.authorities.length;i++){
+      if(this.authorities[i].superRole==true){
+        isSuper=true;
+        break;
+      }
+    }
+    return isSuper;
   }
 
   public getRole(): string {

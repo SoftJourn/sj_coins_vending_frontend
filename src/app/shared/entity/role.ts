@@ -1,8 +1,8 @@
 export class Role {
   constructor(public authority: string
-    , public isSuper: boolean){
+    , public superRole: boolean){
     this.authority = authority;
-    this.isSuper = isSuper;
+    this.superRole = superRole;
   }
   public toString (){
     return this.authority;
