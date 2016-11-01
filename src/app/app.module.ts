@@ -31,15 +31,14 @@ import { ProductService } from "./shared/services/product.service";
 import { SimpleNotificationsModule } from "angular2-notifications";
 import { LdapUsersService } from "./shared/services/ldap.users.service";
 import { AdminUsersService } from "./shared/services/admin.users.service";
-import { EditProductComponent } from './products/edit-product/edit-product.component';
-import { ImageUploadService } from './shared/services/image-upload.service';
-import { PurchasesComponent } from './purchases/purchases.component';
+import { EditProductComponent } from "./products/edit-product/edit-product.component";
+import { ImageUploadService } from "./shared/services/image-upload.service";
+import { PurchasesComponent } from "./purchases/purchases.component";
 import { PurchaseService } from "./shared/services/purchase.service";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { AddUserComponent } from "./users/add-user/add-user.component";
-import { ModalImgCropperComponent } from './shared/modal-img-cropper/modal-img-cropper.component';
-import { ImageCropperComponent } from 'ng2-img-cropper';
-import { CoinManagementComponent } from './coin-management/coin-management.component';
+import { ModalImgCropperComponent } from "./shared/modal-img-cropper/modal-img-cropper.component";
+import { ImageCropperComponent } from "ng2-img-cropper";
+import { CoinManagementComponent } from "./coin-management/coin-management.component";
 import { ModalModule } from "angular2-modal";
 import { BootstrapModalModule } from "angular2-modal/plugins/bootstrap";
 import { CoinService } from "./shared/services/coin.service";
@@ -64,8 +63,6 @@ import { CoinService } from "./shared/services/coin.service";
     UsersComponent,
     AddCategoryComponent,
     MachineSizePipe,
-    EditProductComponent,
-    AddUserComponent,
     EditProductComponent,
     PurchasesComponent,
     ModalImgCropperComponent,
