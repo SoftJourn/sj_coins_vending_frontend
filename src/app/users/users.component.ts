@@ -114,10 +114,7 @@ export class UsersComponent implements OnInit {
   public open(content: any): NgbModalRef {
     this.activeModal = this.modalService.open(content);
     this.activeModal
-      .result.then(result => {
-      this.edit = false;
-    }, reason => {
-    });
+      .result.then(result => {this.edit = false}, reason => {this.edit = false});
     return this.activeModal;
   }
 }
