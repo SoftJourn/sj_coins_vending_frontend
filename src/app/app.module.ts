@@ -43,6 +43,7 @@ import { CoinManagementComponent } from './coin-management/coin-management.compo
 import { ModalModule } from "angular2-modal";
 import { BootstrapModalModule } from "angular2-modal/plugins/bootstrap";
 import { CoinService } from "./shared/services/coin.service";
+import { EditMachineComponent } from './machines/edit-machine/edit-machine.component';
 
 @NgModule({
   declarations: [
@@ -70,7 +71,8 @@ import { CoinService } from "./shared/services/coin.service";
     PurchasesComponent,
     ModalImgCropperComponent,
     ImageCropperComponent,
-    CoinManagementComponent
+    CoinManagementComponent,
+    EditMachineComponent
   ],
   imports: [
     BrowserModule,

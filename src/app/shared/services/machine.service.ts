@@ -22,4 +22,9 @@ export class MachineService extends CrudService<Machine> {
     return this.httpService.put(this.getUrl(), machine, MediaType.APPLICATION_JSON)
       .map(response => response.json());
   }
+  public updateMachine(machine: Machine): Observable<Machine> {
+    let url = `${this.getUrl()}/update`;
+    return this.httpService.put(url, machine, MediaType.APPLICATION_JSON)
+        .map(response => response.json());
+  }
 }

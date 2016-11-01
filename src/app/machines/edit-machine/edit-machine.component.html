@@ -1,0 +1,85 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Edit machine</h1>
+        </div>
+    </div>
+</div>
+<hr>
+<div class="container-fluid" *ngIf="form">
+    <div class="col-xs-12 col-lg-12">
+        <div class="card card-block" [ngClass]="formStyles.getCardOutlineClass()">
+            <form (ngSubmit)="submit()" [formGroup]="form">
+                <div class="form-group row" [ngClass]="formStyles.getValidationClass('name')">
+                    <label for="vm-name" class="col-sm-2 col-form-label">Name</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="vm-name" placeholder="Name"
+                               formControlName="name" [ngClass]="formStyles.getValidationIcon('name')">
+                        <label [hidden]="formStyles.isValidOrPristine('name')" class="form-control-feedback pull-right">
+                            Enter valid name!
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group row" [ngClass]="formStyles.getValidationClass('url')">
+                    <label for="vm-url" class="col-sm-2 col-form-label">URL</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="vm-url" placeholder="URL"
+                               formControlName="url" [ngClass]="formStyles.getValidationIcon('url')">
+                        <label [hidden]="formStyles.isValidOrPristine('url')" class="form-control-feedback pull-right">
+                            Enter valid url!
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group row" [ngClass]="formStyles.getValidationClass('rowsCount')">
+                    <label for="vm-rows" class="col-sm-2 col-form-label">Rows count</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="vm-rows"
+                               placeholder="1" formControlName="rowsCount"
+                               [ngClass]="formStyles.getValidationIcon('rowsCount')">
+                        <label [hidden]="formStyles.isValidOrPristine('rowsCount')"
+                               class="form-control-feedback pull-right">
+                            Enter valid number!
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="vm-rows-numbering" class="col-sm-2 col-form-label">Row numbering</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" id="vm-rows-numbering"
+                                formControlName="rowsNumbering">
+                            <option value="NUMERICAL">Numerical</option>
+                            <option value="ALPHABETICAL">Alphabetical</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row" [ngClass]="formStyles.getValidationClass('columnsCount')">
+                    <label for="vm-columns" class="col-sm-2 col-form-label">Columns count</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="vm-columns"
+                               placeholder="1" formControlName="columnsCount"
+                               [ngClass]="formStyles.getValidationIcon('columnsCount')">
+                        <label [hidden]="formStyles.isValidOrPristine('columnsCount')"
+                               class="form-control-feedback pull-right">
+                            Enter valid number!
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="vm-columns-numbering" class="col-sm-2 col-form-label">Column numbering</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" id="vm-columns-numbering" formControlName="columnsNumbering">
+                            <option value="NUMERICAL">Numerical</option>
+                            <option value="ALPHABETICAL">Alphabetical</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-12 form-buttons-container">
+                        <button class="btn btn-success" type="submit" [disabled]="!form.valid">Submit</button>
+                        <button class="btn btn-secondary" type="button" (click)="cancel()">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -5,6 +5,7 @@ export class Machine {
   constructor(
     public id: number,
     public name: string,
+    public url: any,
     public rows: Row[],
     public size: MachineSize
   ) {}

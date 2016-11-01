@@ -7,7 +7,7 @@
     </md-card-title-group>
     <md-card-actions>
       <div class="action-btn-container">
-        <!--<button class="btn btn-success"><i class="fa fa-edit btn-icon"></i>Edit</button>-->
+        <button class="btn btn-success" (click)="onEditMachine()"><i class="fa fa-edit btn-icon"></i>Edit</button>
         <button class="btn btn-success" [routerLink]="['/main/machines/fill', machine.id]">
           <i class="fa fa-upload btn-icon"></i>Fill
         </button>
