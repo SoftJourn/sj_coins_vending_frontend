@@ -4,8 +4,8 @@ import { CoinService } from "../shared/services/coin.service";
 import { NotificationsService } from "angular2-notifications";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { FormValidationStyles } from "../shared/form-validation-styles";
-import { Observable } from "rxjs";
 import { AmountDto } from "./amount-dto";
+import { Observable } from "rxjs";
 
 @Component({
   selector: 'app-coin-management',
@@ -25,15 +25,12 @@ export class CoinManagementComponent implements OnInit {
   withdrawForm: FormGroup;
   transferForm: FormGroup;
 
-  withdrawBtnState = true;
-
   replenishFormStyles: FormValidationStyles;
   transferFormStyles: FormValidationStyles;
 
-  constructor(
-    private coinService: CoinService,
-    private notificationService: NotificationsService
-  ) { }
+  constructor(private coinService: CoinService,
+              private notificationService: NotificationsService) {
+  }
 
   ngOnInit() {
     this.buildForms();
@@ -53,11 +50,6 @@ export class CoinManagementComponent implements OnInit {
     this.withdrawForm = new FormGroup({
       merchant: new FormControl('', Validators.required)
     });
-
-    this.withdrawForm.get('merchant').valueChanges
-      .subscribe(
-        (account: CoinsAccount) => this.withdrawBtnState = this.isSubmitButtonEnabled(account.amount, this.withdrawForm)
-      );
 
     this.transferForm = new FormGroup({
       account: new FormControl('', Validators.required),
@@ -83,7 +75,6 @@ export class CoinManagementComponent implements OnInit {
         this.merchantAccounts = accounts;
         this.merchantsAmount = this.merchantAccounts.reduce((prev, curr) => prev + curr.amount, 0);
         this.withdrawForm.get('merchant').patchValue(this.merchantAccounts[0]);
-        this.withdrawBtnState = !(this.merchantAccounts[0].amount > 0 && this.withdrawForm.value);
 
         return this.coinService.getTreasuryAmount();
       })
@@ -101,23 +92,33 @@ export class CoinManagementComponent implements OnInit {
       );
   }
 
-  isSubmitButtonEnabled(checkAmount: number, form: FormGroup): boolean {
-    if (checkAmount > 0) {
-      return !this.isFormValid(form);
-    } else {
-      return true;
-    }
-  }
-
-  private isFormValid(form: FormGroup): boolean {
+  public isFormValid(form: FormGroup): boolean {
     return !!(form.valid && !form.pristine);
   }
 
   replenishAccounts(): void {
-    this.coinService.replenishAccounts(this.replenishForm.value['amount'])
+    let replenishAmount = this.replenishForm.value['amount'];
+
+    this.coinService.getTreasuryAmount()
+      .flatMap(
+        amountDto => {
+          this.treasuryAmount = amountDto.amount;
+
+          if (amountDto.amount < replenishAmount) {
+            return Observable.throw({message: 'Not enough coins in treasury'});
+          } else {
+            return this.coinService.replenishAccounts(replenishAmount);
+          }
+        })
       .subscribe(
         () => null,
-        error => this.notificationService.error('Error', 'Error appeared during replenish accounts'),
+        error => {
+          if (error && error.message) {
+            this.notificationService.error('Error', error.message);
+          } else {
+            this.notificationService.error('Error', 'Error appeared during replenish accounts');
+          }
+        },
         () => {
           this.notificationService.success('Success', 'Accounts has been replenished successfully.');
           this.loadData();
@@ -128,26 +129,44 @@ export class CoinManagementComponent implements OnInit {
   }
 
   withdrawToTreasury() {
-    this.coinService.withdrawToTreasury(this.withdrawForm.value['merchant'])
-      .subscribe(
-        transaction => {
-          if (transaction.status.toLowerCase() == 'success') {
-            this.notificationService.success(
-              'Success', `Money from ${transaction.account} has been withdrawn successfully`
-            );
-            this.loadData();
-          } else {
-            this.notificationService.error('Error', transaction.error);
-          }
-        },
-        error => this.notificationService.error('Error', 'Error appeared during withdrawal')
-      );
+    let merchantAccount: CoinsAccount = this.withdrawForm.value['merchant'];
+
+    if (merchantAccount.amount == 0) {
+      this.notificationService.error('Error', `Not enough coins in ${merchantAccount.fullName}`)
+    } else {
+      this.coinService.withdrawToTreasury(merchantAccount)
+        .subscribe(
+          transaction => {
+            if (transaction.status.toLowerCase() == 'success') {
+              this.notificationService.success(
+                'Success', `Money from ${transaction.account} has been withdrawn successfully`
+              );
+              this.loadData();
+            } else {
+              this.notificationService.error('Error', transaction.error);
+            }
+          },
+          error => this.notificationService.error('Error', 'Error appeared during withdrawal')
+        );
+    }
 
     this.withdrawForm.reset({merchant: this.merchantAccounts[0]});
   }
 
   transferToAccount(): void {
-    this.coinService.transferToAccount(this.transferForm.value)
+    let transferAmount = this.transferForm.value['amount'];
+
+    this.coinService.getTreasuryAmount()
+      .flatMap(
+        amountDto => {
+          this.treasuryAmount = amountDto.amount;
+
+          if (this.treasuryAmount < transferAmount) {
+            return Observable.throw({message: 'Not enough coins in treasury'});
+          } else {
+            return this.coinService.transferToAccount(this.transferForm.value);
+          }
+        })
       .subscribe(
         transaction => {
           if (transaction.status.toLowerCase() == 'success') {
@@ -157,7 +176,13 @@ export class CoinManagementComponent implements OnInit {
             this.notificationService.error('Error', transaction.error);
           }
         },
-        error => this.notificationService.error('Error', 'Error appeared during money transferring')
+        error => {
+          if (error && error.message) {
+            this.notificationService.error('Error', error.message);
+          } else {
+            this.notificationService.error('Error', 'Error appeared during money transferring');
+          }
+        }
       );
 
     this.transferForm.reset({

@@ -45,7 +45,8 @@
 
   <div class="row">
     <div class="card card-block" [ngClass]="replenishFormStyles.getCardOutlineClass()">
-      <form class="form-inline" (ngSubmit)="replenishAccounts()" [formGroup]="replenishForm">
+      <form class="form-inline" (ngSubmit)="replenishAccounts()"
+            [formGroup]="replenishForm">
         <div class="form-group" [ngClass]="replenishFormStyles.getValidationClass('amount')">
           <label class="sr-only" for="distributePrice">Amount (in dollars)</label>
           <div class="input-group">
@@ -54,7 +55,7 @@
                    formControlName="amount" [ngClass]="replenishFormStyles.getValidationIcon('amount')">
           </div>
         </div>
-        <button type="submit" class="btn btn-success" [disabled]="isSubmitButtonEnabled(treasuryAmount, replenishForm)">
+        <button type="submit" class="btn btn-success" [disabled]="!isFormValid(replenishForm)">
           Replenish accounts
         </button>
         <div class="row validation-msg" *ngIf="!replenishFormStyles.isValidOrPristine('amount')" >
@@ -74,8 +75,7 @@
             <option *ngFor="let account of merchantAccounts" [ngValue]="account">{{account.fullName}}</option>
           </select>
         </div>
-        <button type="submit" class="btn btn-success"
-                [disabled]="withdrawBtnState">
+        <button type="submit" class="btn btn-success">
           Withdraw to treasury
         </button>
       </form>
@@ -99,7 +99,7 @@
                    formControlName="amount" [ngClass]="transferFormStyles.getValidationIcon('amount')">
           </div>
         </div>
-        <button type="submit" class="btn btn-success" [disabled]="isSubmitButtonEnabled(treasuryAmount, transferForm)">
+        <button type="submit" class="btn btn-success" [disabled]="!isFormValid(transferForm)">
           Transfer coins
         </button>
         <div class="row validation-msg" *ngIf="!transferFormStyles.isValidOrPristine('amount')">
