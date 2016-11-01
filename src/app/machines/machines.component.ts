@@ -39,7 +39,11 @@ export class MachinesComponent implements OnInit {
           if (errorDetail.code == 1451) {
             this.notificationService.error('Error', 'Can not delete, this machine is being used!');
           } else {
-            this.notificationService.error('Error', errorDetail.detail);
+            if (errorDetail) {
+              this.notificationService.error('Error', errorDetail.detail);
+            } else {
+              this.notificationService.error('Error', 'Error appeared during deletion');
+            }
           }
         },
         () => this.getMachines()
