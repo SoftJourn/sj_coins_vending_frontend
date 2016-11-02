@@ -53,6 +53,10 @@ button {
   margin-right: 15px;
 }
 
+.form-group {
+  margin-top: inherit !important;
+}
+
 /*==========================================================*/
 
 // BS Admin 2.0
@@ -648,20 +652,21 @@ li.nav-item {
   }
 }
 
-$rotate:180deg;
+$rotate: 180deg;
 
-.add-icon-active{
+.add-icon-active {
   -webkit-transform: rotate($rotate);
   transform: rotate($rotate);
   -ms-transform: rotate($rotate);
 }
-.add-icon-inactive{
+
+.add-icon-inactive {
   -webkit-transform: rotate(-$rotate);
   transform: rotate(-$rotate);
   -ms-transform: rotate(-$rotate);
 }
 
-.rotate{
+.rotate {
   -webkit-transition: all 1s ease-in-out;
   transition: all 1s ease-in-out;
 }

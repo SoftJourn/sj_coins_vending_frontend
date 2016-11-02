@@ -17,9 +17,9 @@
       <div class="card card-block card-outline-success">
         <form (ngSubmit)="onSubmit()" class="form" [formGroup]="form">
           <div class="row">
-            <div class="col-xl-2">
+            <div class="col-xl-3">
               <div class="form-group row">
-                <label for="machines" class="col-sm-3 col-form-label">Machines</label>
+                <label for="machines" class="col-sm-4 col-form-label">Machines</label>
                 <div class="col-sm-8">
                   <select id="machines" class="form-control" formControlName="machine">
                     <option value="-1">All</option>
@@ -28,9 +28,9 @@
                 </div>
               </div>
             </div>
-            <div class="col-xl-2">
+            <div class="col-xl-3">
               <div class="form-group row">
-                <label for="date" class="col-sm-3 col-form-label">Date</label>
+                <label for="date" class="col-sm-4 col-form-label">Date</label>
                 <div class="col-sm-8">
                   <select id="date" class="form-control" formControlName="type">
                     <option value="Any">Any</option>
@@ -44,8 +44,8 @@
             </div>
             <div class="col-xl-3" [hidden]="hideStartDue">
               <div class="form-group row">
-                <label for="start" class="col-sm-3 col-form-label">Start</label>
-                <div class="col-sm-8">
+                <label for="start" class="col-sm-4 col-md-4 col-lg-4 col-xl-3 col-form-label">Start</label>
+                <div class="col-sm-8 col-md-8 col-lg-8 col-xl-9">
                   <div class="input-group">
                     <input class="form-control" name="dp" formControlName="start" ngbDatepicker
                            #d="ngbDatepicker" id="start" [maxDate]="maxDate" (ngModelChange)="changeStart($event)">
@@ -58,8 +58,8 @@
             </div>
             <div class="col-xl-3" [hidden]="hideStartDue">
               <div class="form-group row">
-                <label for="due" class="col-sm-3 col-form-label">Due</label>
-                <div class="col-sm-8">
+                <label for="due" class="col-sm-4 col-md-4 col-lg-4 col-xl-3 col-form-label">Due</label>
+                <div class="col-sm-8 col-md-8 col-lg-8 col-xl-9">
                   <div class="input-group">
                     <input class="form-control" name="dp" formControlName="due" ngbDatepicker
                            #n="ngbDatepicker" id="due" [minDate]="minDate" (ngModelChange)="changeDue($event)">
@@ -70,13 +70,11 @@
                 </div>
               </div>
             </div>
-            <div class="col-xl-2">
-              <div class="col-xs-6 col-md-6 col-xl-6">
+          </div>
+          <div class="row">
+            <div class="col-xl-12 header-buttons-container">
                 <button type="submit" class="btn btn-success">Submit</button>
-              </div>
-              <div class="col-xs-6 col-md-6 col-xl-6">
                 <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
-              </div>
             </div>
           </div>
         </form>
