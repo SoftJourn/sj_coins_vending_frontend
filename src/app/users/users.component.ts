@@ -83,21 +83,26 @@ export class UsersComponent implements OnInit {
       .okBtnClass('btn btn-success modal-footer-confirm-btn')
       .cancelBtn('Cancel')
       .cancelBtnClass('btn btn-secondary modal-footer-confirm-btn')
-      .open().then((response)=> {
-      response.result.then(() => {
-        this.adminUserService.delete(ldapName)
-          .subscribe(
-            next => {
-            },
-            error=> {
-              this.notificationService.error("Delete", error._body);
-            },
+      .open()
+      .then(
+        (response)=> {
+          response.result.then(
             () => {
-              this.notificationService.success('Delete', 'User ' + ldapName + ' has been removed successfully');
-              this.syncAdminUsers();
-            });
-      });
-    });
+              this.adminUserService.delete(ldapName)
+                .subscribe(
+                  next => {
+                  },
+                  error=> {
+                    this.notificationService.error("Delete", error._body);
+                  },
+                  () => {
+                    this.notificationService.success('Delete', 'User ' + ldapName + ' has been removed successfully');
+                    this.syncAdminUsers();
+                  });
+            },
+            () => {}
+          );
+        });
   }
 
   public isNotValid(user: Account) {

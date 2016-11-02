@@ -32,8 +32,7 @@ export class MachinesComponent implements OnInit {
   onDelete(id: number) {
     this.machineService.delete(id)
       .subscribe(
-        () => {
-        },
+        () => null,
         (error: Response) => {
           var errorDetail: ErrorDetail = error.json();
           if (errorDetail.code == 1451) {
@@ -46,7 +45,9 @@ export class MachinesComponent implements OnInit {
             }
           }
         },
-        () => this.getMachines()
+        () => {
+          this.notificationService.success('Success', 'Machine has been deleted successfully');
+          this.getMachines()}
       );
   }
 }

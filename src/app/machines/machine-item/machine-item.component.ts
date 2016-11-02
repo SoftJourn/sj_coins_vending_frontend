@@ -22,6 +22,7 @@ export class MachineItemComponent implements OnInit {
   onEditMachine() {
     this.router.navigate(['/main/machines', this.machine.id, 'edit']);
   }
+
   deleteMachine(): void {
     this.modal.confirm()
       .size('sm')
@@ -34,10 +35,15 @@ export class MachineItemComponent implements OnInit {
       .okBtnClass('btn btn-success modal-footer-confirm-btn')
       .cancelBtn('Cancel')
       .cancelBtnClass('btn btn-secondary modal-footer-confirm-btn')
-      .open().then((response)=> {
-      response.result.then(() => {
-        this.onDelete.emit(this.machine.id);
-      });
-    });
+      .open()
+      .then(
+        (response)=> {
+          response.result.then(
+            () => {
+              this.onDelete.emit(this.machine.id);
+            },
+            () => {}
+          );
+        });
   }
 }
