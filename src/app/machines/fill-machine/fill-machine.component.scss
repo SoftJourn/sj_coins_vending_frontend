@@ -29,6 +29,14 @@
 .card-icon-centered {
 }
 
+.large-screen{
+  display: block;
+}
+
+.small-screen{
+  display: none;
+}
+
 @media (min-width: 768px) {
   .cell-card-row {
     height: 175px;
@@ -93,4 +101,13 @@
   [class*="affix-top"] {
     left: 0px;
   }
+
+  .large-screen{
+    display: none;
+  }
+
+  .small-screen{
+    display: block;
+  }
+
 }

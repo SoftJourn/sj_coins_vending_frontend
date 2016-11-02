@@ -3,7 +3,14 @@
     <div class="col-xs-8 col-md-8 col-xl-8">
       <h2 class="page-header">{{machine?.name}}</h2>
     </div>
-    <div class="col-xs-4 col-md-4 col-xl-4 header-buttons-container">
+    <div class="col-xs-4 col-md-4 col-xl-4 header-buttons-container small-screen">
+      <!--For desktop browser-->
+      <button class="btn btn-success" [disabled]="changedFields.length == 0" (click)="applyChanges()">
+        <i class="fa fa-check btn-icon"></i>Apply
+      </button>
+    </div>
+    <div class="col-xs-4 col-md-4 col-xl-4 header-buttons-container large-screen">
+      <!--For mobile browser-->
       <button class="btn btn-success" [disabled]="changedFields.length == 0" (click)="applyChanges()">
         <i class="fa fa-check btn-icon"></i>Apply changes
       </button>

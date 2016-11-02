@@ -42,6 +42,18 @@
   }
 }
 
+@media (min-width: 321px) and (max-width: 360px){
+  .vm-card-title {
+    width: 180px;
+  }
+
+  .action-btn-container {
+    button {
+      margin-top: 5px;
+    }
+  }
+}
+
 @media (min-width: 577px) and (max-width: 768px) {
   .vm-card-title {
     width: 380px;
