@@ -2,6 +2,10 @@
   text-align: center;
 }
 
+//.col-form-label {
+//  margin-right: 20px;
+//}
+
 .card-block {
   padding: 10px;
 }
@@ -11,18 +15,4 @@
   justify-content: center;
   align-items: center;
   text-align: center
-}
-
-@media (min-width: 992px) and (max-width: 1080px) {
-  .col-lg-3 {
-    float: left;
-    width: 100%;
-  }
-}
-
-@media (min-width: 992px) and (max-width: 1080px) {
-  .col-lg-6 {
-    float: left;
-    width: 100%;
-  }
 }
