@@ -13,11 +13,12 @@
 <hr>
 <div class="container-fluid">
   <div class="row" [hidden]="hideFilter">
-    <div class="col-xs-12 col-md-12 col-lg-12">
+    <div class="col-lg-3 col-xl-3"></div>
+    <div [ngClass]="changeFormSize">
       <div class="card card-block card-outline-success">
         <form (ngSubmit)="onSubmit()" class="form" [formGroup]="form">
           <div class="row">
-            <div class="col-xl-3">
+            <div [ngClass]="changeContentSize">
               <div class="form-group row">
                 <label for="machines" class="col-sm-4 col-form-label">Machines</label>
                 <div class="col-sm-8">
@@ -28,7 +29,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-xl-3">
+            <div [ngClass]="changeContentSize">
               <div class="form-group row">
                 <label for="date" class="col-sm-4 col-form-label">Date</label>
                 <div class="col-sm-8">
@@ -72,7 +73,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-xl-12 header-buttons-container">
+            <div class="col-xs-12 col-md-12 col-lg-12 header-buttons-container">
                 <button type="submit" class="btn btn-success">Submit</button>
                 <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
             </div>

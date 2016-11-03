@@ -32,6 +32,14 @@ export class PurchasesComponent implements OnInit {
   minDate: NgbDateStruct;
   maxDate: NgbDateStruct;
 
+  contentDefaultSize: string = 'col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6';
+  contentFullSize: string = 'col-xs-12 col-sm-12 col-md-12 col-lg-3 col-xl-3';
+  changeContentSize: string;
+
+  formDefaultSize: string = 'col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6';
+  formFullSize: string = 'col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12';
+  changeFormSize: string;
+
   constructor(private purchaseService: PurchaseService,
               private machineService: MachineService,
               private parser: NgbDateParserFormatter,
@@ -39,6 +47,8 @@ export class PurchasesComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.changeFormSize = this.formDefaultSize;
+    this.changeContentSize = this.contentDefaultSize;
     this.buildForm();
     this.buildPageSizeForm();
     let filter = this.toPurchaseFilter(this.form);
@@ -56,9 +66,13 @@ export class PurchasesComponent implements OnInit {
 
     this.form.get('type').valueChanges.subscribe(change => {
         if (change === 'Start-Due') {
+          this.changeFormSize = this.formFullSize;
+          this.changeContentSize = this.contentFullSize;
           this.showStartDue();
         }
         else {
+          this.changeFormSize = this.formDefaultSize;
+          this.changeContentSize = this.contentDefaultSize;
           this.toHideStartDue();
           this.form.get('start').patchValue('');
           this.form.get('due').patchValue('');
