@@ -48,6 +48,13 @@
                     [ngModelOptions]="{standalone: true}"/> Billing Manger
           </label>
         </div>
+        <div class="checkbox">
+          <label>
+            <input  type="checkbox" [ngModel]="selectedModule.hasRole('ROLE_USER_MANAGER')"
+                    (ngModelChange)="selectedModule.setRole('ROLE_USER_MANAGER',$event)"
+                    [ngModelOptions]="{standalone: true}"/> User Manager
+          </label>
+        </div>
       </ng-container>
     </form>
   </div>

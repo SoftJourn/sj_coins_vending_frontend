@@ -12,10 +12,9 @@ export class AccountService {
   private account: Account;
   private STORAGE_KEY = 'account';
 
-  constructor(
-    private tokenService: TokenService,
-    private httpService: HttpService
-  ) {}
+  constructor(private tokenService: TokenService,
+              private httpService: HttpService) {
+  }
 
   private createAccount(username: string): Observable<Account> {
     return new Observable<Account>(observer => {
@@ -47,17 +46,15 @@ export class AccountService {
         'Wrong credentials'
       );
 
-      if (this.verifyCredentials(credentials)) {
+      if (AccountService.verifyCredentials(credentials)) {
         this.tokenService.getAccessToken(credentials).subscribe(
-          accessToken => {
-            this.createAccount(credentials.username).subscribe(
-              account => {
-                this.account = account;
-                observer.complete();
-              },
-              error => observer.error(error)
-            )
-          },
+          accessToken => this.createAccount(credentials.username).subscribe(
+            account => {
+              this.account = account;
+              observer.complete();
+            },
+            error => observer.error(error)
+          ),
           error => observer.error(badCredError)
         );
       } else {
@@ -68,32 +65,31 @@ export class AccountService {
 
   public logout(): void {
     this.tokenService.revokeRefreshToken().subscribe(
-      () => null,
-      error => {}
+      () => null
     );
     this.deleteAccountFromLocalStorage();
     this.tokenService.deleteTokensFromStorage();
   }
 
-  private verifyCredentials(credentials: UsernamePasswordCredentials): boolean {
-    let regExp = /^[\w!@#\$%\^&\*\(\)\-\\\.|\/\?><;':"+=~`{}\[\],]+$/i;
+  private static verifyCredentials(credentials: UsernamePasswordCredentials): boolean {
+    let regExp: RegExp = /^[\w!@#$%\^&*()\-\\.|\/?><;':"+=~`{}\[\],]+$/i;
 
     return regExp.test(credentials.username) && regExp.test(credentials.password);
   }
 
   private createAccountFromJson(user: any): Account {
-    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(user));
-
-    return new Account(
+    let account: Account = new Account(
       user.ldapName,
       user.fullName,
       user.email,
-      user.authorities
+      this.tokenService.authorities
     );
+    localStorage.setItem(this.STORAGE_KEY, account.toString());
+    return account;
   }
 
   public getAccount(): Account {
-    return JSON.parse(localStorage.getItem('account'));
+    return new Account(JSON.parse(localStorage.getItem(this.STORAGE_KEY)));
   }
 
   private deleteAccountFromLocalStorage(): void {
