@@ -3,13 +3,47 @@
 </button>
 <nav class="sidebar" [ngClass]="{'sidebarPushRight': isActive}">
   <ul class="list-group">
-    <a *ngFor="let route of allowedRoutes" [routerLink]="['/main']" routerLinkActive="router-link-active"
-       [routerLinkActiveOptions]="{exact: true}" (click)="hide()" class="list-group-item">
-      <i class="fa fa-th fa-lg"></i>Dashboard
-    </a>
-
-    <a class="list-group-item log-out" (click)="logout()">
-      <span><i class="fa fa-power-off fa-lg"></i>Log Out</span>
-    </a>
+    <li>
+      <a *ngIf="isVisible('/main')" [routerLink]="['/main']" routerLinkActive="router-link-active"
+         [routerLinkActiveOptions]="{exact: true}" (click)="hide()" class="list-group-item">
+        <i class="fa fa-th fa-lg"></i>Dashboard
+      </a>
+    </li>
+    <li>
+      <a *ngIf="isVisible('/main/products')" [routerLink]="['/main/products']"
+         routerLinkActive="router-link-active"
+         [routerLinkActiveOptions]="{exact: true}" class="list-group-item" (click)="hide()">
+        <span><i class="fa fa-shopping-basket fa-lg"></i>Products</span>
+      </a>
+    </li>
+    <li>
+      <a *ngIf="isVisible('/main/machines')" [routerLink]="['/main/machines']" routerLinkActive="router-link-active"
+         [routerLinkActiveOptions]="{exact: true}" class="list-group-item" (click)="hide()">
+        <span><i class="fa fa-cogs fa-lg"></i>Vending machines</span>
+      </a>
+    </li>
+    <li>
+      <a *ngIf="isVisible('/main/coins')" [routerLink]="['/main/coins']" routerLinkActive="router-link-active"
+         [routerLinkActiveOptions]="{exact: true}" class="list-group-item" (click)="hide()">
+        <span><i class="fa fa-money fa-lg"></i>Coins management</span>
+      </a>
+    </li>
+    <li>
+      <a *ngIf="isVisible('/main/categories')" [routerLink]="['/main/categories']" routerLinkActive="router-link-active"
+         [routerLinkActiveOptions]="{exact: true}" class="list-group-item" (click)="hide()">
+        <span><i class="fa fa-tags fa-lg"></i>Categories</span>
+      </a>
+    </li>
+    <li>
+      <a *ngIf="isVisible('/main/users')" [routerLink]="['/main/users']" routerLinkActive="router-link-active"
+         [routerLinkActiveOptions]="{exact: true}" class="list-group-item" (click)="hide()">
+        <span><i class="fa fa-users fa-lg"></i>Users</span>
+      </a>
+    </li>
+    <li>
+      <a class="list-group-item log-out" (click)="logout()">
+        <span><i class="fa fa-power-off fa-lg"></i>Log Out</span>
+      </a>
+    </li>
   </ul>
 </nav>

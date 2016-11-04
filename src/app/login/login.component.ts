@@ -1,8 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
-import {AppError} from "../shared/app-error";
-import {AccountService} from "../shared/services/account.service";
+import { AppError } from "../shared/app-error";
+import { AccountService } from "../shared/services/account.service";
 import { NotificationsService } from "angular2-notifications";
 
 @Component({
@@ -14,11 +14,10 @@ export class LoginComponent implements OnInit {
   form: FormGroup;
   loginError: AppError;
 
-  constructor(
-    private router: Router,
-    private accountService: AccountService,
-    private notificationService: NotificationsService
-  ) {}
+  constructor(private router: Router,
+              private accountService: AccountService,
+              private notificationService: NotificationsService) {
+  }
 
   ngOnInit() {
     this.loginError = new AppError();
@@ -56,9 +55,11 @@ export class LoginComponent implements OnInit {
   onSubmit(): void {
     this.accountService.login(this.form.value)
       .subscribe(
-        () => {},
+        () => {
+        },
         (error: AppError) => this.notificationService.error('Error', error.message),
-        () => this.router.navigate(['/main'])
-      )
+        () => {
+          this.router.navigate([this.accountService.getRoutes()[0]]);
+        })
   }
 }

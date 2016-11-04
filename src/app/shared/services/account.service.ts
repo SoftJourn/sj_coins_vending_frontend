@@ -7,6 +7,16 @@ import { Account } from "../entity/account";
 import { UsernamePasswordCredentials } from "../username-password-credentials";
 import { HttpService } from "./http.service";
 
+export const routes: { [key: string]: string[] } = {
+  "ROLE_INVENTORY": ["/main/coins"],
+  "ROLE_BILLING": ["/main/products", "/main/machines", "/main/categories"],
+  "ROLE_USER_MANAGER": ["/main/users"],
+  "ROLE_SUPER_USER": ["/main/coins"]
+    .concat(["/main/products", "/main/machines", "/main/categories"])
+    .concat(["/main/products", "/main/machines", "/main/categories"])
+    .concat(["/main/users"])
+};
+
 @Injectable()
 export class AccountService {
   private account: Account;
@@ -95,5 +105,12 @@ export class AccountService {
   private deleteAccountFromLocalStorage(): void {
     localStorage.removeItem(this.STORAGE_KEY);
     this.account = null;
+  }
+
+  public getRoutes(): Array<string> {
+    let route = [];
+    this.getAccount().authorities.forEach(a=>route = route.concat(routes[a.authority]));
+    //noinspection TypeScriptUnresolvedFunction
+    return Array.from(new Set(route));
   }
 }
