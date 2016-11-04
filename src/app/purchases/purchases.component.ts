@@ -1,16 +1,15 @@
-import {Component, OnInit} from "@angular/core";
-import {Purchase} from "../shared/entity/purchase";
-import {PurchaseService} from "../shared/services/purchase.service";
-import {Machine} from "../machines/shared/machine";
-import {MachineService} from "../shared/services/machine.service";
-import {NgbDateParserFormatter, NgbDateStruct, NgbDatepickerConfig} from "@ng-bootstrap/ng-bootstrap";
-import {FormControl, FormGroup} from "@angular/forms";
-import {PurchaseFilter} from "../purchases/shared/purchase-filter";
-import {PurchasePage} from "./shared/purchase-page";
-import {ErrorDetail} from "../shared/entity/error-detail";
-import {Response} from "@angular/http";
-import {NotificationsService} from "angular2-notifications/lib/notifications.service";
-
+import { Component, OnInit, HostListener } from "@angular/core";
+import { Purchase } from "../shared/entity/purchase";
+import { PurchaseService } from "../shared/services/purchase.service";
+import { Machine } from "../machines/shared/machine";
+import { MachineService } from "../shared/services/machine.service";
+import { NgbDateParserFormatter, NgbDateStruct } from "@ng-bootstrap/ng-bootstrap";
+import { FormControl, FormGroup } from "@angular/forms";
+import { PurchaseFilter } from "../purchases/shared/purchase-filter";
+import { PurchasePage } from "./shared/purchase-page";
+import { ErrorDetail } from "../shared/entity/error-detail";
+import { Response } from "@angular/http";
+import { NotificationsService } from "angular2-notifications/lib/notifications.service";
 
 @Component({
   selector: 'app-purchases',
@@ -18,19 +17,28 @@ import {NotificationsService} from "angular2-notifications/lib/notifications.ser
   styleUrls: ['./purchases.component.scss']
 })
 export class PurchasesComponent implements OnInit {
+
+  // -------------------------------- functional variables --------------------------------
   public page: PurchasePage = new PurchasePage();
   public purchases: Purchase[];
   public machines: Machine[];
 
   form: FormGroup;
   pageForm: FormGroup;
+
+  // -------------------------------- functional variables --------------------------------
   hideFilter: boolean = true;
   hideStartDue: boolean = true;
 
   pageSize: number = 10;
+  pageItems: number = 5;
+  pageDirectionLinks: boolean = true;
+  pageItemsSize: string = '';
 
   minDate: NgbDateStruct;
   maxDate: NgbDateStruct;
+
+  inlineBlock: string;
 
   contentDefaultSize: string = 'col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6';
   contentFullSize: string = 'col-xs-12 col-sm-12 col-md-12 col-lg-3 col-xl-3';
@@ -39,6 +47,8 @@ export class PurchasesComponent implements OnInit {
   formDefaultSize: string = 'col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-6';
   formFullSize: string = 'col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12';
   changeFormSize: string;
+
+  // -------------------------------- init methods --------------------------------
 
   constructor(private purchaseService: PurchaseService,
               private machineService: MachineService,
@@ -68,11 +78,13 @@ export class PurchasesComponent implements OnInit {
         if (change === 'Start-Due') {
           this.changeFormSize = this.formFullSize;
           this.changeContentSize = this.contentFullSize;
+          this.inlineBlock = 'd-inline-block';
           this.showStartDue();
         }
         else {
           this.changeFormSize = this.formDefaultSize;
           this.changeContentSize = this.contentDefaultSize;
+          this.inlineBlock = '';
           this.toHideStartDue();
           this.form.get('start').patchValue('');
           this.form.get('due').patchValue('');
@@ -89,6 +101,7 @@ export class PurchasesComponent implements OnInit {
 
   }
 
+  // -------------------------------- ui methods --------------------------------
   private buildForm(): void {
     this.form = new FormGroup({
       machine: new FormControl('-1'),
@@ -102,6 +115,20 @@ export class PurchasesComponent implements OnInit {
     this.pageForm = new FormGroup({
       pageSize: new FormControl('10')
     });
+    if (window.innerWidth < 767) {
+      this.pageItems = 3;
+      this.pageItemsSize = 'sm';
+      this.pageDirectionLinks = false;
+    }
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    if (event.target.innerWidth > 767) {
+      this.pageItems = 5;
+      this.pageItemsSize = '';
+      this.pageDirectionLinks = true;
+    }
   }
 
   showFilter() {
@@ -116,6 +143,8 @@ export class PurchasesComponent implements OnInit {
     this.hideStartDue = true;
   }
 
+
+  // -------------------------------- functional methods --------------------------------
   onSubmit(): void {
     if (this.form.get('type').value === 'Start-Due') {
       if (this.form.get('start').value == '' || this.form.get('due').value == '') {
@@ -148,7 +177,15 @@ export class PurchasesComponent implements OnInit {
   }
 
   changePage($event) {
-    this.fetch($event, this.pageSize);
+    if (this.form.get('type').value === 'Start-Due') {
+      if (this.form.get('start').value == '' || this.form.get('due').value == '') {
+        this.notificationService.error('Error', 'Please set start and due dates');
+      } else {
+        this.fetch($event, this.pageSize);
+      }
+    } else {
+      this.fetch($event, this.pageSize);
+    }
   }
 
   changeStart($event) {

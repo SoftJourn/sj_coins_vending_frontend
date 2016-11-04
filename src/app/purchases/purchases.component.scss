@@ -13,6 +13,12 @@
   text-align: center
 }
 
+.vertical-align {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 @media (min-width: 992px) and (max-width: 1080px) {
   .col-lg-3 {
     float: left;
@@ -24,5 +30,37 @@
   .col-lg-6 {
     float: left;
     width: 100%;
+  }
+}
+
+@media (max-width: 320px) {
+  .vertical-align {
+    display: block;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 360px) {
+  .vertical-align {
+    display: block;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .vertical-align {
+    display: block;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 568px) {
+  .vertical-align {
+    display: block;
+    align-items: center;
+    justify-content: center;
   }
 }
