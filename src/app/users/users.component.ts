@@ -7,7 +7,7 @@ import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { FormControl, FormGroup } from "@angular/forms";
 import { LdapUsersService } from "../shared/services/ldap.users.service";
 import { Overlay } from "angular2-modal";
-import { Modal } from 'angular2-modal/plugins/bootstrap';
+import { Modal } from "angular2-modal/plugins/bootstrap";
 
 
 const mediaWindowSize = 600;
@@ -90,36 +90,35 @@ export class UsersComponent implements OnInit {
             () => {
               this.adminUserService.delete(ldapName)
                 .subscribe(
-                  next => {
+                  ()=> {
                   },
                   error=> {
-                    this.notificationService.error("Delete", error._body);
+                    this.notificationService.error("Delete", error.body);
                   },
                   () => {
                     this.notificationService.success('Delete', 'User ' + ldapName + ' has been removed successfully');
                     this.syncAdminUsers();
                   });
             },
-            () => {}
+            () => {
+            }
           );
         });
   }
 
-  public isNotValid(user: Account) {
+  public static isNotValid(user: Account) {
     return !user.authorities || user.authorities.length < 1;
   }
 
-  public  addAdminUser(content: any) {
-    if (this.isNotValid(this.selectedModule)) {
+  public  addAdminUser() {
+    if (UsersComponent.isNotValid(this.selectedModule)) {
       this.notificationService.info("Info", "Please select at least one role");
       return;
     }
     this.adminUserService.save(this.selectedModule)
-      .subscribe(response=> {
-          this.notificationService.success('Add', 'User has been added successfully');
-        },
+      .subscribe(response=> this.notificationService.success('Add', 'User has been added successfully'),
         error=> {
-          this.notificationService.error('Error', error._body);
+          this.notificationService.error('Error', error.body);
         },
         ()=> {
           this.syncAdminUsers();
@@ -138,11 +137,8 @@ export class UsersComponent implements OnInit {
   public open(content: any): NgbModalRef {
     this.activeModal = this.modalService.open(content);
     this.activeModal
-      .result.then(result => {
-      this.edit = false
-    }, reason => {
-      this.edit = false
-    });
+      .result.then(result => this.edit = false
+      , reason => this.edit = false);
     return this.activeModal;
   }
 }
