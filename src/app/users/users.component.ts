@@ -1,4 +1,4 @@
-import { Component, OnInit, trigger, state, style, transition, animate } from "@angular/core";
+import { Component, OnInit, trigger, state, style, transition, animate, ViewContainerRef } from "@angular/core";
 import { Account } from "../shared/entity/account";
 import { AdminUsersService } from "../shared/services/admin.users.service";
 import { NotificationsService } from "angular2-notifications/lib/notifications.service";
@@ -6,6 +6,8 @@ import { AddMenu } from "../shared/entity/add-menu";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { FormControl, FormGroup } from "@angular/forms";
 import { LdapUsersService } from "../shared/services/ldap.users.service";
+import { Overlay } from "angular2-modal";
+import { Modal } from 'angular2-modal/plugins/bootstrap';
 
 
 const mediaWindowSize = 600;
@@ -34,10 +36,12 @@ export class UsersComponent implements OnInit {
   public edit: boolean = false;
 
 
-  constructor(private adminUserService: AdminUsersService
-    , private notificationService: NotificationsService
-    , private ladpUserService: LdapUsersService
-    , private modalService: NgbModal) {
+  constructor(private adminUserService: AdminUsersService,
+              private notificationService: NotificationsService,
+              private ladpUserService: LdapUsersService,
+              private modalService: NgbModal,
+              overlay: Overlay, vcRef: ViewContainerRef, public modal: Modal) {
+    overlay.defaultViewContainer = vcRef;
   }
 
   ngOnInit(): any {
@@ -68,21 +72,41 @@ export class UsersComponent implements OnInit {
   }
 
   public deleteUser(ldapName: string) {
-    this.adminUserService.delete(ldapName)
-      .subscribe(
-        next => {
-        },
-        error=> {
-          this.notificationService.error("Delete", error._body);
-        },
-        () => {
-          this.notificationService.success('Delete', 'User ' + ldapName + ' has been removed successfully');
-          this.syncAdminUsers();
+    this.modal.confirm()
+      .size('sm')
+      .isBlocking(true)
+      .showClose(true)
+      .keyboard(27)
+      .title('Delete user')
+      .body('Do you really want to delete this user?')
+      .okBtn('Yes')
+      .okBtnClass('btn btn-success modal-footer-confirm-btn')
+      .cancelBtn('Cancel')
+      .cancelBtnClass('btn btn-secondary modal-footer-confirm-btn')
+      .open()
+      .then(
+        (response)=> {
+          response.result.then(
+            () => {
+              this.adminUserService.delete(ldapName)
+                .subscribe(
+                  next => {
+                  },
+                  error=> {
+                    this.notificationService.error("Delete", error._body);
+                  },
+                  () => {
+                    this.notificationService.success('Delete', 'User ' + ldapName + ' has been removed successfully');
+                    this.syncAdminUsers();
+                  });
+            },
+            () => {}
+          );
         });
   }
 
   public isNotValid(user: Account) {
-    return !user.authorities||user.authorities.length<1;
+    return !user.authorities || user.authorities.length < 1;
   }
 
   public  addAdminUser(content: any) {
@@ -114,7 +138,11 @@ export class UsersComponent implements OnInit {
   public open(content: any): NgbModalRef {
     this.activeModal = this.modalService.open(content);
     this.activeModal
-      .result.then(result => {this.edit = false}, reason => {this.edit = false});
+      .result.then(result => {
+      this.edit = false
+    }, reason => {
+      this.edit = false
+    });
     return this.activeModal;
   }
 }

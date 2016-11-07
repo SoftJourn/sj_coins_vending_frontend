@@ -32,17 +32,22 @@ export class MachinesComponent implements OnInit {
   onDelete(id: number) {
     this.machineService.delete(id)
       .subscribe(
-        () => {
-        },
+        () => null,
         (error: Response) => {
           var errorDetail: ErrorDetail = error.json();
           if (errorDetail.code == 1451) {
             this.notificationService.error('Error', 'Can not delete, this machine is being used!');
           } else {
-            this.notificationService.error('Error', errorDetail.detail);
+            if (errorDetail) {
+              this.notificationService.error('Error', errorDetail.detail);
+            } else {
+              this.notificationService.error('Error', 'Error appeared during deletion');
+            }
           }
         },
-        () => this.getMachines()
+        () => {
+          this.notificationService.success('Success', 'Machine has been deleted successfully');
+          this.getMachines()}
       );
   }
 }

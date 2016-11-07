@@ -44,31 +44,35 @@ export class CategoriesComponent implements OnInit {
       .okBtnClass('btn btn-success modal-footer-confirm-btn')
       .cancelBtn('Cancel')
       .cancelBtnClass('btn btn-secondary modal-footer-confirm-btn')
-      .open().then((response)=> {
-      response.result.then(() => {
-        this.categoryService.delete(id).subscribe(
-          next => {
-          },
-          error => {
-            var errorDetail: ErrorDetail = JSON.parse(error._body);
-            if (errorDetail.code == 1451) {
-              this.notificationService.error('Error', 'Can not delete, this category is being used!');
-            }
-            else {
-              this.notificationService.error('Error', errorDetail.detail);
-            }
-          },
-          () => {
-            this.categoryService.findAll().subscribe(
-              categories => {
-                this.categories = categories;
-                this.notificationService.success('Delete', 'Category has been deleted successfully.');
-              }
-            );
-          }
-        );
-      });
-    });
+      .open()
+      .then(
+        (response)=> {
+          response.result.then(
+            () => {
+              this.categoryService.delete(id).subscribe(
+                next => {
+                },
+                error => {
+                  var errorDetail: ErrorDetail = JSON.parse(error._body);
+                  if (errorDetail.code == 1451) {
+                    this.notificationService.error('Error', 'Can not delete, this category is being used!');
+                  }
+                  else {
+                    this.notificationService.error('Error', errorDetail.detail);
+                  }
+                },
+                () => {
+                  this.categoryService.findAll().subscribe(
+                    categories => {
+                      this.categories = categories;
+                      this.notificationService.success('Delete', 'Category has been deleted successfully.');
+                    }
+                  );
+                });
+            },
+            () => {}
+          );
+        });
   }
 }
 

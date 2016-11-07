@@ -2,10 +2,6 @@
   text-align: center;
 }
 
-.col-form-label {
-  margin-right: 15px;
-}
-
 .card-block {
   padding: 10px;
 }
@@ -15,4 +11,56 @@
   justify-content: center;
   align-items: center;
   text-align: center
+}
+
+.vertical-align {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 992px) and (max-width: 1080px) {
+  .col-lg-3 {
+    float: left;
+    width: 100%;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1080px) {
+  .col-lg-6 {
+    float: left;
+    width: 100%;
+  }
+}
+
+@media (max-width: 320px) {
+  .vertical-align {
+    display: block;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 360px) {
+  .vertical-align {
+    display: block;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .vertical-align {
+    display: block;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 568px) {
+  .vertical-align {
+    display: block;
+    align-items: center;
+    justify-content: center;
+  }
 }

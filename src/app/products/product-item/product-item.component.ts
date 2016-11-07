@@ -39,11 +39,16 @@ export class ProductItemComponent implements OnInit {
       .okBtnClass('btn btn-success modal-footer-confirm-btn')
       .cancelBtn('Cancel')
       .cancelBtnClass('btn btn-secondary modal-footer-confirm-btn')
-      .open().then((response)=> {
-      response.result.then(() => {
-        this.onDelete.emit(this.product.id);
-      });
-    });
+      .open()
+      .then(
+        (response)=> {
+          response.result.then(
+            () => {
+              this.onDelete.emit(this.product.id);
+            },
+            () => {}
+          );
+        });
   }
 
   onEditProduct() {
