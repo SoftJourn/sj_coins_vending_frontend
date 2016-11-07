@@ -18,8 +18,8 @@ const mediaWindowSize = 600;
   styleUrls: ['./users.component.scss'],
   animations: [
     trigger('heroState', [
-      state('inactive', style({opacity: 0, 'z-index': -100})),
-      state('active', style({opacity: 1, 'z-index': 1000})),
+      state('inactive', style({opacity: 0, 'z-index': -100, display: 'none'})),
+      state('active', style({opacity: 1, 'z-index': 1000, display: 'block'})),
       transition('inactive => active', [animate('1000ms ease-out')])
     ])
   ]

@@ -90,7 +90,7 @@ export class Account {
     let result = [];
     if (this.authorities)
       this.authorities.forEach(role => result.push(role.authority.replace(regex, '').replace(/_/, ' ')));
-    return result.toString().replace('/,/', ', ');
+    return result.toString().replace(/,/g, ', ');
   }
 
   public toString() {
