@@ -19,6 +19,10 @@
   justify-content: center;
 }
 
+.column-visibility{
+
+}
+
 @media (min-width: 992px) and (max-width: 1080px) {
   .col-lg-3 {
     float: left;
@@ -62,5 +66,11 @@
     display: block;
     align-items: center;
     justify-content: center;
+  }
+}
+
+@media screen and (max-width: 411px) {
+  .column-visibility{
+    display: none;
   }
 }
