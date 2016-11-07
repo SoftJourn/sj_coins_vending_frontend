@@ -6,7 +6,7 @@ import { AccountService } from "./shared/";
 export const routingGuardMap: { [key: string]: RegExp; } = {
   "ROLE_SUPER_USER": new RegExp(".*"),
   "ROLE_BILLING": new RegExp("/main/coins"),
-  "ROLE_INVENTORY": new RegExp("^/main$|/main/products|/main/machines|/main/categories"),
+  "ROLE_INVENTORY": new RegExp("^/main$|/main/products|/main/machines|/main/categories|/main/purchases"),
   "ROLE_USER_MANAGER": new RegExp("/main/users")
 };
 

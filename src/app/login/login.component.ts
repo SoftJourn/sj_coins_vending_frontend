@@ -42,6 +42,15 @@ export class LoginComponent implements OnInit {
     return this.isValidOrPristine(controlName) ? 'primary' : 'warn'
   }
 
+  errorMessage(controlName: string): string {
+    let control = this.form.controls[controlName];
+
+    if (control.hasError('pattern')) {
+      return 'Please enter valid email address';
+    }
+
+    return 'This field is required'
+  }
 
   onSubmit(): void {
     this.accountService.login(this.form.value)
