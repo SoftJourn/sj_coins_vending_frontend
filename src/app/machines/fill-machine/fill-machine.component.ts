@@ -112,7 +112,7 @@ export class FillMachineComponent implements OnInit, AfterContentInit {
 
     let rowElem: Element = this.renderer.selectRootElement('#row' + rowId);
 
-    if (rowElem.ownerDocument.body.clientWidth === 320) {
+    if (rowElem.ownerDocument.body.clientWidth < 768) {
       let cellElement = this.domAdapter.querySelector(this.hostElement.nativeElement, '#cell' + field.internalId);
 
       this.renderer.attachViewAfter(cellElement, [this.cellFormElement.nativeElement])
@@ -200,5 +200,13 @@ export class FillMachineComponent implements OnInit, AfterContentInit {
           this.notificationService.success('Success', 'Machine filled successfully');
         }
       );
+  }
+
+  setClassIfProductAbsent(field: Field): string {
+    if (field && field.product == null) {
+      return " card-icon-centered";
+    } else {
+      return "";
+    }
   }
 }

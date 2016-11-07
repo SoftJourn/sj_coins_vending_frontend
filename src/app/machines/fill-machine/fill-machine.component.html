@@ -26,12 +26,19 @@
       <div class="card-deck-wrapper">
         <div *ngFor="let row of machine?.rows">
           <div class="card-deck cell-card-row">
-            <div id="cell{{field.internalId}}" class="card product-card card-icon-centered" *ngFor="let field of row.fields"
+            <div id="cell{{field.internalId}}" class="card product-card" [ngClass]="setClassIfProductAbsent(field)"
+                 *ngFor="let field of row.fields"
                  (click)="toggleState(field, row.id)"
                  [@selectDeselectCard]="applyCardState(field.internalId)">
-              <div>
-                <i class="fa fa-plus-circle fa-3x" *ngIf="field?.product == null"></i>
-                <img [src]="createImageUrl(field.product)" class="img-fluid" *ngIf="field?.product != null">
+              <div class="product-img-container">
+                <div class="product-add-icon" *ngIf="field?.product == null">
+                  <i class="fa fa-plus-circle fa-3x"></i>
+                </div>
+                <img [src]="createImageUrl(field.product)" class="product-img" *ngIf="field?.product != null">
+              </div>
+              <hr>
+              <div class="cell-info">
+                <b>ID</b>:&nbsp;<i>{{field?.internalId}}</i>&nbsp;<b>QTY</b>:&nbsp;<i>{{field?.count}}</i>
               </div>
             </div>
           </div>
