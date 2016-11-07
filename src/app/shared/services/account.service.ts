@@ -89,7 +89,7 @@ export class AccountService {
 
   private createAccountFromJson(user: any): Account {
     let account: Account = new Account(
-      user.ldapName,
+      user.ldapId,
       user.fullName,
       user.email,
       this.tokenService.authorities

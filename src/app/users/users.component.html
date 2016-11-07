@@ -28,9 +28,9 @@
     <form class="d-inline-block text-xs-left">
       <label for="new-admin">LDAP user
         <select *ngIf="!edit" id="new-admin" [(ngModel)]="selectedModule" [ngModelOptions]="{standalone: true}">
-          <option *ngFor="let user of ldapUsers" [ngValue]="user">{{user.ldapName}}</option>
+          <option *ngFor="let user of ldapUsers" [ngValue]="user">{{user.ldapId}}</option>
         </select>
-        <b *ngIf="edit">{{selectedModule.ldapName}}</b>
+        <b *ngIf="edit">{{selectedModule.ldapId}}</b>
       </label>
       <br>
       <ng-container *ngIf="selectedModule">
@@ -59,7 +59,8 @@
     </form>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-success" type="submit" (click)="addAdminUser() ">Submit</button>
+    <button *ngIf="!edit" class="btn btn-success" type="submit" (click)="addAdminUserSubmit() ">Submit</button>
+    <button *ngIf="edit" class="btn btn-success" type="submit" (click)="editAdminUserSubmit() ">Submit</button>
     <button type="button" class="btn btn-secondary" (click)="c('Close click')">Close</button>
   </div>
 </template>
@@ -85,16 +86,16 @@
       <ng-container *ngFor="let user of adminUsers; let i = index;">
         <tr >
           <td class="collapsible" scope="row">{{i+1}}</td>
-          <td class="collapsible">{{user.ldapName}}</td>
+          <td class="collapsible">{{user.ldapId}}</td>
           <td>{{user.fullName}}</td>
-          <td>         {{user.getRole()}}        </td>
+          <td>{{user.getRole()}}</td>
           <td class="relative">
             <div *ngIf="!user.isSuperUser()">
               <button class="btn btn-secondary" (click)="editUser(user,content)">
                 <i class="fa fa-pencil-square"></i>
               </button>
               <button type="button" class="btn btn-danger collapsible block-interval-sm"
-                      (click)="deleteUser(user.ldapName)">
+                      (click)="deleteUser(user.ldapId)">
                 <i class="fa fa-trash"></i>
               </button>
             </div>

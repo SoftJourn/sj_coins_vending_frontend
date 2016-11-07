@@ -1,29 +1,32 @@
 import { Role } from "./role";
 export class Account {
 
+  public ldapId: string;
+
   constructor(object: Object);
   constructor(ldapName: string, fullName: string, email: string, authorities: Role[]);
-  constructor(public ldapName: string|Object,
+  constructor(fistParam: string|Object,
               public fullName?: string,
               public email?: string,
               public authorities?: Role[]) {
-    if (ldapName instanceof Object) {
-      let obj = ldapName;
+    if (fistParam instanceof Object) {
+      let obj = fistParam;
 
       if (Account.isValidInstance(obj)) {
-        this.ldapName = obj['ldapName'];
+        this.ldapId = obj['ldapId'];
         this.fullName = obj['fullName'];
         this.email = obj['email'];
         this.authorities = obj['authorities'].map(role=>new Role(role));
       } else {
         return null;
       }
-
+    } else {
+      this.ldapId = <string>fistParam;
     }
   }
 
   public static isValidInstance(obj: Object): boolean {
-    let hasAllProperties = obj.hasOwnProperty("ldapName")
+    let hasAllProperties = obj.hasOwnProperty("ldapId")
       && obj.hasOwnProperty("fullName")
       && obj.hasOwnProperty("email")
       && obj.hasOwnProperty("authorities");
@@ -31,7 +34,7 @@ export class Account {
     if (!hasAllProperties)
       return false;
 
-    let typeAccordance = typeof(obj['ldapName']) == "string"
+    let typeAccordance = typeof(obj['ldapId']) == "string"
       && typeof(obj['fullName']) == "string"
       && typeof(obj['email']) == "string"
       && typeof(obj['authorities']) == "object"
@@ -87,7 +90,7 @@ export class Account {
     let result = [];
     if (this.authorities)
       this.authorities.forEach(role => result.push(role.authority.replace(regex, '').replace(/_/, ' ')));
-    return result.toString();
+    return result.toString().replace('/,/', ', ');
   }
 
   public toString() {

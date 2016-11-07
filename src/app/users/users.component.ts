@@ -110,15 +110,31 @@ export class UsersComponent implements OnInit {
     return !user.authorities || user.authorities.length < 1;
   }
 
-  public  addAdminUser() {
+  public  addAdminUserSubmit() {
     if (UsersComponent.isNotValid(this.selectedModule)) {
       this.notificationService.info("Info", "Please select at least one role");
       return;
     }
     this.adminUserService.save(this.selectedModule)
       .subscribe(response=> this.notificationService.success('Add', 'User has been added successfully'),
-        error=> {
-          this.notificationService.error('Error', error.body);
+        error => {
+          this.notificationService.error('Error', error.text());
+        },
+        ()=> {
+          this.syncAdminUsers();
+          this.activeModal.close('Submit');
+        });
+  }
+
+  public editAdminUserSubmit() {
+    if (UsersComponent.isNotValid(this.selectedModule)) {
+      this.notificationService.info("Info", "Please select at least one role");
+      return;
+    }
+    this.adminUserService.update(this.selectedModule.ldapId, this.selectedModule)
+      .subscribe(response => this.notificationService.success('Edit', 'User has been edited successfully')
+        , error => {
+          this.notificationService.error('Error', error.text());
         },
         ()=> {
           this.syncAdminUsers();
@@ -127,7 +143,7 @@ export class UsersComponent implements OnInit {
   }
 
   public editUser(user: Account, content: any) {
-    let ldap = this.ldapUsers.filter(luser=>user.ldapName == luser.ldapName)[0];
+    let ldap = this.ldapUsers.filter(luser=>user.ldapId == luser.ldapId)[0];
     ldap.authorities = user.authorities;
     this.selectedModule = ldap;
     this.edit = true;
