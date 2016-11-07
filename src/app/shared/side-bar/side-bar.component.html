@@ -3,39 +3,39 @@
 </button>
 <nav class="sidebar" [ngClass]="{'sidebarPushRight': isActive}">
   <ul class="list-group">
-    <li>
-      <a *ngIf="isVisible('/main')" [routerLink]="['/main']" routerLinkActive="router-link-active"
+    <li *ngIf="isVisible('/main')" >
+      <a [routerLink]="['/main']" routerLinkActive="router-link-active"
          [routerLinkActiveOptions]="{exact: true}" (click)="hide()" class="list-group-item">
         <i class="fa fa-th fa-lg"></i>Dashboard
       </a>
     </li>
-    <li>
-      <a *ngIf="isVisible('/main/products')" [routerLink]="['/main/products']"
+    <li *ngIf="isVisible('/main/products')" >
+      <a [routerLink]="['/main/products']"
          routerLinkActive="router-link-active"
          [routerLinkActiveOptions]="{exact: true}" class="list-group-item" (click)="hide()">
         <span><i class="fa fa-shopping-basket fa-lg"></i>Products</span>
       </a>
     </li>
-    <li>
-      <a *ngIf="isVisible('/main/machines')" [routerLink]="['/main/machines']" routerLinkActive="router-link-active"
+    <li *ngIf="isVisible('/main/machines')">
+      <a [routerLink]="['/main/machines']" routerLinkActive="router-link-active"
          [routerLinkActiveOptions]="{exact: true}" class="list-group-item" (click)="hide()">
         <span><i class="fa fa-cogs fa-lg"></i>Vending machines</span>
       </a>
     </li>
-    <li>
-      <a *ngIf="isVisible('/main/coins')" [routerLink]="['/main/coins']" routerLinkActive="router-link-active"
+    <li *ngIf="isVisible('/main/coins')">
+      <a [routerLink]="['/main/coins']" routerLinkActive="router-link-active"
          [routerLinkActiveOptions]="{exact: true}" class="list-group-item" (click)="hide()">
         <span><i class="fa fa-money fa-lg"></i>Coins management</span>
       </a>
     </li>
-    <li>
-      <a *ngIf="isVisible('/main/categories')" [routerLink]="['/main/categories']" routerLinkActive="router-link-active"
+    <li *ngIf="isVisible('/main/categories')">
+      <a [routerLink]="['/main/categories']" routerLinkActive="router-link-active"
          [routerLinkActiveOptions]="{exact: true}" class="list-group-item" (click)="hide()">
         <span><i class="fa fa-tags fa-lg"></i>Categories</span>
       </a>
     </li>
-    <li>
-      <a *ngIf="isVisible('/main/users')" [routerLink]="['/main/users']" routerLinkActive="router-link-active"
+    <li *ngIf="isVisible('/main/users')">
+      <a [routerLink]="['/main/users']" routerLinkActive="router-link-active"
          [routerLinkActiveOptions]="{exact: true}" class="list-group-item" (click)="hide()">
         <span><i class="fa fa-users fa-lg"></i>Users</span>
       </a>

@@ -8,8 +8,8 @@ import { UsernamePasswordCredentials } from "../username-password-credentials";
 import { HttpService } from "./http.service";
 
 export const routes: { [key: string]: string[] } = {
-  "ROLE_INVENTORY": ["/main/coins"],
-  "ROLE_BILLING": ["/main/products", "/main/machines", "/main/categories"],
+  "ROLE_BILLING": ["/main/coins"],
+  "ROLE_INVENTORY": ["/main","/main/products", "/main/machines", "/main/categories"],
   "ROLE_USER_MANAGER": ["/main/users"],
   "ROLE_SUPER_USER": ["/main/coins"]
     .concat(["/main/products", "/main/machines", "/main/categories"])
@@ -109,7 +109,7 @@ export class AccountService {
 
   public getRoutes(): Array<string> {
     let route = [];
-    this.getAccount().authorities.forEach(a=>route = route.concat(routes[a.authority]));
+    this.getAccount().authorities.forEach(a=>route = routes[a.authority]?route.concat(routes[a.authority]):route);
     //noinspection TypeScriptUnresolvedFunction
     return Array.from(new Set(route));
   }
