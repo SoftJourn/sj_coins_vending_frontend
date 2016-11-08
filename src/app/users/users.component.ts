@@ -148,16 +148,27 @@ export class UsersComponent implements OnInit {
   public editUser(user: Account, content: any) {
     let ldap = this.ldapUsers.filter(luser=>user.ldapId == luser.ldapId)[0];
     ldap.authorities = user.authorities;
-    this.selectedModule = ldap;
     this.edit = true;
-    this.open(content);
+    this.open(content, ldap);
   }
 
-  public open(content: any): NgbModalRef {
+  public open(content: any, selectedModule?: Account): NgbModalRef {
+    if (!selectedModule)
+      this.selectedModule = this.ldapUsers[0];
+    else
+      this.selectedModule = selectedModule;
     this.activeModal = this.modalService.open(content);
     this.activeModal
-      .result.then(result => this.edit = false
-      , reason => this.edit = false);
+      .result.then(
+      result => {
+        this.edit = false;
+        this.ldapUsers.forEach(user => user.authorities = null);
+      }
+      , reason => {
+        this.edit = false;
+        this.ldapUsers.forEach(user => user.authorities = null);
+      });
+
     return this.activeModal;
   }
 }
