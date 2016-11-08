@@ -1,9 +1,18 @@
 <div class="affix-top">
-  <div class="col-xs-12 col-md-12 col-xl-12 row header-container">
-    <div class="col-xs-8 col-md-8 col-xl-8">
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 row header-container">
+    <div class="col-xs-9 col-sm-4 col-md-3 col-lg-6 col-xl-7">
       <h2>Products</h2>
     </div>
-    <div class="col-xs-4 col-md-4 col-xl-4 header-buttons-container">
+    <div class="col-xs-12 col-sm-8 col-md-9 col-lg-6 col-xl-5 header-buttons-container">
+      <form [formGroup]="form">
+        <div class="right-inner-addon">
+          <i class="fa fa-search fa-lg"></i>
+          <input type="search"
+                 class="form-control"
+                 formControlName="name"
+                 placeholder="Search"/>
+        </div>
+      </form>
       <button class="btn btn-success" [routerLink]="['/main/products/add']">
         <i class="fa fa-plus btn-icon"></i>Create
       </button>

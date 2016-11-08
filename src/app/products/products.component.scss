@@ -1,7 +1,7 @@
 a.wrapper-link {
   background: transparent;
   color: #373a3c;
-  :hover{
+  :hover {
     color: #373a3c;
     text-decoration: none;
   }
@@ -16,7 +16,7 @@ div.card-footer {
   }
 }
 
-.affix-top{
+.affix-top {
   z-index: 10;
   background-color: #fff;
   position: fixed;
@@ -26,13 +26,53 @@ div.card-footer {
   padding: 10px 10px 0 10px;
 }
 
-.affix-bottom{
+.affix-bottom {
   margin-top: 80px;
+}
+
+.right-inner-addon {
+  position: absolute;
+  width: 70%;
+}
+
+.right-inner-addon input {
+  padding-right: 30px;
+}
+
+.right-inner-addon i {
+  position: absolute;
+  right: 0px;
+  padding: 10px 12px;
+  pointer-events: none;
 }
 
 @media only screen and (max-width: 768px) {
   /* For mobile phones: */
   [class*="affix-top"] {
     left: 0px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .header-container {
+    display: block;
+  }
+  .right-inner-addon {
+    width: 60%;
+  }
+}
+
+@media screen and (max-width: 1080px) {
+  .right-inner-addon {
+    padding-right: 10px;
+  }
+  .right-inner-addon i {
+    padding-right: 15px;
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  .col-xl-7 {
+    width: 100%;
   }
 }

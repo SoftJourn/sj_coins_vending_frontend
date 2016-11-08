@@ -16,6 +16,12 @@ export class ProductService extends CrudService<Product> {
     return `${AppProperties.API_VENDING_ENDPOINT}/products`;
   }
 
+  public findAllThatContainByName(name: string): Observable<Product[]> {
+    return this.httpService.get(this.getUrl() + '/search?name=' + name).map(response => {
+      return response.json();
+    });
+  }
+
   public updateImage(id: number, file: any): Observable<void> {
     let url = `${this.getUrl()}/${id}/image`;
 
