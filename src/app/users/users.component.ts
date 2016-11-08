@@ -118,7 +118,10 @@ export class UsersComponent implements OnInit {
     this.adminUserService.save(this.selectedModule)
       .subscribe(response=> this.notificationService.success('Add', 'User has been added successfully'),
         error => {
-          this.notificationService.error('Error', error.text());
+          if (error.status == 409)
+            this.notificationService.error('Error', 'Selected user already exists');
+          else
+            this.notificationService.error('Error', error.text());
         },
         ()=> {
           this.syncAdminUsers();
