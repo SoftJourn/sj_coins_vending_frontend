@@ -139,7 +139,7 @@ export class CoinManagementComponent implements OnInit {
           transaction => {
             if (transaction.status.toLowerCase() == 'success') {
               this.notificationService.success(
-                'Success', `Money from ${transaction.account} has been withdrawn successfully`
+                'Success', `Money from ${merchantAccount.fullName} has been withdrawn successfully`
               );
               this.loadData();
             } else {
@@ -155,6 +155,7 @@ export class CoinManagementComponent implements OnInit {
 
   transferToAccount(): void {
     let transferAmount = this.transferForm.value['amount'];
+    let transferDto = this.transferForm.value;
 
     this.coinService.getTreasuryAmount()
       .flatMap(
@@ -164,7 +165,7 @@ export class CoinManagementComponent implements OnInit {
           if (this.treasuryAmount < transferAmount) {
             return Observable.throw({message: 'Not enough coins in treasury'});
           } else {
-            return this.coinService.transferToAccount(this.transferForm.value);
+            return this.coinService.transferToAccount(transferDto);
           }
         })
       .subscribe(
