@@ -1,3 +1,11 @@
+a.fa {
+  position: absolute;
+  z-index: 1000;
+  top: 30%;
+  right: 2%;
+  cursor: pointer;
+}
+
 a.wrapper-link {
   background: transparent;
   color: #373a3c;
@@ -51,28 +59,79 @@ div.card-footer {
   [class*="affix-top"] {
     left: 0px;
   }
+  a.fa {
+    right: 7%;
+  }
+}
+
+@media only screen and (min-width: 360px) and (max-width: 360px) {
+  a.fa {
+    right: 8%;
+  }
+}
+
+@media screen and (min-width: 361px) and (max-width: 480px) {
+  a.fa {
+    right: 10%;
+  }
 }
 
 @media screen and (max-width: 480px) {
   .header-container {
     display: block;
   }
+  .affix-bottom {
+    margin-top: 115px;
+  }
   .right-inner-addon {
     width: 60%;
   }
 }
 
-@media screen and (max-width: 1080px) {
+@media screen and (min-width: 340px) and (max-width: 568px) {
+  .col-sm-8 {
+    width: 81%;
+  }
+}
+
+@media screen and (max-width: 568px) and (min-width: 340px) {
+  .col-sm-8 {
+    width: 100%;
+  }
+}
+
+@media screen and (min-width: 361px) and (max-width: 1080px) {
   .right-inner-addon {
     padding-right: 10px;
   }
   .right-inner-addon i {
     padding-right: 15px;
   }
+  a.fa {
+    right: 7%;
+  }
 }
 
-@media screen and (min-width: 1280px) {
+@media screen and (min-width: 1280px) and (max-width: 1560px) {
   .col-xl-7 {
     width: 100%;
+  }
+  .col-xl-5 {
+    width: 70%;
+  }
+  a.fa {
+    right: 7%;
+  }
+}
+
+@media screen and (min-width: 1560px) and (max-width: 1920px) {
+  .col-xl-7 {
+    width: 100%;
+  }
+  .col-xl-5 {
+    width: 70%;
+  }
+  a.fa {
+    right: 2%;
   }
 }

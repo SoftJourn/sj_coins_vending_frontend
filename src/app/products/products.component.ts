@@ -15,6 +15,10 @@ export class ProductsComponent implements OnInit {
   public products: Product[];
   form: FormGroup;
 
+  searchClass: string = 'fa-search';
+  cancelClass: string = 'fa-close';
+  searchChangeClass: string = this.searchClass;
+
   constructor(private productService: ProductService,
               private notificationService: NotificationsService) {
   }
@@ -30,6 +34,11 @@ export class ProductsComponent implements OnInit {
       .debounceTime(300)
       .distinctUntilChanged()
       .subscribe(change => {
+        if (change != '') {
+          this.searchChangeClass = this.cancelClass;
+        } else {
+          this.searchChangeClass = this.searchClass;
+        }
         this.productService.findAllThatContainByName(change).subscribe(
           products => this.products = products,
           error => {
@@ -41,6 +50,11 @@ export class ProductsComponent implements OnInit {
     this.form = new FormGroup({
       name: new FormControl('')
     });
+  }
+
+  searchCancel() {
+    this.form.get('name').patchValue('');
+    this.searchChangeClass = this.searchClass;
   }
 
   onDelete(id: number) {

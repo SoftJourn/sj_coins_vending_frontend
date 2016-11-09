@@ -43,6 +43,7 @@ import { ModalModule } from "angular2-modal";
 import { BootstrapModalModule } from "angular2-modal/plugins/bootstrap";
 import { CoinService } from "./shared/services/coin.service";
 import { EditMachineComponent } from './machines/edit-machine/edit-machine.component';
+import { PurchaseDatePipe } from './purchases/shared/purchase-date.pipe'
 
 @NgModule({
   declarations: [
@@ -69,7 +70,8 @@ import { EditMachineComponent } from './machines/edit-machine/edit-machine.compo
     ModalImgCropperComponent,
     ImageCropperComponent,
     CoinManagementComponent,
-    EditMachineComponent
+    EditMachineComponent,
+    PurchaseDatePipe
   ],
   imports: [
     BrowserModule,

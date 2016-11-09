@@ -68,7 +68,9 @@ export class PurchasesComponent implements OnInit {
         this.purchases = this.page.content;
         this.machineService.findAll().subscribe(machines => {
           this.machines = machines;
-        })
+        }, error => {
+          alert(error);
+        });
       }, (error: Response) => {
         var errorDetail: ErrorDetail = error.json();
         this.notificationService.error('Error', errorDetail.detail);
