@@ -6,21 +6,21 @@ hr {
 .product-card {
   cursor: pointer;
   text-align: center;
-  //vertical-align: bottom;
+  vertical-align: bottom;
 }
 
 .product-img-container {
-  height: 196px;
+  height: 80%;
 }
 
 .product-img {
 }
 
 .product-add-icon {
+  padding-top: 15%;
   color: #c2c4ce;
 }
 .cell-card-row {
-  height: 230px;
 }
 
 .cell-info {
@@ -72,7 +72,7 @@ hr {
 
 @media (min-width: 768px) {
   .cell-card-row {
-    height: 230px;
+    height: 175px;
   }
 
   .product-img {
@@ -80,6 +80,9 @@ hr {
     height: auto;
   }
 
+  .product-add-icon {
+    padding-top: 35%;
+  }
 
   .machine-bg {
     padding: 20px;
