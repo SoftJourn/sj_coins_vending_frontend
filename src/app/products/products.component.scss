@@ -79,10 +79,13 @@ div.card-footer {
   }
 }
 
-@media screen and (min-width: 480px) and (max-width: 740px) {
+@media screen and (min-width: 0px) and (max-width: 600px) {
   .affix-bottom {
     margin-top: 115px;
   }
+}
+
+@media screen and (min-width: 480px) and (max-width: 740px) {
   .right-inner-addon {
     width: 70%;
   }
