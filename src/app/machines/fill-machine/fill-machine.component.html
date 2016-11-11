@@ -30,8 +30,8 @@
                  *ngFor="let field of row.fields"
                  (click)="toggleState(field, row.id)"
                  [@selectDeselectCard]="applyCardState(field.internalId)">
-              <div class="product-img-container">
-                <div class="product-add-icon" *ngIf="field?.product == null">
+              <div class="product-img-container centered">
+                <div class="product-add-icon " *ngIf="field?.product == null">
                   <i class="fa fa-plus-circle fa-3x"></i>
                 </div>
                 <img [src]="createImageUrl(field.product)" class="product-img" *ngIf="field?.product != null">
