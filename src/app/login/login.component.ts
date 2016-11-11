@@ -21,7 +21,6 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.loginError = new AppError();
-    localStorage.clear();
     this.form = new FormGroup({
       username: new FormControl('', [
         Validators.required,
@@ -46,7 +45,7 @@ export class LoginComponent implements OnInit {
     let control = this.form.controls[controlName];
 
     if (control.hasError('pattern')) {
-      return 'Please enter valid email address';
+      return 'Please enter valid LDAP login';
     }
 
     return 'This field is required'
@@ -59,7 +58,10 @@ export class LoginComponent implements OnInit {
         },
         (error: AppError) => this.notificationService.error('Error', error.message),
         () => {
-          this.router.navigate([this.accountService.getRoutes()[0]]);
+          if (!!this.accountService.getRoutes()[0])
+            this.router.navigate([this.accountService.getRoutes()[0]]);
+          else
+            this.notificationService.info('Info', 'User is not admin');
         })
   }
 }
