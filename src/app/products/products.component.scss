@@ -2,7 +2,7 @@ a.fa {
   position: absolute;
   z-index: 1000;
   top: 30%;
-  right: 2%;
+  right: 20px;
   cursor: pointer;
 }
 
@@ -59,32 +59,38 @@ div.card-footer {
   [class*="affix-top"] {
     left: 0px;
   }
+}
+
+@media only screen and (min-width: 320px) and (max-width: 360px) {
   a.fa {
-    right: 7%;
+    right: 10px;
+  }
+  .right-inner-addon {
+    width: 60%;
   }
 }
 
-@media only screen and (min-width: 360px) and (max-width: 360px) {
+@media only screen and (min-width: 360px) and (max-width: 480px) {
   a.fa {
-    right: 8%;
+    right: 20px;
+  }
+  .right-inner-addon {
+    width: 65%;
   }
 }
 
-@media screen and (min-width: 361px) and (max-width: 480px) {
-  a.fa {
-    right: 10%;
-  }
-}
-
-@media screen and (max-width: 480px) {
-  .header-container {
-    display: block;
-  }
+@media screen and (min-width: 480px) and (max-width: 740px) {
   .affix-bottom {
     margin-top: 115px;
   }
   .right-inner-addon {
-    width: 60%;
+    width: 70%;
+  }
+}
+
+@media screen and (min-width: 320px) and (max-width: 600px) {
+  .header-container {
+    display: inline-block;
   }
 }
 
@@ -107,9 +113,6 @@ div.card-footer {
   .right-inner-addon i {
     padding-right: 15px;
   }
-  a.fa {
-    right: 7%;
-  }
 }
 
 @media screen and (min-width: 1280px) and (max-width: 1560px) {
@@ -119,9 +122,6 @@ div.card-footer {
   .col-xl-5 {
     width: 70%;
   }
-  a.fa {
-    right: 7%;
-  }
 }
 
 @media screen and (min-width: 1560px) and (max-width: 1920px) {
@@ -130,8 +130,5 @@ div.card-footer {
   }
   .col-xl-5 {
     width: 70%;
-  }
-  a.fa {
-    right: 2%;
   }
 }
