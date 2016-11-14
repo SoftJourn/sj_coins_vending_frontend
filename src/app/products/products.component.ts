@@ -42,6 +42,7 @@ export class ProductsComponent implements OnInit {
         this.productService.findAllThatContainByName(change).subscribe(
           products => this.products = products,
           error => {
+            this.notificationService.error('Error', 'You entered invalid search text!');
           });
       });
   }
