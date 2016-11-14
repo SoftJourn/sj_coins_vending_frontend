@@ -51,6 +51,9 @@ export class AccountService {
 
   public login(credentials: UsernamePasswordCredentials): Observable<void> {
     return new Observable<void>(observer => {
+
+      this.tokenService.deleteTokensFromStorage();
+
       let badCredError = new AppError(
         'auth/account-not-found',
         'Wrong credentials'
