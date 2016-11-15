@@ -24,6 +24,10 @@ button {
   text-align: right !important;
 }
 
+body{
+  overflow-y: auto !important;
+}
+
 .header-container {
   display: flex;
   align-items: center;
