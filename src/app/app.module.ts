@@ -1,5 +1,5 @@
 import { BrowserModule } from "@angular/platform-browser";
-import { NgModule } from "@angular/core";
+import { NgModule, ErrorHandler } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { HttpModule } from "@angular/http";
@@ -44,6 +44,7 @@ import { BootstrapModalModule } from "angular2-modal/plugins/bootstrap";
 import { CoinService } from "./shared/services/coin.service";
 import { EditMachineComponent } from './machines/edit-machine/edit-machine.component';
 import { PurchaseDatePipe } from './purchases/shared/purchase-date.pipe'
+import { GlobalErrorHandler } from "./shared/global-error-handler";
 
 @NgModule({
   declarations: [
@@ -105,7 +106,8 @@ import { PurchaseDatePipe } from './purchases/shared/purchase-date.pipe'
     AdminUsersService,
     ImageUploadService,
     PurchaseService,
-    CoinService
+    CoinService,
+    {provide: ErrorHandler, useClass: GlobalErrorHandler}
   ],
   bootstrap: [AppComponent]
 })
