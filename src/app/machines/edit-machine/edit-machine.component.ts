@@ -1,13 +1,13 @@
-import {Component, OnInit} from '@angular/core';
-import {FormGroup, FormControl, Validators} from "@angular/forms";
-import {MachineService} from "../../shared/services/machine.service";
-import {NotificationsService} from "angular2-notifications";
-import {FormValidationStyles} from "../../shared/form-validation-styles";
-import {Router, ActivatedRoute} from "@angular/router";
-import {Response} from "@angular/http";
-import {ErrorDetail} from "../../shared/entity/error-detail";
-import {Subscription} from "rxjs";
-import {Machine} from "../shared/machine";
+import { Component, OnInit } from "@angular/core";
+import { FormGroup, FormControl, Validators } from "@angular/forms";
+import { MachineService } from "../../shared/services/machine.service";
+import { NotificationsService } from "angular2-notifications";
+import { FormValidationStyles } from "../../shared/form-validation-styles";
+import { Router, ActivatedRoute } from "@angular/router";
+import { Response } from "@angular/http";
+import { ErrorDetail } from "../../shared/entity/error-detail";
+import { Subscription } from "rxjs";
+import { Machine } from "../shared/machine";
 
 @Component({
     selector: 'app-edit-machine',
@@ -24,11 +24,12 @@ export class EditMachineComponent implements OnInit {
     private typeColsRows: any;
     public rowsNumbering: any;
     public columnsNumbering: any;
+  public isActive: boolean;
 
     constructor(private machineService: MachineService,
                 private notificationService: NotificationsService,
                 private route: ActivatedRoute,
-                private router: Router,) {
+                private router: Router) {
     }
 
     ngOnInit() {
@@ -68,7 +69,8 @@ export class EditMachineComponent implements OnInit {
                 Validators.required,
                 Validators.pattern('^[1-9]$|^[1][0-9]{0,1}$')
             ]),
-            columnsNumbering: new FormControl({value: this.columnsNumbering, disabled: true}, Validators.required)
+          columnsNumbering: new FormControl({value: this.columnsNumbering, disabled: true}, Validators.required),
+          isActive: new FormControl(this.machines.isActive)
         });
 
         this.formStyles = new FormValidationStyles(this.form);
@@ -99,7 +101,8 @@ export class EditMachineComponent implements OnInit {
             rowsCount: '',
             rowsNumbering: 'ALPHABETICAL',
             columnsCount: '',
-            columnsNumbering: 'NUMERICAL'
+          columnsNumbering: 'NUMERICAL',
+          isActive: false
         });
     }
 

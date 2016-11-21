@@ -8,7 +8,8 @@ export class Machine {
     public url: string,
     public uniqueId: string,
     public rows: Row[],
-    public size: MachineSize
+    public size: MachineSize,
+    public isActive: boolean
   ) {}
 }
 
