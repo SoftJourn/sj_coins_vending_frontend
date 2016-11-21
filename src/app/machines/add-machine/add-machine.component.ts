@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from "@angular/core";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { MachineService } from "../../shared/services/machine.service";
 import { NotificationsService } from "angular2-notifications";
@@ -45,7 +45,8 @@ export class AddMachineComponent implements OnInit {
         Validators.required,
         Validators.pattern('^[1-9]$|^[1][0-9]{0,1}$')
       ]),
-      columnsNumbering: new FormControl('NUMERICAL', Validators.required)
+      columnsNumbering: new FormControl('NUMERICAL', Validators.required),
+      isActive: new FormControl()
     });
 
     this.formStyles = new FormValidationStyles(this.form);
