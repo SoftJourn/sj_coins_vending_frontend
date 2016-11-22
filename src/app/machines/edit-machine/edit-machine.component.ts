@@ -10,132 +10,137 @@ import { Subscription } from "rxjs";
 import { Machine } from "../shared/machine";
 
 @Component({
-    selector: 'app-edit-machine',
-    templateUrl: './edit-machine.component.html',
-    styleUrls: ['./edit-machine.component.scss']
+  selector: 'app-edit-machine',
+  templateUrl: './edit-machine.component.html',
+  styleUrls: ['./edit-machine.component.scss']
 })
 export class EditMachineComponent implements OnInit {
 
-    form: FormGroup;
-    public formStyles: FormValidationStyles;
-    private subscription: Subscription;
-    private mashinesIndex: number;
-    public machines: Machine;
-    private typeColsRows: any;
-    public rowsNumbering: any;
-    public columnsNumbering: any;
+  form: FormGroup;
+  public formStyles: FormValidationStyles;
+  private subscription: Subscription;
+  private mashinesIndex: number;
+  public machines: Machine;
+  private typeColsRows: any;
+  public rowsNumbering: any;
+  public columnsNumbering: any;
+  public productsInCellLimit: number;
   public isActive: boolean;
 
-    constructor(private machineService: MachineService,
-                private notificationService: NotificationsService,
-                private route: ActivatedRoute,
-                private router: Router) {
-    }
+  constructor(private machineService: MachineService,
+              private notificationService: NotificationsService,
+              private route: ActivatedRoute,
+              private router: Router) {
+  }
 
-    ngOnInit() {
-        this.subscription = this.route.params.subscribe(
-            (params: any) => {
-                this.mashinesIndex = +params['id'];
+  ngOnInit() {
+    this.subscription = this.route.params.subscribe(
+      (params: any) => {
+        this.mashinesIndex = +params['id'];
 
-                this.machineService.findOne(this.mashinesIndex).subscribe(
-                    machines => {
-                        this.machines = machines;
-                        this.checkTypeColumRows();
-                        this.buildForm();
-                    },
-                    error => {
-                        console.log(error);
-                    });
-            }
-        );
-    }
+        this.machineService.findOne(this.mashinesIndex).subscribe(
+          machines => {
+            this.machines = machines;
+            this.checkTypeColumRows();
+            this.buildForm();
+          },
+          error => {
+            console.log(error);
+          });
+      }
+    );
+  }
 
-    private buildForm(): void {
-        this.form = new FormGroup({
-            name: new FormControl(this.machines.name, [
-                Validators.required,
-                Validators.pattern('^[a-zA-Z0-9\u0400-\u04FF]+[ a-zA-Z0-9\u0400-\u04FF]*[a-zA-Z0-9\u0400-\u04FF]$')
-            ]),
-            url: new FormControl(this.machines.url, [
-                Validators.required,
-                Validators.pattern('https?:\\/\\/(www\\.)?([-a-zA-Z0-9@:%._+~#=]{2,256}\\.[a-z]{2,6}|[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})\\b([-a-zA-Z0-9@:%_+.~#?&/=]*)')
-            ]),
-            rowsCount: new FormControl({value: this.machines.size.rows, disabled: true}, [
-                Validators.required,
-                Validators.pattern('^[1-9]$|^[1][0-9]{0,1}$')
-            ]),
-            rowsNumbering: new FormControl({value: this.rowsNumbering, disabled: true}, Validators.required),
-            columnsCount: new FormControl({value: this.machines.size.columns, disabled: true}, [
-                Validators.required,
-                Validators.pattern('^[1-9]$|^[1][0-9]{0,1}$')
-            ]),
-          columnsNumbering: new FormControl({value: this.columnsNumbering, disabled: true}, Validators.required),
-          isActive: new FormControl(this.machines.isActive)
-        });
+  private buildForm(): void {
+    this.form = new FormGroup({
+      name: new FormControl(this.machines.name, [
+        Validators.required,
+        Validators.pattern('^[a-zA-Z0-9\u0400-\u04FF]+[ a-zA-Z0-9\u0400-\u04FF]*[a-zA-Z0-9\u0400-\u04FF]$')
+      ]),
+      url: new FormControl(this.machines.url, [
+        Validators.required,
+        Validators.pattern('https?:\\/\\/(www\\.)?([-a-zA-Z0-9@:%._+~#=]{2,256}\\.[a-z]{2,6}|[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})\\b([-a-zA-Z0-9@:%_+.~#?&/=]*)')
+      ]),
+      rowsCount: new FormControl({value: this.machines.size.rows, disabled: true}, [
+        Validators.required,
+        Validators.pattern('^[1-9]$|^[1][0-9]{0,1}$')
+      ]),
+      rowsNumbering: new FormControl({value: this.rowsNumbering, disabled: true}, Validators.required),
+      columnsCount: new FormControl({value: this.machines.size.columns, disabled: true}, [
+        Validators.required,
+        Validators.pattern('^[1-9]$|^[1][0-9]{0,1}$')
+      ]),
+      columnsNumbering: new FormControl({value: this.columnsNumbering, disabled: true}, Validators.required),
+      productsInCellLimit: new FormControl({value: this.machines.productsInCellLimit, disabled: true}, [
+        Validators.required,
+        Validators.pattern('^[1-9]$|^[1][0-9]{0,1}$')
+      ]),
+      isActive: new FormControl(this.machines.isActive)
+    });
 
-        this.formStyles = new FormValidationStyles(this.form);
-    }
+    this.formStyles = new FormValidationStyles(this.form);
+  }
 
-    submit() {
-        this.form.value.id = this.mashinesIndex;
-        this.machineService.updateMachine(this.form.value).subscribe(
-            () => {
-            },
-            (error: Response) => {
-                let errorDetail: ErrorDetail = error.json();
-                if (errorDetail) {
-                    this.notificationService.error('Error', errorDetail.detail);
-                }
-            },
-            () => {
-                this.router.navigate(['/main/machines']);
-                this.notificationService.success('Update', 'Machine has been updated successfully');
-                this.resetForm()
-            }
-        );
-    }
-
-    private resetForm() {
-        this.form.reset({
-            name: '',
-            rowsCount: '',
-            rowsNumbering: 'ALPHABETICAL',
-            columnsCount: '',
-          columnsNumbering: 'NUMERICAL',
-          isActive: false
-        });
-    }
-
-    private checkTypeColumRows() {
-        let reg1 = /\d{1}\d{1}/;
-        let reg2 = /[A-Za-z]{1}[A-Za-z]{1}/;
-        let reg3 = /[A-Z]{1}[0-9]{1}/;
-        let reg4 = /[0-9]{1}[A-Z]{1}/;
-        for (let i = 0; i < this.machines.rows.length; i++) {
-            for (let j = 0; j < this.machines.rows[i].fields.length; j++) {
-                this.typeColsRows = this.machines.rows[0].fields[0].internalId;
-            }
+  submit() {
+    this.form.value.id = this.mashinesIndex;
+    this.machineService.updateMachine(this.form.value).subscribe(
+      () => {
+      },
+      (error: Response) => {
+        let errorDetail: ErrorDetail = error.json();
+        if (errorDetail) {
+          this.notificationService.error('Error', errorDetail.detail);
         }
-
-        if (reg1.test(this.typeColsRows)) {
-            this.rowsNumbering = 'NUMERICAL';
-            this.columnsNumbering = 'NUMERICAL';
-
-        } else if (reg2.test(this.typeColsRows)) {
-            this.rowsNumbering = 'ALPHABETICAL';
-            this.columnsNumbering = 'ALPHABETICAL';
-        }
-        else if (reg3.test(this.typeColsRows)) {
-            this.rowsNumbering = 'ALPHABETICAL';
-            this.columnsNumbering = 'NUMERICAL';
-        } else if (reg4.test(this.typeColsRows)) {
-            this.rowsNumbering = 'NUMERICAL';
-            this.columnsNumbering = 'ALPHABETICAL';
-        }
-    }
-
-    cancel(): void {
+      },
+      () => {
         this.router.navigate(['/main/machines']);
+        this.notificationService.success('Update', 'Machine has been updated successfully');
+        this.resetForm()
+      }
+    );
+  }
+
+  private resetForm() {
+    this.form.reset({
+      name: '',
+      rowsCount: '',
+      rowsNumbering: 'ALPHABETICAL',
+      columnsCount: '',
+      columnsNumbering: 'NUMERICAL',
+      isActive: false
+    });
+  }
+
+  private checkTypeColumRows() {
+    let reg1 = /\d{1}\d{1}/;
+    let reg2 = /[A-Za-z]{1}[A-Za-z]{1}/;
+    let reg3 = /[A-Z]{1}[0-9]{1}/;
+    let reg4 = /[0-9]{1}[A-Z]{1}/;
+    for (let i = 0; i < this.machines.rows.length; i++) {
+      for (let j = 0; j < this.machines.rows[i].fields.length; j++) {
+        this.typeColsRows = this.machines.rows[0].fields[0].internalId;
+      }
     }
+
+    if (reg1.test(this.typeColsRows)) {
+      this.rowsNumbering = 'NUMERICAL';
+      this.columnsNumbering = 'NUMERICAL';
+
+    } else if (reg2.test(this.typeColsRows)) {
+      this.rowsNumbering = 'ALPHABETICAL';
+      this.columnsNumbering = 'ALPHABETICAL';
+    }
+    else if (reg3.test(this.typeColsRows)) {
+      this.rowsNumbering = 'ALPHABETICAL';
+      this.columnsNumbering = 'NUMERICAL';
+    } else if (reg4.test(this.typeColsRows)) {
+      this.rowsNumbering = 'NUMERICAL';
+      this.columnsNumbering = 'ALPHABETICAL';
+    }
+  }
+
+  cancel(): void {
+    this.router.navigate(['/main/machines']);
+  }
 
 }

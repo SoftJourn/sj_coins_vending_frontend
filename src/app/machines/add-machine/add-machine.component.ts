@@ -16,11 +16,10 @@ export class AddMachineComponent implements OnInit {
   form: FormGroup;
   formStyles: FormValidationStyles;
 
-  constructor(
-    private machineService: MachineService,
-    private notificationService: NotificationsService,
-    private router: Router
-  ) {}
+  constructor(private machineService: MachineService,
+              private notificationService: NotificationsService,
+              private router: Router) {
+  }
 
   ngOnInit() {
     this.buildForm();
@@ -46,7 +45,11 @@ export class AddMachineComponent implements OnInit {
         Validators.pattern('^[1-9]$|^[1][0-9]{0,1}$')
       ]),
       columnsNumbering: new FormControl('NUMERICAL', Validators.required),
-      isActive: new FormControl()
+      productsInCellLimit: new FormControl('', [
+        Validators.required,
+        Validators.pattern('^[1-9]$|^[1][0-9]{0,1}$')
+      ]),
+      isActive: new FormControl(false)
     });
 
     this.formStyles = new FormValidationStyles(this.form);
@@ -54,7 +57,8 @@ export class AddMachineComponent implements OnInit {
 
   submit() {
     this.machineService.save(this.form.value).subscribe(
-      () => {},
+      () => {
+      },
       (error: Response) => {
         let errorDetail: ErrorDetail = error.json();
         if (errorDetail.code === 1062) {
