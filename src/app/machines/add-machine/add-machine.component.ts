@@ -45,6 +45,10 @@ export class AddMachineComponent implements OnInit {
         Validators.pattern('^[1-9]$|^[1][0-9]{0,1}$')
       ]),
       columnsNumbering: new FormControl('NUMERICAL', Validators.required),
+      productsInCellLimit: new FormControl('', [
+        Validators.required,
+        Validators.pattern('^[1-9]$|^[1][0-9]{0,1}$')
+      ]),
       isActive: new FormControl(false)
     });
 
