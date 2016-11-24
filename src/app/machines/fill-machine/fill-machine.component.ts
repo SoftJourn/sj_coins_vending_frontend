@@ -12,6 +12,7 @@ import { NotificationsService } from "angular2-notifications";
 import { AppProperties } from "../../shared/app.properties";
 import { FormValidationStyles } from "../../shared/form-validation-styles";
 import { BrowserDomAdapter } from "@angular/platform-browser/src/browser/browser_adapter";
+import { ErrorDetail } from "../../shared/entity/error-detail";
 
 @Component({
   selector: 'fill-machine',
@@ -66,12 +67,29 @@ export class FillMachineComponent implements OnInit, AfterContentInit {
 
     this.machineService.findOne(id).subscribe(
       machine => this.machine = machine,
-      error => {}
+      error => {
+        try {
+          let errorDetail = <ErrorDetail> error.json();
+          this.notificationService.error('Error', errorDetail.detail);
+        } catch (err) {
+          console.log(err);
+          this.notificationService.error('Error', 'Error appeared, watch logs!');
+        }
+      }
     );
 
     this.productService.findAll().subscribe(
       products => {
         this.products = products;
+      },
+      error => {
+        try {
+          let errorDetail = <ErrorDetail> error.json();
+          this.notificationService.error('Error', errorDetail.detail);
+        } catch (err) {
+          console.log(err);
+          this.notificationService.error('Error', 'Error appeared, watch logs!');
+        }
       }
     );
 
@@ -198,6 +216,15 @@ export class FillMachineComponent implements OnInit, AfterContentInit {
           this.changedFields = [];
           this.machine = machine;
           this.notificationService.success('Success', 'Machine filled successfully');
+        },
+        error => {
+          try {
+            let errorDetail = <ErrorDetail> error.json();
+            this.notificationService.error('Error', errorDetail.detail);
+          } catch (err) {
+            console.log(err);
+            this.notificationService.error('Error', 'Error appeared, watch logs!');
+          }
         }
       );
   }

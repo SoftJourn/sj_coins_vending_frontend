@@ -1,6 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { Dashboard } from "../shared/entity/dashboard";
 import { DashboardService } from "../shared/services/dashboard.service";
+import { ErrorDetail } from "../shared/entity/error-detail";
+import { NotificationsService } from "angular2-notifications/lib/notifications.service";
 
 @Component({
   selector: 'app-dashboard',
@@ -10,7 +12,8 @@ import { DashboardService } from "../shared/services/dashboard.service";
 export class DashboardComponent implements OnInit {
   public dashboard: Dashboard = new Dashboard();
 
-  constructor(private dashboardService: DashboardService) {
+  constructor(private dashboardService: DashboardService,
+              private notificationService: NotificationsService) {
   }
 
   ngOnInit() {
@@ -18,7 +21,15 @@ export class DashboardComponent implements OnInit {
       data => {
         this.dashboard = data;
       },
-      error => {}
+      error => {
+        try {
+          let errorDetail = <ErrorDetail> error.json();
+          this.notificationService.error('Error', errorDetail.detail);
+        } catch (err) {
+          console.log(err);
+          this.notificationService.error('Error', 'Error appeared, watch logs!');
+        }
+      }
     );
   }
 }

@@ -1,9 +1,9 @@
 import { Component, OnInit, EventEmitter, trigger, state, style, transition, animate } from '@angular/core';
-import {FormGroup, FormControl, Validators} from "@angular/forms";
-import {Category} from "../../shared/entity/category";
-import {CategoryService} from "../../shared/services/category.service";
-import {NotificationsService} from "angular2-notifications/components";
-import {ErrorDetail} from "../../shared/entity/error-detail";
+import { FormGroup, FormControl, Validators } from "@angular/forms";
+import { Category } from "../../shared/entity/category";
+import { CategoryService } from "../../shared/services/category.service";
+import { NotificationsService } from "angular2-notifications/components";
+import { ErrorDetail } from "../../shared/entity/error-detail";
 import { FormValidationStyles } from "../../shared/form-validation-styles";
 import { Router } from "@angular/router";
 import { Response } from "@angular/http";
@@ -13,37 +13,36 @@ import { Output, Input } from "@angular/core/src/metadata/directives";
   selector: 'add-category',
   templateUrl: './add-category.component.html',
   styleUrls: ['./add-category.component.scss'],
-  animations:[
-    trigger('menuState',[
-      state('shown',style({
-        display:'block'
+  animations: [
+    trigger('menuState', [
+      state('shown', style({
+        display: 'block'
       })),
-      state('hidden',style({
-        display:'none',
+      state('hidden', style({
+        display: 'none',
       })),
-      transition('shown <=> hidden',[animate('100ms ease-out')])
+      transition('shown <=> hidden', [animate('100ms ease-out')])
     ])
   ]
 })
 export class AddCategoryComponent implements OnInit {
   form: FormGroup;
   formStyles: FormValidationStyles;
-  @Input() isVisible : boolean = false;
+  @Input() isVisible: boolean = false;
   @Output() isVisibleChange = new EventEmitter<boolean>();
   @Output() categoryChange = new EventEmitter<boolean>();
   visibility = 'hidden';
 
-  constructor(
-    private categoryService: CategoryService,
-    private notificationService: NotificationsService,
-    private router: Router
-  ) {}
+  constructor(private categoryService: CategoryService,
+              private notificationService: NotificationsService,
+              private router: Router) {
+  }
 
   ngOnInit() {
     this.buildForm();
   }
 
-  ngOnChanges(){
+  ngOnChanges() {
     this.visibility = this.isVisible ? 'shown' : 'hidden';
   }
 
@@ -69,19 +68,24 @@ export class AddCategoryComponent implements OnInit {
           });
           this.categoryChange.emit(true);
         },
-        (error: Response) => {
-          let errorDetail: ErrorDetail = error.json();
-          if (errorDetail.code == 1062) {
-            this.notificationService.error('Error', 'Such category name exists!');
-          }
-          else {
-            this.notificationService.error('Error', errorDetail.detail);
+        error => {
+          try {
+            let errorDetail = <ErrorDetail> error.json();
+            if (errorDetail.code == 1062) {
+              this.notificationService.error('Error', 'Such category name exists!');
+            }
+            else {
+              this.notificationService.error('Error', errorDetail.detail);
+            }
+          } catch (err) {
+            console.log(err);
+            this.notificationService.error('Error', 'Error appeared, watch logs!');
           }
         });
   }
 
   cancel(): void {
-    this.isVisible=false;
+    this.isVisible = false;
     this.isVisibleChange.emit(this.isVisible);
   }
 

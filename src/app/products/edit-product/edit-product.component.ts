@@ -61,13 +61,25 @@ export class EditProductComponent implements OnInit {
                                     }
                                 }
                             },
-                            error => {
-                                console.log(error);
-                            });
+                          error => {
+                            try {
+                              let errorDetail = <ErrorDetail> error.json();
+                              this.notificationService.error('Error', errorDetail.detail);
+                            } catch (err) {
+                              console.log(err);
+                              this.notificationService.error('Error', 'Error appeared, watch logs!');
+                            }
+                          });
                     },
-                    error => {
-                        console.log(error);
-                    });
+                  error => {
+                    try {
+                      let errorDetail = <ErrorDetail> error.json();
+                      this.notificationService.error('Error', errorDetail.detail);
+                    } catch (err) {
+                      console.log(err);
+                      this.notificationService.error('Error', 'Error appeared, watch logs!');
+                    }
+                  });
             }
         );
     }
@@ -107,20 +119,25 @@ export class EditProductComponent implements OnInit {
                 .subscribe(
                     () => {
                     },
-                    error => {
-                        if (error.status == 415) {
-                            this.notificationService.error('Error', 'This file format not supported!');
+                  error => {
+                    try {
+                      let errorDetail = <ErrorDetail> error.json();
+                      if (error.status == 415) {
+                        this.notificationService.error('Error', 'This file format not supported!');
+                      }
+                      else {
+                        if (errorDetail.code == 1062) {
+                          this.notificationService.error('Error', 'Such product name exists!');
                         }
                         else {
-                            var errorDetail: ErrorDetail = JSON.parse(error._body);
-                            if (errorDetail.code == 1062) {
-                                this.notificationService.error('Error', 'Such product name exists!');
-                            }
-                            else {
-                                this.notificationService.error('Error', errorDetail.detail);
-                            }
+                          this.notificationService.error('Error', errorDetail.detail);
                         }
+                      }
+                    } catch (err) {
+                      console.log(err);
+                      this.notificationService.error('Error', 'Error appeared, watch logs!');
                     }
+                  }
                 );
         }
         else if (this.product.imageUrl) {
@@ -132,20 +149,25 @@ export class EditProductComponent implements OnInit {
                         this.router.navigate(['/main/products'])
                         this.notificationService.success('Update', 'Product has been updated successfully');
                     },
-                    error => {
-                        if (error.status == 415) {
-                            this.notificationService.error('Error', 'This file format not supported!');
+                  error => {
+                    try {
+                      let errorDetail = <ErrorDetail> error.json();
+                      if (error.status == 415) {
+                        this.notificationService.error('Error', 'This file format not supported!');
+                      }
+                      else {
+                        if (errorDetail.code == 1062) {
+                          this.notificationService.error('Error', 'Such product name exists!');
                         }
                         else {
-                            var errorDetail: ErrorDetail = JSON.parse(error._body);
-                            if (errorDetail.code == 1062) {
-                                this.notificationService.error('Error', 'Such product name exists!');
-                            }
-                            else {
-                                this.notificationService.error('Error', errorDetail.detail);
-                            }
+                          this.notificationService.error('Error', errorDetail.detail);
                         }
+                      }
+                    } catch (err) {
+                      console.log(err);
+                      this.notificationService.error('Error', 'Error appeared, watch logs!');
                     }
+                  }
                 );
         }
         else {

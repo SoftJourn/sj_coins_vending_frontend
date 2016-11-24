@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from "@angular/core";
 import { Machine } from "./shared/machine";
 import { MachineService } from "../shared/services/machine.service";
-import { Response } from "@angular/http";
 import { ErrorDetail } from "../shared/entity/error-detail";
 import { NotificationsService } from "angular2-notifications/lib/notifications.service";
 
@@ -25,6 +24,13 @@ export class MachinesComponent implements OnInit {
     this.machineService.findAll().subscribe(
       machines => this.machines = machines,
       error => {
+        try {
+          let errorDetail = <ErrorDetail> error.json();
+          this.notificationService.error('Error', errorDetail.detail);
+        } catch (err) {
+          console.log(err);
+          this.notificationService.error('Error', 'Error appeared, watch logs!');
+        }
       }
     )
   }
@@ -33,21 +39,27 @@ export class MachinesComponent implements OnInit {
     this.machineService.delete(id)
       .subscribe(
         () => null,
-        (error: Response) => {
-          var errorDetail: ErrorDetail = error.json();
-          if (errorDetail.code == 1451) {
-            this.notificationService.error('Error', 'Can not delete, this machine is being used!');
-          } else {
-            if (errorDetail) {
-              this.notificationService.error('Error', errorDetail.detail);
+        error => {
+          try {
+            let errorDetail = <ErrorDetail> error.json();
+            if (errorDetail.code == 1451) {
+              this.notificationService.error('Error', 'Can not delete, this machine is being used!');
             } else {
-              this.notificationService.error('Error', 'Error appeared during deletion');
+              if (errorDetail) {
+                this.notificationService.error('Error', errorDetail.detail);
+              } else {
+                this.notificationService.error('Error', 'Error appeared during deletion');
+              }
             }
+          } catch (err) {
+            console.log(err);
+            this.notificationService.error('Error', 'Error appeared, watch logs!');
           }
         },
         () => {
           this.notificationService.success('Success', 'Machine has been deleted successfully');
-          this.getMachines()}
+          this.getMachines()
+        }
       );
   }
 }

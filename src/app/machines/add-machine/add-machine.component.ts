@@ -16,11 +16,10 @@ export class AddMachineComponent implements OnInit {
   form: FormGroup;
   formStyles: FormValidationStyles;
 
-  constructor(
-    private machineService: MachineService,
-    private notificationService: NotificationsService,
-    private router: Router
-  ) {}
+  constructor(private machineService: MachineService,
+              private notificationService: NotificationsService,
+              private router: Router) {
+  }
 
   ngOnInit() {
     this.buildForm();
@@ -54,13 +53,19 @@ export class AddMachineComponent implements OnInit {
 
   submit() {
     this.machineService.save(this.form.value).subscribe(
-      () => {},
-      (error: Response) => {
-        let errorDetail: ErrorDetail = error.json();
-        if (errorDetail.code === 1062) {
-          this.notificationService.error('Error', 'Machine with such name exists!');
-        } else {
-          this.notificationService.error('Error', errorDetail.detail);
+      () => {
+      },
+      error => {
+        try {
+          let errorDetail = <ErrorDetail> error.json();
+          if (errorDetail.code === 1062) {
+            this.notificationService.error('Error', 'Machine with such name exists!');
+          } else {
+            this.notificationService.error('Error', errorDetail.detail);
+          }
+        } catch (err) {
+          console.log(err);
+          this.notificationService.error('Error', 'Error appeared, watch logs!');
         }
       },
       () => {

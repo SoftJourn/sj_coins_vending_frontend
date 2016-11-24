@@ -41,7 +41,16 @@ export class AddProductComponent implements OnInit {
             categories => {
                 this.categories = categories;
                 this.form.get('category').patchValue(categories[0]);
-            });
+            },
+          error => {
+            try {
+              let errorDetail = <ErrorDetail> error.json();
+              this.notificationService.error('Error', errorDetail.detail);
+            } catch (err) {
+              console.log(err);
+              this.notificationService.error('Error', 'Error appeared, watch logs!');
+            }
+          });
     }
 
     private buildForm(): void {
@@ -73,20 +82,25 @@ export class AddProductComponent implements OnInit {
                 .subscribe(
                     () => {
                     },
-                    error => {
-                        if (error.status == 415) {
-                            this.notificationService.error('Error', 'This file format not supported!');
+                  error => {
+                    try {
+                      let errorDetail = <ErrorDetail> error.json();
+                      if (error.status == 415) {
+                        this.notificationService.error('Error', 'This file format not supported!');
+                      }
+                      else {
+                        if (errorDetail.code == 1062) {
+                          this.notificationService.error('Error', 'Such product name exists!');
                         }
                         else {
-                            var errorDetail: ErrorDetail = JSON.parse(error._body);
-                            if (errorDetail.code == 1062) {
-                                this.notificationService.error('Error', 'Such product name exists!');
-                            }
-                            else {
-                                this.notificationService.error('Error', errorDetail.detail);
-                            }
+                          this.notificationService.error('Error', errorDetail.detail);
                         }
-                    },
+                      }
+                    } catch (err) {
+                      console.log(err);
+                      this.notificationService.error('Error', 'Error appeared, watch logs!');
+                    }
+                  },
                     () => {
                         this.imageUpload.cleanImageData();
                         this.imageUpload.imageSrc = this.imageUpload.defaultImageSrc;
@@ -123,9 +137,15 @@ export class AddProductComponent implements OnInit {
                 this.imgName = img.name;
                 this.showDialog = !this.showDialog;
             },
-            (err) => {
-                console.log(err);
+          error => {
+            try {
+              let errorDetail = <ErrorDetail> error.json();
+              this.notificationService.error('Error', errorDetail.detail);
+            } catch (err) {
+              console.log(err);
+              this.notificationService.error('Error', 'Error appeared, watch logs!');
             }
+          }
         );
 
     };

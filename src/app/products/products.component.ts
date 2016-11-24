@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from "@angular/core";
 import { ProductService } from "../shared/services/product.service";
 import { Product } from "../shared/entity/product";
 import { NotificationsService } from "angular2-notifications";
 import { ErrorDetail } from "../shared/entity/error-detail";
-import { Response } from "@angular/http";
 import { FormControl, FormGroup } from "@angular/forms";
 
 @Component({
@@ -28,6 +27,13 @@ export class ProductsComponent implements OnInit {
     this.productService.findAll().subscribe(
       products => this.products = products,
       error => {
+        try {
+          let errorDetail = <ErrorDetail> error.json();
+          this.notificationService.error('Error', errorDetail.detail);
+        } catch (err) {
+          console.log(err);
+          this.notificationService.error('Error', 'Error appeared, watch logs!');
+        }
       }
     );
     this.form.get('name').valueChanges
@@ -61,21 +67,32 @@ export class ProductsComponent implements OnInit {
   onDelete(id: number) {
     this.productService.delete(id).subscribe(
       () => {
-      }, (error: Response) => {
-        var errorDetail: ErrorDetail = error.json();
-        if (errorDetail.code == 1451) {
-          this.notificationService.error('Error', 'Can not delete, this product is being used!');
-        } else {
-          this.notificationService.error('Error', errorDetail.detail);
+      }, error => {
+        try {
+          let errorDetail = <ErrorDetail> error.json();
+          if (errorDetail.code == 1451) {
+            this.notificationService.error('Error', 'Can not delete, this product is being used!');
+          } else {
+            this.notificationService.error('Error', errorDetail.detail);
+          }
+        } catch (err) {
+          console.log(err);
+          this.notificationService.error('Error', 'Error appeared, watch logs!');
         }
       },
       () => {
         this.productService.findAll().subscribe(
-          products => {
-            this.products = products;
-            this.notificationService.success('Success', 'Product has been deleted successfully!');
+          products => this.products = products,
+          error => {
+            try {
+              let errorDetail = <ErrorDetail> error.json();
+              this.notificationService.error('Error', errorDetail.detail);
+            } catch (err) {
+              console.log(err);
+              this.notificationService.error('Error', 'Error appeared, watch logs!');
+            }
           }
-        )
+        );
       }
     )
   }

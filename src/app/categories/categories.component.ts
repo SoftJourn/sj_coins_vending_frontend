@@ -28,7 +28,16 @@ export class CategoriesComponent implements OnInit {
 
   private updateCategories() {
     this.categoryService.findAll().subscribe(
-      categories => this.categories = categories
+      categories => this.categories = categories,
+      error => {
+        try {
+          let errorDetail = <ErrorDetail> error.json();
+          this.notificationService.error('Error', errorDetail.detail);
+        } catch (err) {
+          console.log(err);
+          this.notificationService.error('Error', 'Error appeared, watch logs!');
+        }
+      }
     );
   }
 
@@ -46,19 +55,24 @@ export class CategoriesComponent implements OnInit {
       .cancelBtnClass('btn btn-secondary modal-footer-confirm-btn')
       .open()
       .then(
-        (response)=> {
+        (response) => {
           response.result.then(
             () => {
               this.categoryService.delete(id).subscribe(
                 next => {
                 },
                 error => {
-                  var errorDetail: ErrorDetail = JSON.parse(error._body);
-                  if (errorDetail.code == 1451) {
-                    this.notificationService.error('Error', 'Can not delete, this category is being used!');
-                  }
-                  else {
-                    this.notificationService.error('Error', errorDetail.detail);
+                  try {
+                    let errorDetail = <ErrorDetail> error.json();
+                    if (errorDetail.code == 1451) {
+                      this.notificationService.error('Error', 'Can not delete, this category is being used!');
+                    }
+                    else {
+                      this.notificationService.error('Error', errorDetail.detail);
+                    }
+                  } catch (err) {
+                    console.log(err);
+                    this.notificationService.error('Error', 'Error appeared, watch logs!');
                   }
                 },
                 () => {
@@ -70,7 +84,8 @@ export class CategoriesComponent implements OnInit {
                   );
                 });
             },
-            () => {}
+            () => {
+            }
           );
         });
   }

@@ -43,9 +43,15 @@ export class EditMachineComponent implements OnInit {
                         this.checkTypeColumRows();
                         this.buildForm();
                     },
-                    error => {
-                        console.log(error);
-                    });
+                  error => {
+                    try {
+                      let errorDetail = <ErrorDetail> error.json();
+                      this.notificationService.error('Error', errorDetail.detail);
+                    } catch (err) {
+                      console.log(err);
+                      this.notificationService.error('Error', 'Error appeared, watch logs!');
+                    }
+                  });
             }
         );
     }
@@ -81,12 +87,15 @@ export class EditMachineComponent implements OnInit {
         this.machineService.updateMachine(this.form.value).subscribe(
             () => {
             },
-            (error: Response) => {
-                let errorDetail: ErrorDetail = error.json();
-                if (errorDetail) {
-                    this.notificationService.error('Error', errorDetail.detail);
-                }
-            },
+          error => {
+            try {
+              let errorDetail = <ErrorDetail> error.json();
+              this.notificationService.error('Error', errorDetail.detail);
+            } catch (err) {
+              console.log(err);
+              this.notificationService.error('Error', 'Error appeared, watch logs!');
+            }
+          },
             () => {
                 this.router.navigate(['/main/machines']);
                 this.notificationService.success('Update', 'Machine has been updated successfully');

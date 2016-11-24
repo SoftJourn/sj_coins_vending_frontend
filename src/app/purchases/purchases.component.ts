@@ -69,11 +69,22 @@ export class PurchasesComponent implements OnInit {
         this.machineService.findAll().subscribe(machines => {
           this.machines = machines;
         }, error => {
-          alert(error);
+          try {
+            let errorDetail = <ErrorDetail> error.json();
+            this.notificationService.error('Error', errorDetail.detail);
+          } catch (err) {
+            console.log(err);
+            this.notificationService.error('Error', 'Error appeared, watch logs!');
+          }
         });
-      }, (error: Response) => {
-        var errorDetail: ErrorDetail = error.json();
-        this.notificationService.error('Error', errorDetail.detail);
+      }, error => {
+        try {
+          let errorDetail = <ErrorDetail> error.json();
+          this.notificationService.error('Error', errorDetail.detail);
+        } catch (err) {
+          console.log(err);
+          this.notificationService.error('Error', 'Error appeared, watch logs!');
+        }
       });
 
     this.form.get('type').valueChanges.subscribe(change => {
@@ -204,9 +215,14 @@ export class PurchasesComponent implements OnInit {
       .subscribe(page => {
         this.page = page;
         this.purchases = this.page.content;
-      }, (error: Response) => {
-        var errorDetail: ErrorDetail = error.json();
-        this.notificationService.error('Error', errorDetail.detail);
+      }, error => {
+        try {
+          let errorDetail = <ErrorDetail> error.json();
+          this.notificationService.error('Error', errorDetail.detail);
+        } catch (err) {
+          console.log(err);
+          this.notificationService.error('Error', 'Error appeared, watch logs!');
+        }
       });
   }
 
