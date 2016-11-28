@@ -22,7 +22,8 @@ export class MachinesComponent implements OnInit {
 
   private getMachines(): void {
     this.machineService.findAll().subscribe(
-      machines => this.machines = machines,
+      machines =>
+        this.machines = machines,
       error => {
         try {
           let errorDetail = <ErrorDetail> error.json();

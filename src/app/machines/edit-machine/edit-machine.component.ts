@@ -24,7 +24,6 @@ export class EditMachineComponent implements OnInit {
   private typeColsRows: any;
   public rowsNumbering: any;
   public columnsNumbering: any;
-  public productsInCellLimit: number;
   public isActive: boolean;
 
   constructor(private machineService: MachineService,
@@ -77,7 +76,7 @@ export class EditMachineComponent implements OnInit {
         Validators.pattern('^[1-9]$|^[1][0-9]{0,1}$')
       ]),
       columnsNumbering: new FormControl({value: this.columnsNumbering, disabled: true}, Validators.required),
-      productsInCellLimit: new FormControl({value: this.machines.productsInCellLimit, disabled: true}, [
+      cellLimit: new FormControl({value: this.machines.size.cellLimit, disabled: true}, [
         Validators.required,
         Validators.pattern('^[1-9]$|^[1][0-9]{0,1}$')
       ]),

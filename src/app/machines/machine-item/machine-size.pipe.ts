@@ -1,4 +1,4 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform } from "@angular/core";
 import { MachineSize } from "../shared/machine";
 
 @Pipe({
@@ -7,7 +7,7 @@ import { MachineSize } from "../shared/machine";
 export class MachineSizePipe implements PipeTransform {
 
   transform(size: MachineSize, args?: any): string {
-    return `${size.rows}x${size.columns}`;
+    return `${size.rows}x${size.columns}x${size.cellLimit}`;
   }
 
 }

@@ -9,7 +9,6 @@ export class Machine {
     public uniqueId: string,
     public rows: Row[],
     public size: MachineSize,
-    public productsInCellLimit: number,
     public isActive: boolean
   ) {}
 }
@@ -38,6 +37,7 @@ export class MachineSize {
 
   constructor(
     public rows: number,
-    public columns: number
+    public columns: number,
+    public cellLimit: number
   ) {}
 }

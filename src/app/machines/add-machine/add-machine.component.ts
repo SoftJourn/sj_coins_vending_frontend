@@ -45,7 +45,7 @@ export class AddMachineComponent implements OnInit {
         Validators.pattern('^[1-9]$|^[1][0-9]{0,1}$')
       ]),
       columnsNumbering: new FormControl('NUMERICAL', Validators.required),
-      productsInCellLimit: new FormControl('', [
+      cellLimit: new FormControl('', [
         Validators.required,
         Validators.pattern('^[1-9]$|^[1][0-9]{0,1}$')
       ]),
@@ -59,9 +59,9 @@ export class AddMachineComponent implements OnInit {
     this.machineService.save(this.form.value).subscribe(
       () => {
       },
-      error => {
+      (error: Response) => {
         try {
-          let errorDetail = <ErrorDetail> error.json();
+          let errorDetail: ErrorDetail = error.json();
           if (errorDetail.code === 1062) {
             this.notificationService.error('Error', 'Machine with such name exists!');
           } else {
@@ -69,12 +69,12 @@ export class AddMachineComponent implements OnInit {
           }
         } catch (err) {
           console.log(err);
-          this.notificationService.error('Error', 'Error appeared, watch logs!');
+          this.notificationService.error('Error', 'Details are not provided');
         }
       },
       () => {
         this.notificationService.success('Create', 'Machine has been created successfully');
-        this.resetForm()
+        this.router.navigateByUrl('main/machines');
       }
     );
   }
