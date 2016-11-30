@@ -5,7 +5,7 @@ import { NotificationsService } from "angular2-notifications";
 import { ErrorDetail } from "../shared/entity/error-detail";
 import { AddMenu } from "../shared/entity/add-menu";
 import { Overlay } from "angular2-modal";
-import { Modal } from 'angular2-modal/plugins/bootstrap';
+import { Modal } from "angular2-modal/plugins/bootstrap";
 
 @Component({
   selector: 'categories-list',
@@ -32,6 +32,9 @@ export class CategoriesComponent implements OnInit {
       error => {
         try {
           let errorDetail = <ErrorDetail> error.json();
+          if (!errorDetail.detail)
+          //noinspection ExceptionCaughtLocallyJS
+            throw errorDetail;
           this.notificationService.error('Error', errorDetail.detail);
         } catch (err) {
           console.log(err);
@@ -68,6 +71,9 @@ export class CategoriesComponent implements OnInit {
                       this.notificationService.error('Error', 'Can not delete, this category is being used!');
                     }
                     else {
+                      if (!errorDetail.detail)
+                      //noinspection ExceptionCaughtLocallyJS
+                        throw errorDetail;
                       this.notificationService.error('Error', errorDetail.detail);
                     }
                   } catch (err) {

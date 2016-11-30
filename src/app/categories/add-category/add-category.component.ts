@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, trigger, state, style, transition, animate } from '@angular/core';
+import { Component, OnInit, EventEmitter, trigger, state, style, transition, animate } from "@angular/core";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { Category } from "../../shared/entity/category";
 import { CategoryService } from "../../shared/services/category.service";
@@ -6,7 +6,6 @@ import { NotificationsService } from "angular2-notifications/components";
 import { ErrorDetail } from "../../shared/entity/error-detail";
 import { FormValidationStyles } from "../../shared/form-validation-styles";
 import { Router } from "@angular/router";
-import { Response } from "@angular/http";
 import { Output, Input } from "@angular/core/src/metadata/directives";
 
 @Component({
@@ -75,6 +74,9 @@ export class AddCategoryComponent implements OnInit {
               this.notificationService.error('Error', 'Such category name exists!');
             }
             else {
+              if (!errorDetail.detail)
+              //noinspection ExceptionCaughtLocallyJS
+                throw errorDetail;
               this.notificationService.error('Error', errorDetail.detail);
             }
           } catch (err) {

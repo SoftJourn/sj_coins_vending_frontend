@@ -8,7 +8,6 @@ import { FormControl, FormGroup } from "@angular/forms";
 import { PurchaseFilter } from "../purchases/shared/purchase-filter";
 import { PurchasePage } from "./shared/purchase-page";
 import { ErrorDetail } from "../shared/entity/error-detail";
-import { Response } from "@angular/http";
 import { NotificationsService } from "angular2-notifications/lib/notifications.service";
 
 @Component({
@@ -71,6 +70,9 @@ export class PurchasesComponent implements OnInit {
         }, error => {
           try {
             let errorDetail = <ErrorDetail> error.json();
+            if (!errorDetail.detail)
+            //noinspection ExceptionCaughtLocallyJS
+              throw errorDetail;
             this.notificationService.error('Error', errorDetail.detail);
           } catch (err) {
             console.log(err);
@@ -80,6 +82,9 @@ export class PurchasesComponent implements OnInit {
       }, error => {
         try {
           let errorDetail = <ErrorDetail> error.json();
+          if (!errorDetail.detail)
+          //noinspection ExceptionCaughtLocallyJS
+            throw errorDetail;
           this.notificationService.error('Error', errorDetail.detail);
         } catch (err) {
           console.log(err);
@@ -218,6 +223,9 @@ export class PurchasesComponent implements OnInit {
       }, error => {
         try {
           let errorDetail = <ErrorDetail> error.json();
+          if (!errorDetail.detail)
+          //noinspection ExceptionCaughtLocallyJS
+            throw errorDetail;
           this.notificationService.error('Error', errorDetail.detail);
         } catch (err) {
           console.log(err);

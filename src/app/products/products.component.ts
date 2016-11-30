@@ -29,6 +29,9 @@ export class ProductsComponent implements OnInit {
       error => {
         try {
           let errorDetail = <ErrorDetail> error.json();
+          if (!errorDetail.detail)
+          //noinspection ExceptionCaughtLocallyJS
+            throw errorDetail;
           this.notificationService.error('Error', errorDetail.detail);
         } catch (err) {
           console.log(err);
@@ -73,6 +76,9 @@ export class ProductsComponent implements OnInit {
           if (errorDetail.code == 1451) {
             this.notificationService.error('Error', 'Can not delete, this product is being used!');
           } else {
+            if (!errorDetail.detail)
+            //noinspection ExceptionCaughtLocallyJS
+              throw errorDetail;
             this.notificationService.error('Error', errorDetail.detail);
           }
         } catch (err) {
@@ -86,6 +92,9 @@ export class ProductsComponent implements OnInit {
           error => {
             try {
               let errorDetail = <ErrorDetail> error.json();
+              if (!errorDetail.detail)
+              //noinspection ExceptionCaughtLocallyJS
+                throw errorDetail;
               this.notificationService.error('Error', errorDetail.detail);
             } catch (err) {
               console.log(err);

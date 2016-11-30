@@ -27,6 +27,9 @@ export class MachinesComponent implements OnInit {
       error => {
         try {
           let errorDetail = <ErrorDetail> error.json();
+          if (!errorDetail.detail)
+          //noinspection ExceptionCaughtLocallyJS
+            throw errorDetail;
           this.notificationService.error('Error', errorDetail.detail);
         } catch (err) {
           console.log(err);

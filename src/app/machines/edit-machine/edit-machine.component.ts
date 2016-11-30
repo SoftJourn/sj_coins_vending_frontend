@@ -4,7 +4,6 @@ import { MachineService } from "../../shared/services/machine.service";
 import { NotificationsService } from "angular2-notifications";
 import { FormValidationStyles } from "../../shared/form-validation-styles";
 import { Router, ActivatedRoute } from "@angular/router";
-import { Response } from "@angular/http";
 import { ErrorDetail } from "../../shared/entity/error-detail";
 import { Subscription } from "rxjs";
 import { Machine } from "../shared/machine";
@@ -46,6 +45,9 @@ export class EditMachineComponent implements OnInit {
                   error => {
                     try {
                       let errorDetail = <ErrorDetail> error.json();
+                      if (!errorDetail.detail)
+                      //noinspection ExceptionCaughtLocallyJS
+                        throw errorDetail;
                       this.notificationService.error('Error', errorDetail.detail);
                     } catch (err) {
                       console.log(err);
@@ -94,6 +96,9 @@ export class EditMachineComponent implements OnInit {
           error => {
             try {
               let errorDetail = <ErrorDetail> error.json();
+              if (!errorDetail.detail)
+              //noinspection ExceptionCaughtLocallyJS
+                throw errorDetail;
               this.notificationService.error('Error', errorDetail.detail);
             } catch (err) {
               console.log(err);

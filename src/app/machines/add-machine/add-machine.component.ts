@@ -65,6 +65,9 @@ export class AddMachineComponent implements OnInit {
           if (errorDetail.code === 1062) {
             this.notificationService.error('Error', 'Machine with such name exists!');
           } else {
+            if (!errorDetail.detail)
+            //noinspection ExceptionCaughtLocallyJS
+              throw errorDetail;
             this.notificationService.error('Error', errorDetail.detail);
           }
         } catch (err) {

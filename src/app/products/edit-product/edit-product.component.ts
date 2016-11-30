@@ -1,16 +1,16 @@
-import {Component, OnInit} from '@angular/core';
-import {FormGroup, Validators, FormControl} from "@angular/forms";
-import {Category} from "../../shared/entity/category";
-import {CategoryService} from "../../shared/services/category.service";
-import {Product} from "../../shared/entity/product";
-import {ProductService} from "../../shared/services/product.service";
-import {ErrorDetail} from "../../shared/entity/error-detail";
-import {NotificationsService} from "angular2-notifications/components";
-import {FormValidationStyles} from "../../shared/form-validation-styles";
-import {Subscription} from "rxjs";
-import {AppProperties} from "../../shared/app.properties";
-import {ActivatedRoute, Router} from "@angular/router";
-import {ImageUploadService} from "../../shared/services/image-upload.service";
+import { Component, OnInit } from "@angular/core";
+import { FormGroup, Validators, FormControl } from "@angular/forms";
+import { Category } from "../../shared/entity/category";
+import { CategoryService } from "../../shared/services/category.service";
+import { Product } from "../../shared/entity/product";
+import { ProductService } from "../../shared/services/product.service";
+import { ErrorDetail } from "../../shared/entity/error-detail";
+import { NotificationsService } from "angular2-notifications/components";
+import { FormValidationStyles } from "../../shared/form-validation-styles";
+import { Subscription } from "rxjs";
+import { AppProperties } from "../../shared/app.properties";
+import { ActivatedRoute, Router } from "@angular/router";
+import { ImageUploadService } from "../../shared/services/image-upload.service";
 
 @Component({
     selector: 'app-edit-product',
@@ -64,6 +64,9 @@ export class EditProductComponent implements OnInit {
                           error => {
                             try {
                               let errorDetail = <ErrorDetail> error.json();
+                              if (!errorDetail.detail)
+                              //noinspection ExceptionCaughtLocallyJS
+                                throw errorDetail;
                               this.notificationService.error('Error', errorDetail.detail);
                             } catch (err) {
                               console.log(err);
@@ -74,6 +77,9 @@ export class EditProductComponent implements OnInit {
                   error => {
                     try {
                       let errorDetail = <ErrorDetail> error.json();
+                      if (!errorDetail.detail)
+                      //noinspection ExceptionCaughtLocallyJS
+                        throw errorDetail;
                       this.notificationService.error('Error', errorDetail.detail);
                     } catch (err) {
                       console.log(err);
@@ -130,6 +136,9 @@ export class EditProductComponent implements OnInit {
                           this.notificationService.error('Error', 'Such product name exists!');
                         }
                         else {
+                          if (!errorDetail.detail)
+                          //noinspection ExceptionCaughtLocallyJS
+                            throw errorDetail;
                           this.notificationService.error('Error', errorDetail.detail);
                         }
                       }
@@ -160,6 +169,9 @@ export class EditProductComponent implements OnInit {
                           this.notificationService.error('Error', 'Such product name exists!');
                         }
                         else {
+                          if (!errorDetail.detail)
+                          //noinspection ExceptionCaughtLocallyJS
+                            throw errorDetail;
                           this.notificationService.error('Error', errorDetail.detail);
                         }
                       }
