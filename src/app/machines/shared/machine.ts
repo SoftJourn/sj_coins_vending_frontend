@@ -9,6 +9,7 @@ export class Machine {
     public uniqueId: string,
     public rows: Row[],
     public size: MachineSize,
+    public productsInCellLimit: number,
     public isActive: boolean
   ) {}
 }
