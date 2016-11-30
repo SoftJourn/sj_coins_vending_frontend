@@ -1,6 +1,15 @@
 import {
-  Component, OnInit, style, state, animate, transition, trigger, Renderer, AfterContentInit,
-  ViewChild, ElementRef
+  Component,
+  OnInit,
+  style,
+  state,
+  animate,
+  transition,
+  trigger,
+  Renderer,
+  AfterContentInit,
+  ViewChild,
+  ElementRef
 } from "@angular/core";
 import { MachineService } from "../../shared/services/machine.service";
 import { Machine, Field } from "../shared/machine";
@@ -21,7 +30,7 @@ import { ErrorDetail } from "../../shared/entity/error-detail";
   animations: [
     trigger('showHideForm', [
       state('inactive', style({display: 'none', opacity: 0})),
-      state('active',   style({display: 'block', opacity: 1})),
+      state('active', style({display: 'block', opacity: 1})),
       transition('inactive => active', animate('300ms ease-in')),
       transition('active => inactive', animate('300ms ease-out')),
     ]),
@@ -31,7 +40,7 @@ import { ErrorDetail } from "../../shared/entity/error-detail";
         '-moz-box-shadow': '0px 0px 0px 0px rgba(5,168,255,1)',
         'box-shadow': '0px 0px 0px 0px rgba(5,168,255,1)'
       })),
-      state('active',   style({
+      state('active', style({
         '-webkit-box-shadow': '0px 0px 25px 5px rgba(5,168,255,1)',
         '-moz-box-shadow': '0px 0px 25px 5px rgba(5,168,255,1)',
         'box-shadow': '0px 0px 25px 5px rgba(5,168,255,1)'
@@ -53,23 +62,31 @@ export class FillMachineComponent implements OnInit, AfterContentInit {
   @ViewChild('cellForm') cellFormElement: ElementRef;
   domAdapter = new BrowserDomAdapter();
 
-  constructor(
-    private machineService: MachineService,
-    private productService: ProductService,
-    private route: ActivatedRoute,
-    private notificationService: NotificationsService,
-    private renderer: Renderer,
-    private hostElement: ElementRef
-  ) { }
+  constructor(private machineService: MachineService,
+              private productService: ProductService,
+              private route: ActivatedRoute,
+              private notificationService: NotificationsService,
+              private renderer: Renderer,
+              private hostElement: ElementRef) {
+  }
 
   ngOnInit() {
     let id = parseInt(this.route.snapshot.params['id']);
 
     this.machineService.findOne(id).subscribe(
-      machine => this.machine = machine,
+      machine => {
+        this.machine = machine;
+        this.form.addControl('count', new FormControl(3, [
+          Validators.required,
+          Validators.pattern('^[1-9]$|^[1][0-9]{1}$')
+        ]))
+      },
       error => {
         try {
           let errorDetail = <ErrorDetail> error.json();
+          if (!errorDetail.detail)
+          //noinspection ExceptionCaughtLocallyJS
+            throw errorDetail;
           this.notificationService.error('Error', errorDetail.detail);
         } catch (err) {
           console.log(err);
@@ -85,6 +102,9 @@ export class FillMachineComponent implements OnInit, AfterContentInit {
       error => {
         try {
           let errorDetail = <ErrorDetail> error.json();
+          if (!errorDetail.detail)
+          //noinspection ExceptionCaughtLocallyJS
+            throw errorDetail;
           this.notificationService.error('Error', errorDetail.detail);
         } catch (err) {
           console.log(err);
@@ -96,10 +116,7 @@ export class FillMachineComponent implements OnInit, AfterContentInit {
     this.form = new FormGroup({
       fieldInternalId: new FormControl('', Validators.required),
       product: new FormControl('', Validators.required),
-      count: new FormControl('', [
-        Validators.required,
-        Validators.pattern('^[1-9]$|^[1][0-9]{1}$')
-      ])
+      count: new FormControl('3')
     });
   }
 
@@ -220,10 +237,15 @@ export class FillMachineComponent implements OnInit, AfterContentInit {
         error => {
           try {
             let errorDetail = <ErrorDetail> error.json();
+            if (!errorDetail.detail)
+            //noinspection ExceptionCaughtLocallyJS
+              throw errorDetail;
             this.notificationService.error('Error', errorDetail.detail);
           } catch (err) {
             console.log(err);
             this.notificationService.error('Error', 'Error appeared, watch logs!');
+          } finally {
+            this.clearCell();
           }
         }
       );

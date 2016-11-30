@@ -67,14 +67,14 @@
             <div class="form-group row">
               <label for="product-count" class="col-sm-2 col-form-label">Count</label>
               <div class="col-sm-10">
-                <input class="form-control" id="product-count" placeholder="1"
-                       formControlName="count">
+                <input class="form-control" id="product-count" placeholder="1" type="number"
+                       min="0" [max]="machine?.size?.cellLimit" formControlName="count">
               </div>
             </div>
             <div class="form-group row">
               <div class="col-sm-12 form-buttons-container">
                 <button class="btn btn-success" type="submit" [disabled]="!isFormValid()">Submit</button>
-                <button class="btn btn-secondary" type="button" [disabled]="isClearCellDisabled()"
+                <button class="btn btn-secondary" type="reset" [disabled]="isClearCellDisabled()"
                         (click)="clearCell()">Clear cell</button>
                 <button class="btn btn-secondary" type="button" (click)="cancel()">Cancel</button>
               </div>
