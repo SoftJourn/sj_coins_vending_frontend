@@ -1,6 +1,6 @@
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule, ErrorHandler } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { CommonModule, LocationStrategy, HashLocationStrategy } from "@angular/common";
 import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { HttpModule } from "@angular/http";
 import { AppComponent } from "./app.component";
@@ -107,7 +107,8 @@ import { GlobalErrorHandler } from "./shared/global-error-handler";
     ImageUploadService,
     PurchaseService,
     CoinService,
-    {provide: ErrorHandler, useClass: GlobalErrorHandler}
+    {provide: ErrorHandler, useClass: GlobalErrorHandler},
+    {provide: LocationStrategy, useClass: HashLocationStrategy}
   ],
   bootstrap: [AppComponent]
 })
