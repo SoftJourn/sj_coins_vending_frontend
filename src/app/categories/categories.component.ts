@@ -32,10 +32,17 @@ export class CategoriesComponent implements OnInit {
       error => {
         try {
           let errorDetail = <ErrorDetail> error.json();
-          this.notificationService.error('Error', errorDetail.detail);
+
+          let msg = 'Error appeared, please contact support';
+
+          if (errorDetail && errorDetail.detail && errorDetail.detail.length > 0) {
+            msg = errorDetail.detail
+          }
+
+          this.notificationService.error('Error', msg);
         } catch (err) {
           console.log(err);
-          this.notificationService.error('Error', 'Error appeared, watch logs!');
+          this.notificationService.error('Error', 'Error appeared, please contact support');
         }
       }
     );
@@ -68,7 +75,13 @@ export class CategoriesComponent implements OnInit {
                       this.notificationService.error('Error', 'Can not delete, this category is being used!');
                     }
                     else {
-                      this.notificationService.error('Error', errorDetail.detail);
+                      let msg = 'Error appeared, please contact support';
+
+                      if (errorDetail && errorDetail.detail && errorDetail.detail.length > 0) {
+                        msg = errorDetail.detail;
+                      }
+
+                      this.notificationService.error('Error', msg);
                     }
                   } catch (err) {
                     console.log(err);

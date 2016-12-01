@@ -75,11 +75,17 @@ export class AddCategoryComponent implements OnInit {
               this.notificationService.error('Error', 'Such category name exists!');
             }
             else {
+              let msg = 'Error appeared, please contact support';
+
+              if (errorDetail && errorDetail.detail && errorDetail.detail.length > 0) {
+                msg = errorDetail.detail;
+              }
+
               this.notificationService.error('Error', errorDetail.detail);
             }
           } catch (err) {
             console.log(err);
-            this.notificationService.error('Error', 'Error appeared, watch logs!');
+            this.notificationService.error('Error', 'Error appeared, please contact support');
           }
         });
   }
