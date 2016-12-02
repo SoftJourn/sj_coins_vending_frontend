@@ -73,7 +73,7 @@
           <label class="sr-only" for="merchant">Amount (in coins)</label>
           <select class="form-control" id="merchant" formControlName="merchant">
             <option *ngFor="let account of merchantAccounts" [ngValue]="account">
-              {{account.fullName}} ({{account.amount}})
+              {{account.fullName}} ({{account.amount}}) {{account.isNew ? 'NEW' : ''}}
             </option>
           </select>
         </div>
@@ -91,7 +91,7 @@
           <label class="sr-only" for="account">Amount (in coins)</label>
           <select class="form-control" id="account" formControlName="account">
             <option *ngFor="let account of regularAccounts" [ngValue]="account">
-              {{account.fullName}} ({{account.amount}})
+              {{account.fullName}} ({{account.amount}}) {{account.isNew ? 'NEW' : ''}}
             </option>
           </select>
         </div>

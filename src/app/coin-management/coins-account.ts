@@ -3,7 +3,8 @@ export class CoinsAccount {
   constructor(
     public ldapId: string,
     public amount: number,
-    public fullName: string
+    public fullName: string,
+    public isNew: boolean
   ) {}
 }
 
