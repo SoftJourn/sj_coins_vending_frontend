@@ -20,6 +20,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.accountService.logout();
     this.loginError = new AppError();
     this.form = new FormGroup({
       username: new FormControl('', [

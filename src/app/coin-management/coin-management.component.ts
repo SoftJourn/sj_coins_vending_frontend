@@ -143,7 +143,13 @@ export class CoinManagementComponent implements OnInit {
               );
               this.loadData();
             } else {
-              this.notificationService.error('Error', transaction.error);
+              let msg = 'Error happened in transaction';
+
+              if (transaction && transaction.error && transaction.error.length > 0) {
+                msg = transaction.error
+              }
+
+              this.notificationService.error('Error', msg);
             }
           },
           error => this.notificationService.error('Error', 'Error appeared during withdrawal')
@@ -174,11 +180,17 @@ export class CoinManagementComponent implements OnInit {
             this.notificationService.success('Success', 'Money has been transferred successfully');
             this.loadData();
           } else {
-            this.notificationService.error('Error', transaction.error);
+            let msg = 'Error happened in transaction';
+
+            if (transaction && transaction.error && transaction.error.length > 0) {
+              msg = transaction.error
+            }
+
+            this.notificationService.error('Error', msg);
           }
         },
         error => {
-          if (error && error.message) {
+          if (error && error.message && error.message.length > 0) {
             this.notificationService.error('Error', error.message);
           } else {
             this.notificationService.error('Error', 'Error appeared during money transferring');

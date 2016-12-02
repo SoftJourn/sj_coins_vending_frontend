@@ -141,6 +141,12 @@ export class TokenService {
   }
 
   public revokeRefreshToken(): Observable<{}> {
+    if (!this.refreshToken) {
+      return Observable.throw(new AppError(
+        'token/refresh_token-missing',
+        'Refresh token is missing'));
+    }
+
     let url = `${AppProperties.AUTH_ENDPOINT}/revoke`;
     let body = `token_value=${this.refreshToken}`;
 

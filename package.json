@@ -6,7 +6,7 @@
   "scripts": {
     "start": "ng serve",
     "startProd": "ng serve -prod",
-    "build": "ng build --prod && npm run htaccess",
+    "build": "ng build --prod",
     "htaccess": "cp .htaccess dist/",
     "lint": "tslint \"src/**/*.ts\"",
     "test": "ng test",

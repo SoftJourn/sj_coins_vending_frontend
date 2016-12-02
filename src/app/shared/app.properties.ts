@@ -7,7 +7,7 @@ export class AppProperties {
   static CLIENT_AUTH_HASH = 'dXNlcl9jcmVkOnN1cGVyc2VjcmV0';
   static NOTIFICATION_OPTIONS = {
     position: ["bottom", "right"],
-    timeOut: 2000,
+    timeOut: 5000,
     lastOnBottom: true
   };
 }
