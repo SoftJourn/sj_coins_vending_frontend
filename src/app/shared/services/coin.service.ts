@@ -1,16 +1,22 @@
-import { Injectable } from "@angular/core";
-import { HttpService } from "./http.service";
-import { AccountType, CoinsAccount } from "../../coin-management/coins-account";
-import { Observable } from "rxjs";
-import { AppProperties } from "../app.properties";
-import { AmountDto } from "../../coin-management/amount-dto";
-import { Transaction } from "../../coin-management/transaction";
-import { MediaType } from "../media-type";
+import {Injectable} from "@angular/core";
+import {HttpService} from "./http.service";
+import {
+  AccountType,
+  CoinsAccount
+} from "../../coin-management/coins-account";
+import {Observable} from "rxjs";
+import {AppProperties} from "../app.properties";
+import {AmountDto} from "../../coin-management/amount-dto";
+import {Transaction} from "../../coin-management/transaction";
+import {MediaType} from "../media-type";
+import {ResultDTO} from "../../coin-management/result-dto";
+import {CheckDTO} from "../../coin-management/check-dto";
 
 @Injectable()
 export class CoinService {
 
-  constructor(protected httpService: HttpService) {}
+  constructor(protected httpService: HttpService) {
+  }
 
   public getAccountsByType(accountType: AccountType): Observable<CoinsAccount[]> {
     let url = `${AppProperties.API_COINS_ENDPOINT}/accounts/${accountType.type}`;
@@ -63,4 +69,19 @@ export class CoinService {
     return this.httpService.post(url, amountDto, MediaType.APPLICATION_JSON)
       .map(response => response.json());
   }
+
+  public transferToAccounts(transferFile: any): Observable<ResultDTO> {
+    let url = `${AppProperties.API_COINS_ENDPOINT}/add/`;
+    return this.httpService.post(url, transferFile)
+      .map(response => response.json());
+  }
+
+  public checkProcessing(checkHash: string): Observable<CheckDTO> {
+    let url = `${AppProperties.API_COINS_ENDPOINT}/check/${checkHash}`;
+    let request = this.httpService.get(url)
+      .map(response => response.json());
+    return request.expand(() => Observable.timer(5000).concatMap(() => this.httpService.get(url)
+      .map(response => response.json())));
+  }
+
 }

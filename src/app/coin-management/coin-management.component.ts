@@ -1,11 +1,25 @@
-import { Component, OnInit } from "@angular/core";
-import { CoinsAccount, REGULAR, MERCHANT } from "./coins-account";
-import { CoinService } from "../shared/services/coin.service";
-import { NotificationsService } from "angular2-notifications";
-import { FormGroup, FormControl, Validators } from "@angular/forms";
-import { FormValidationStyles } from "../shared/form-validation-styles";
-import { AmountDto } from "./amount-dto";
-import { Observable } from "rxjs";
+import {
+  Component,
+  OnInit
+} from "@angular/core";
+import {
+  CoinsAccount,
+  REGULAR,
+  MERCHANT
+} from "./coins-account";
+import {CoinService} from "../shared/services/coin.service";
+import {NotificationsService} from "angular2-notifications";
+import {
+  FormGroup,
+  FormControl,
+  Validators
+} from "@angular/forms";
+import {FormValidationStyles} from "../shared/form-validation-styles";
+import {AmountDto} from "./amount-dto";
+import {Observable} from "rxjs";
+import {ResultDTO} from "./result-dto";
+import {CheckDTO} from "./check-dto";
+import {ErrorDetail} from "../shared/entity/error-detail";
 
 @Component({
   selector: 'app-coin-management',
@@ -17,6 +31,13 @@ export class CoinManagementComponent implements OnInit {
   productsPrice: number;
   merchantsAmount: number;
   accountsAmount: number;
+  fileName: string = '';
+  transferFile: File;
+  transferFileButtonDisabled: boolean = true;
+  transferFileFormStyle: string = 'card-outline-success';
+  progressMax: number = 0;
+  progressCurrent: number = 0;
+  progressHide: boolean = true;
 
   regularAccounts: CoinsAccount[];
   merchantAccounts: CoinsAccount[];
@@ -203,4 +224,78 @@ export class CoinManagementComponent implements OnInit {
       amount: ''
     });
   }
+
+  transferToAccounts(): void {
+    let uploadFormData = new FormData();
+    uploadFormData.append('file', this.transferFile, this.transferFile.name);
+    this.coinService.transferToAccounts(uploadFormData).subscribe((response: ResultDTO) => {
+        this.transferFileButtonDisabled = true;
+        this.progressHide = false;
+        this.transferFile = null;
+        this.fileName = '';
+        this.notificationService.success('Success', 'Accounts charging task is in progress!');
+        let subscription = this.coinService.checkProcessing(response.checkHash).subscribe((response: CheckDTO) => {
+          console.log(response);
+          this.progressMax = response.total;
+          this.progressCurrent = response.isDone;
+          if (response.isDone == response.total) {
+            this.progressHide = true;
+            this.notificationService.success('Success', 'Accounts charging task has finished successfully!');
+            subscription.unsubscribe();
+          }
+        }, error => {
+          try {
+            let errorDetail = <ErrorDetail> error.json();
+            if (!errorDetail.detail)
+            //noinspection ExceptionCaughtLocallyJS
+              throw errorDetail;
+            this.progressHide = true;
+            this.notificationService.error('Error', errorDetail.detail);
+          } catch (err) {
+            console.log(err);
+            this.progressHide = true;
+            this.notificationService.error('Error', 'Error appeared, watch logs!');
+          }
+        });
+      },
+      error => {
+        try {
+          let errorDetail = <ErrorDetail> error.json();
+          if (!errorDetail.detail)
+          //noinspection ExceptionCaughtLocallyJS
+            throw errorDetail;
+          this.notificationService.error('Error', errorDetail.detail);
+        } catch (err) {
+          console.log(err);
+          this.notificationService.error('Error', 'Error appeared, watch logs!');
+        }
+        this.transferFile = null;
+        this.fileName = '';
+      });
+  }
+
+  public handleInputChange(e) {
+    let file: File = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0];
+    let pattern = /(text\/csv)/;
+    let reader = new FileReader();
+    if (!file.type.match(pattern)) {
+      this.notificationService.error('Error', 'This file format not supported!');
+      this.transferFileFormStyle = 'card-outline-danger';
+    } else {
+      reader.onloadend = () => {
+        this.transferFile = file;
+        e.target.value = null;
+        this.fileName = file.name;
+        this.transferFileButtonDisabled = false;
+        this.transferFileFormStyle = 'card-outline-success';
+        this.notificationService.success('Success', 'File was loaded successfully!')
+      };
+      reader.onerror = () => {
+        this.transferFileFormStyle = 'card-outline-danger';
+        this.notificationService.error('Error', 'File was not loaded, file may contain mistakes!')
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
 }
