@@ -33,6 +33,7 @@ export class UsersComponent implements OnInit {
   public form: FormGroup;
   public selectedModule: Account;
   public activeModal: NgbModalRef;
+  public userStateBeforeActiveModal;
   public edit: boolean = false;
 
 
@@ -85,14 +86,14 @@ export class UsersComponent implements OnInit {
       .cancelBtnClass('btn btn-secondary modal-footer-confirm-btn')
       .open()
       .then(
-        (response)=> {
+        (response) => {
           response.result.then(
             () => {
               this.adminUserService.delete(ldapName)
                 .subscribe(
-                  ()=> {
+                  () => {
                   },
-                  error=> {
+                  error => {
                     this.notificationService.error("Delete", error.body);
                   },
                   () => {
@@ -116,14 +117,14 @@ export class UsersComponent implements OnInit {
       return;
     }
     this.adminUserService.save(this.selectedModule)
-      .subscribe(response=> this.notificationService.success('Add', 'User has been added successfully'),
+      .subscribe(response => this.notificationService.success('Add', 'User has been added successfully'),
         error => {
           if (error.status == 409)
             this.notificationService.error('Error', 'Selected user already exists');
           else
             this.notificationService.error('Error', error.text());
         },
-        ()=> {
+        () => {
           this.syncAdminUsers();
           this.activeModal.close('Submit');
         });
@@ -139,15 +140,15 @@ export class UsersComponent implements OnInit {
         , error => {
           this.notificationService.error('Error', error.text());
         },
-        ()=> {
+        () => {
           this.syncAdminUsers();
           this.activeModal.close('Submit');
         });
   }
 
   public editUser(user: Account, content: any) {
-    let ldap = this.ldapUsers.filter(luser=>user.ldapId == luser.ldapId)[0];
-    ldap.authorities = user.authorities;
+    let ldap = this.ldapUsers.filter(luser => user.ldapId == luser.ldapId)[0];
+    ldap.authorities = user.authorities.slice();
     this.edit = true;
     this.open(content, ldap);
   }
