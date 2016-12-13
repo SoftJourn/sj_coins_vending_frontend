@@ -76,10 +76,6 @@ export class FillMachineComponent implements OnInit, AfterContentInit {
     this.machineService.findOne(id).subscribe(
       machine => {
         this.machine = machine;
-        this.form.addControl('count', new FormControl(3, [
-          Validators.required,
-          Validators.pattern('^[1-9]$|^[1][0-9]{1}$')
-        ]))
       },
       error => {
         try {
@@ -116,7 +112,10 @@ export class FillMachineComponent implements OnInit, AfterContentInit {
     this.form = new FormGroup({
       fieldInternalId: new FormControl('', Validators.required),
       product: new FormControl('', Validators.required),
-      count: new FormControl('3')
+      count: new FormControl('', [
+        Validators.required,
+        Validators.pattern('^[1-9]\\d*')
+      ])
     });
   }
 
