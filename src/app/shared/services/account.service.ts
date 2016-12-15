@@ -11,7 +11,7 @@ export const routes: { [key: string]: string[] } = {
   "ROLE_BILLING": ["/main/coins"],
   "ROLE_INVENTORY": ["/main","/main/products", "/main/machines", "/main/categories"],
   "ROLE_USER_MANAGER": ["/main/users"],
-  "ROLE_SUPER_USER": ["/main/coins"]
+  "ROLE_SUPER_ADMIN": ["/main/coins"]
     .concat(["/main/products", "/main/machines", "/main/categories"])
     .concat(["/main/products", "/main/machines", "/main/categories"])
     .concat(["/main/users"])
