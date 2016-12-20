@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 import { Http, Headers, Response } from "@angular/http";
 import { Observable } from "rxjs";
 import { TokenService } from "./token.service";
@@ -13,14 +13,14 @@ export class HttpService {
   ) { }
 
   get(url: string): Observable<Response> {
-    return this.getAuthHeaders()
+    return this.tokenService.getAuthHeaders()
       .flatMap(
         headers => this.http.get(url, {headers: headers})
       );
   }
 
   post(url: string, body: any, contentType?: string): Observable<Response> {
-    return this.getAuthHeaders()
+    return this.tokenService.getAuthHeaders()
       .flatMap((headers: Headers) => {
         if (contentType == null) {
           return this.http.post(url, body, {headers: headers});
@@ -33,7 +33,7 @@ export class HttpService {
   }
 
   put(url: string, body: any, contentType: string): Observable<Response> {
-    return this.getAuthHeaders()
+    return this.tokenService.getAuthHeaders()
       .flatMap((headers: Headers) => {
         headers.append(HttpHeaders.CONTENT_TYPE, contentType);
 
@@ -42,19 +42,8 @@ export class HttpService {
   }
 
   delete(url: string): Observable<Response> {
-    return this.getAuthHeaders()
+    return this.tokenService.getAuthHeaders()
       .flatMap((headers: Headers) => this.http.delete(url, {headers: headers}));
   }
 
-  private getAuthHeaders(): Observable<Headers> {
-    return this.tokenService.getAccessToken()
-      .map(accessToken => {
-        let headers = new Headers();
-        let authValue = `${this.tokenService.getTokenType()} ${accessToken}`;
-
-        headers.append(HttpHeaders.AUTHORIZATION, authValue);
-
-        return headers;
-      });
-  }
 }

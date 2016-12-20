@@ -140,6 +140,18 @@ export class TokenService {
     this.jti = null;
   }
 
+  public getAuthHeaders(): Observable<Headers> {
+    return this.getAccessToken()
+      .map(accessToken => {
+        let headers = new Headers();
+        let authValue = `${this.getTokenType()} ${accessToken}`;
+
+        headers.append(HttpHeaders.AUTHORIZATION, authValue);
+
+        return headers;
+      });
+  }
+
   public revokeRefreshToken(): Observable<{}> {
     if (!this.refreshToken) {
       return Observable.throw(new AppError(
@@ -147,11 +159,14 @@ export class TokenService {
         'Refresh token is missing'));
     }
 
+
     let url = `${AppProperties.AUTH_ENDPOINT}/revoke`;
     let body = `token_value=${this.refreshToken}`;
 
-    return this.http.post(url, body, {headers: TokenService.getHeadersForTokenRequest()})
-      .map(response => Observable.empty());
+    return this.getAuthHeaders().flatMap((headers: Headers) => {
+      headers.append(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
+      return this.http.post(url, body, {headers: headers});
+    });
   }
 
   get authorities(): Role[] {
