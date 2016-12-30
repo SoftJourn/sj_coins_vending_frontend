@@ -274,6 +274,23 @@ export class CoinManagementComponent implements OnInit {
       });
   }
 
+  public getTemplate(): void {
+    let reader = new FileReader();
+    this.coinService.getTemplate().subscribe(response => {
+      reader.readAsDataURL(response);
+      reader.onloadend = () => {
+        let a = document.createElement("a");
+        document.body.appendChild(a);
+        a.setAttribute("style", "display: none");
+        a.href = reader.result;
+        a.target = '_blank';
+        a.download = 'template.csv';
+        a.click();
+        document.body.removeChild(a);
+      }
+    });
+  }
+
   public handleInputChange(e) {
     let file: File = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0];
     let pattern = /(text\/csv)/;

@@ -11,6 +11,7 @@ import {Transaction} from "../../coin-management/transaction";
 import {MediaType} from "../media-type";
 import {ResultDTO} from "../../coin-management/result-dto";
 import {CheckDTO} from "../../coin-management/check-dto";
+import {Response} from "@angular/http";
 
 @Injectable()
 export class CoinService {
@@ -82,6 +83,13 @@ export class CoinService {
       .map(response => response.json());
     return request.expand(() => Observable.timer(5000).concatMap(() => this.httpService.get(url)
       .map(response => response.json())));
+  }
+
+  public getTemplate(): Observable<Blob> {
+    let url = `${AppProperties.API_COINS_ENDPOINT}/template`;
+    return this.httpService.get(url).map((response: Response) => {
+      return new Blob([response.text()]);
+    });
   }
 
 }
