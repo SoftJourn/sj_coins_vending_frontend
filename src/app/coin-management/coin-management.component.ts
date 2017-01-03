@@ -1,11 +1,26 @@
-import { Component, OnInit } from "@angular/core";
-import { CoinsAccount, REGULAR, MERCHANT } from "./coins-account";
-import { CoinService } from "../shared/services/coin.service";
-import { NotificationsService } from "angular2-notifications";
-import { FormGroup, FormControl, Validators } from "@angular/forms";
-import { FormValidationStyles } from "../shared/form-validation-styles";
-import { AmountDto } from "./amount-dto";
-import { Observable } from "rxjs";
+import {
+  Component,
+  OnInit
+} from "@angular/core";
+import {
+  CoinsAccount,
+  REGULAR,
+  MERCHANT
+} from "./coins-account";
+import {CoinService} from "../shared/services/coin.service";
+import {NotificationsService} from "angular2-notifications";
+import {
+  FormGroup,
+  FormControl,
+  Validators
+} from "@angular/forms";
+import {FormValidationStyles} from "../shared/form-validation-styles";
+import {AmountDto} from "./amount-dto";
+import {Observable} from "rxjs";
+import {ResultDTO} from "./result-dto";
+import {CheckDTO} from "./check-dto";
+import {ErrorDetail} from "../shared/entity/error-detail";
+import {Transaction} from "./transaction";
 
 @Component({
   selector: 'app-coin-management',
@@ -17,6 +32,17 @@ export class CoinManagementComponent implements OnInit {
   productsPrice: number;
   merchantsAmount: number;
   accountsAmount: number;
+  fileName: string = '';
+  transferFile: File;
+  transferFileButtonDisabled: boolean = true;
+  transferFileFormStyle: string = 'card-outline-success';
+  showResultsHide: boolean = true;
+  showResultsButtonHide: boolean = true;
+  transactions: Transaction[];
+  progressValue: string;
+  progressMax: number = 0;
+  progressCurrent: number = 0;
+  progressHide: boolean = true;
 
   regularAccounts: CoinsAccount[];
   merchantAccounts: CoinsAccount[];
@@ -203,4 +229,110 @@ export class CoinManagementComponent implements OnInit {
       amount: ''
     });
   }
+
+  transferToAccounts(): void {
+    //create form to send file
+    let uploadFormData = new FormData();
+    uploadFormData.append('file', this.transferFile, this.transferFile.name);
+    // send form with file inside the form
+    this.coinService.transferToAccounts(uploadFormData).subscribe((response: ResultDTO) => {
+        this.transferFileButtonDisabled = true;
+        this.progressHide = false;
+        this.transferFile = null;
+        this.fileName = '';
+        this.notificationService.success('Success', 'Accounts charging task is in progress!');
+        // checking progress on server
+        let subscription = this.coinService.checkProcessing(response.checkHash).subscribe((response: CheckDTO) => {
+          this.progressMax = response.total;
+          this.progressCurrent = response.isDone;
+          this.progressValue = (this.progressCurrent / this.progressMax * 100).toFixed(2);
+          // if all was done unsubscribe and show results
+          if (response.isDone == response.total) {
+            this.progressHide = true;
+            this.transactions = response.transactions;
+            this.showResultsButtonHide = false;
+            this.notificationService.success('Success', 'Accounts charging task has finished successfully!');
+            subscription.unsubscribe();
+          }
+        }, error => {
+          try {
+            let errorDetail = <ErrorDetail> error.json();
+            if (!errorDetail.detail)
+            //noinspection ExceptionCaughtLocallyJS
+              throw errorDetail;
+            this.progressHide = true;
+            this.notificationService.error('Error', errorDetail.detail);
+          } catch (err) {
+            console.log(err);
+            this.progressHide = true;
+            this.notificationService.error('Error', 'Error appeared, watch logs!');
+          }
+        });
+      },
+      error => {
+        try {
+          let errorDetail = <ErrorDetail> error.json();
+          if (!errorDetail.detail)
+          //noinspection ExceptionCaughtLocallyJS
+            throw errorDetail;
+          this.notificationService.error('Error', errorDetail.detail);
+        } catch (err) {
+          console.log(err);
+          this.notificationService.error('Error', 'Error appeared, watch logs!');
+        }
+        this.transferFile = null;
+        this.fileName = '';
+      });
+  }
+
+  public showResults(){
+    this.showResultsHide = !this.showResultsHide;
+  }
+
+  // download template file from server
+  public getTemplate(): void {
+    let reader = new FileReader();
+    this.coinService.getTemplate().subscribe(response => {
+      reader.readAsDataURL(response);
+      reader.onloadend = () => {
+        let a = document.createElement("a");
+        document.body.appendChild(a);
+        a.setAttribute("style", "display: none");
+        a.href = reader.result;
+        a.target = '_blank';
+        a.download = 'template.csv';
+        a.click();
+        document.body.removeChild(a);
+      }
+    });
+  }
+
+  // upload file
+  public handleInputChange(e) {
+    let file: File = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0];
+    let pattern = /(text\/csv)/;
+    let reader = new FileReader();
+    // check pattern
+    if (!file.type.match(pattern)) {
+      this.notificationService.error('Error', 'This file format not supported!');
+      this.transferFileFormStyle = 'card-outline-danger';
+    } else {
+      // do actions after file loading
+      reader.onloadend = () => {
+        this.transferFile = file;
+        e.target.value = null;
+        this.fileName = file.name;
+        this.transferFileButtonDisabled = false;
+        this.transferFileFormStyle = 'card-outline-success';
+        this.notificationService.success('Success', 'File was loaded successfully!')
+      };
+      reader.onerror = () => {
+        this.transferFileFormStyle = 'card-outline-danger';
+        this.notificationService.error('Error', 'File was not loaded, file may contain mistakes!')
+      };
+      // read file
+      reader.readAsDataURL(file);
+    }
+  }
+
 }
