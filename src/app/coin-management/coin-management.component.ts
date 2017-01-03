@@ -20,6 +20,7 @@ import {Observable} from "rxjs";
 import {ResultDTO} from "./result-dto";
 import {CheckDTO} from "./check-dto";
 import {ErrorDetail} from "../shared/entity/error-detail";
+import {Transaction} from "./transaction";
 
 @Component({
   selector: 'app-coin-management',
@@ -35,6 +36,10 @@ export class CoinManagementComponent implements OnInit {
   transferFile: File;
   transferFileButtonDisabled: boolean = true;
   transferFileFormStyle: string = 'card-outline-success';
+  showResultsHide: boolean = true;
+  showResultsButtonHide: boolean = true;
+  transactions: Transaction[];
+  progressValue: string;
   progressMax: number = 0;
   progressCurrent: number = 0;
   progressHide: boolean = true;
@@ -226,20 +231,26 @@ export class CoinManagementComponent implements OnInit {
   }
 
   transferToAccounts(): void {
+    //create form to send file
     let uploadFormData = new FormData();
     uploadFormData.append('file', this.transferFile, this.transferFile.name);
+    // send form with file inside the form
     this.coinService.transferToAccounts(uploadFormData).subscribe((response: ResultDTO) => {
         this.transferFileButtonDisabled = true;
         this.progressHide = false;
         this.transferFile = null;
         this.fileName = '';
         this.notificationService.success('Success', 'Accounts charging task is in progress!');
+        // checking progress on server
         let subscription = this.coinService.checkProcessing(response.checkHash).subscribe((response: CheckDTO) => {
-          console.log(response);
           this.progressMax = response.total;
           this.progressCurrent = response.isDone;
+          this.progressValue = (this.progressCurrent / this.progressMax * 100).toFixed(2);
+          // if all was done unsubscribe and show results
           if (response.isDone == response.total) {
             this.progressHide = true;
+            this.transactions = response.transactions;
+            this.showResultsButtonHide = false;
             this.notificationService.success('Success', 'Accounts charging task has finished successfully!');
             subscription.unsubscribe();
           }
@@ -274,6 +285,11 @@ export class CoinManagementComponent implements OnInit {
       });
   }
 
+  public showResults(){
+    this.showResultsHide = !this.showResultsHide;
+  }
+
+  // download template file from server
   public getTemplate(): void {
     let reader = new FileReader();
     this.coinService.getTemplate().subscribe(response => {
@@ -291,14 +307,17 @@ export class CoinManagementComponent implements OnInit {
     });
   }
 
+  // upload file
   public handleInputChange(e) {
     let file: File = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0];
     let pattern = /(text\/csv)/;
     let reader = new FileReader();
+    // check pattern
     if (!file.type.match(pattern)) {
       this.notificationService.error('Error', 'This file format not supported!');
       this.transferFileFormStyle = 'card-outline-danger';
     } else {
+      // do actions after file loading
       reader.onloadend = () => {
         this.transferFile = file;
         e.target.value = null;
@@ -311,6 +330,7 @@ export class CoinManagementComponent implements OnInit {
         this.transferFileFormStyle = 'card-outline-danger';
         this.notificationService.error('Error', 'File was not loaded, file may contain mistakes!')
       };
+      // read file
       reader.readAsDataURL(file);
     }
   }

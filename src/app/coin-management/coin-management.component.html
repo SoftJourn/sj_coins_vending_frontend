@@ -116,9 +116,15 @@
 
   <div class="row">
     <div class="card card-block" [ngClass]="transferFileFormStyle">
-      <progress class="progress progress-striped progress-animated progress-success"
-                [max]="progressMax" [value]="progressCurrent" [hidden]="progressHide">
-      </progress>
+      <div [hidden]="progressHide">
+        <div class="text-xs-center" id="progress-text">
+          {{progressValue}}%
+        </div>
+        <progress class="progress progress-striped progress-animated progress-success"
+                  [max]="progressMax" [value]="progressCurrent"
+                  aria-describedby="progress-text">
+        </progress>
+      </div>
       <form class="form-inline">
         <div class="form-group">
           <button type="button" class="btn btn-success" (click)="getTemplate()">
@@ -143,7 +149,34 @@
                 [disabled]="transferFileButtonDisabled">
           Transfer coins
         </button>
+        <button type="button" class="btn btn-success" (click)="showResults()"
+                [disabled]="showResultsButtonHide">
+          Watch Results
+        </button>
       </form>
+      <div class="row" [hidden]="showResultsHide">
+        <div class="col-xs-12 col-md-12 col-xl-12">
+          <br>
+          <table class="table table-hover">
+            <thead class="thead-inverse">
+            <tr>
+              <th class="column-visibility">#</th>
+              <th>Account</th>
+              <th>Status</th>
+              <th>Amount, coins</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let transaction of transactions; let i = index">
+              <th class="column-visibility" scope="row">{{i + 1}}</th>
+              <td>{{transaction?.destination}}</td>
+              <td>{{transaction?.status}}</td>
+              <td>{{transaction?.amount}}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 
