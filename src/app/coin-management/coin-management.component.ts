@@ -310,7 +310,7 @@ export class CoinManagementComponent implements OnInit {
   // upload file
   public handleInputChange(e) {
     let file: File = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0];
-    let pattern = /(text\/csv)/;
+    let pattern = /(text\/csv)|(application\/vnd.ms-excel)/;
     let reader = new FileReader();
     // check pattern
     if (!file.type.match(pattern)) {
