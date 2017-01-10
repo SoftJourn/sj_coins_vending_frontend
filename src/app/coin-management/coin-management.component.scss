@@ -12,3 +12,8 @@
 div.validation-msg i {
   margin-right: 10px;
 }
+
+.disabled {
+  cursor: not-allowed;
+  opacity: .65;
+}

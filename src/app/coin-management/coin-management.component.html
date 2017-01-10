@@ -135,12 +135,12 @@
           <div class="input-group">
             <span class="input-group-addon"><i class="fa fa-file-text fa-lg"></i></span>
             <input type="text" class="form-control" readonly [value]="fileName">
-            <label class="input-group-btn">
-                    <span class="btn btn-info">
+            <label class="input-group-btn" [ngClass]="">
+                    <span class="btn btn-info" [ngClass]="blockAttachFileIfInProcessClass">
                       <i class="fa fa-search btn-icon"></i>Attache file
                         <input type="file" style="display: none;"
                                accept=".csv"
-                               (change)="handleInputChange($event)">
+                               (change)="handleInputChange($event)" [disabled]="blockAttachFileIfInProcess">
                     </span>
             </label>
           </div>

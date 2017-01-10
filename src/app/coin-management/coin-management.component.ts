@@ -36,6 +36,8 @@ export class CoinManagementComponent implements OnInit {
   transferFile: File;
   transferFileButtonDisabled: boolean = true;
   transferFileFormStyle: string = 'card-outline-success';
+  blockAttachFileIfInProcess: boolean = false;
+  blockAttachFileIfInProcessClass: string = '';
   showResultsHide: boolean = true;
   showResultsButtonHide: boolean = true;
   transactions: Transaction[];
@@ -231,6 +233,9 @@ export class CoinManagementComponent implements OnInit {
   }
 
   transferToAccounts(): void {
+    // Block Attach file button
+    this.blockAttachFileIfInProcess = true;
+    this.blockAttachFileIfInProcessClass = 'disabled';
     //create form to send file
     let uploadFormData = new FormData();
     uploadFormData.append('file', this.transferFile, this.transferFile.name);
@@ -251,6 +256,9 @@ export class CoinManagementComponent implements OnInit {
             this.progressHide = true;
             this.transactions = response.transactions;
             this.showResultsButtonHide = false;
+            // Unblock Attach file button
+            this.blockAttachFileIfInProcess = false;
+            this.blockAttachFileIfInProcessClass = '';
             this.notificationService.success('Success', 'Accounts charging task has finished successfully!');
             subscription.unsubscribe();
           }
@@ -261,16 +269,24 @@ export class CoinManagementComponent implements OnInit {
             //noinspection ExceptionCaughtLocallyJS
               throw errorDetail;
             this.progressHide = true;
+            // Unblock Attach file button
+            this.blockAttachFileIfInProcess = false;
+            this.blockAttachFileIfInProcessClass = '';
             this.notificationService.error('Error', errorDetail.detail);
           } catch (err) {
             console.log(err);
             this.progressHide = true;
+            // Unblock Attach file button
+            this.blockAttachFileIfInProcess = false;
+            this.blockAttachFileIfInProcessClass = '';
             this.notificationService.error('Error', 'Error appeared, watch logs!');
           }
         });
       },
       error => {
         try {
+          // Unblock Attach file button
+          this.blockAttachFileIfInProcess = false;
           let errorDetail = <ErrorDetail> error.json();
           if (!errorDetail.detail)
           //noinspection ExceptionCaughtLocallyJS
@@ -278,14 +294,20 @@ export class CoinManagementComponent implements OnInit {
           this.notificationService.error('Error', errorDetail.detail);
         } catch (err) {
           console.log(err);
+          // Unblock Attach file button
+          this.blockAttachFileIfInProcess = false;
+          this.blockAttachFileIfInProcessClass = '';
           this.notificationService.error('Error', 'Error appeared, watch logs!');
         }
+        // Unblock Attach file button
+        this.blockAttachFileIfInProcess = false;
+        this.blockAttachFileIfInProcessClass = '';
         this.transferFile = null;
         this.fileName = '';
       });
   }
 
-  public showResults(){
+  public showResults() {
     this.showResultsHide = !this.showResultsHide;
   }
 
