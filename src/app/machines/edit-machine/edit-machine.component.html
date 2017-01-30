@@ -97,6 +97,7 @@
         </div>
         <div class="form-group row">
           <div class="col-sm-12 form-buttons-container">
+            <button class="btn btn-warning" type="button" (click)="resetMotorState()">Reset motor state</button>
             <button class="btn btn-success" type="submit" [disabled]="!form.valid">Submit</button>
             <button class="btn btn-secondary" type="button" (click)="cancel()">Cancel</button>
           </div>

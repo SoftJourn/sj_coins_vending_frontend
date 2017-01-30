@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import {Component, OnInit, ViewContainerRef} from "@angular/core";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { MachineService } from "../../shared/services/machine.service";
 import { NotificationsService } from "angular2-notifications";
@@ -7,6 +7,8 @@ import { Router, ActivatedRoute } from "@angular/router";
 import { ErrorDetail } from "../../shared/entity/error-detail";
 import { Subscription } from "rxjs";
 import { Machine } from "../shared/machine";
+import { Modal } from "angular2-modal/plugins/bootstrap";
+import {Overlay} from "angular2-modal";
 
 @Component({
   selector: 'app-edit-machine',
@@ -28,7 +30,9 @@ export class EditMachineComponent implements OnInit {
   constructor(private machineService: MachineService,
               private notificationService: NotificationsService,
               private route: ActivatedRoute,
-              private router: Router) {
+              private router: Router,
+              public modal: Modal, overlay: Overlay, vcRef: ViewContainerRef,) {
+    overlay.defaultViewContainer = vcRef;
   }
 
   ngOnInit() {
@@ -91,20 +95,8 @@ export class EditMachineComponent implements OnInit {
     submit() {
         this.form.value.id = this.mashinesIndex;
         this.machineService.updateMachine(this.form.value).subscribe(
-            () => {
-            },
-          error => {
-            try {
-              let errorDetail = <ErrorDetail> error.json();
-              if (!errorDetail.detail)
-              //noinspection ExceptionCaughtLocallyJS
-                throw errorDetail;
-              this.notificationService.error('Error', errorDetail.detail);
-            } catch (err) {
-              console.log(err);
-              this.notificationService.error('Error', 'Error appeared, watch logs!');
-            }
-          },
+            () => {},
+            error => this.processError(error),
             () => {
                 this.router.navigate(['/main/machines']);
                 this.notificationService.success('Update', 'Machine has been updated successfully');
@@ -154,6 +146,49 @@ export class EditMachineComponent implements OnInit {
 
   cancel(): void {
     this.router.navigate(['/main/machines']);
+  }
+
+  resetMotorState() {
+    this.modal.confirm()
+      .size('lg')
+      .isBlocking(true)
+      .showClose(true)
+      .keyboard(27)
+      .title('Reset machine motors')
+      .body('You have to switch machine to service mode before pressing this button!')
+      .okBtn('OK')
+      .okBtnClass('btn btn-success modal-footer-confirm-btn')
+      .cancelBtn('Cancel')
+      .cancelBtnClass('btn btn-secondary modal-footer-confirm-btn')
+      .open()
+      .then(
+        (response) => {
+          response.result.then(
+            () => {
+              this.form.value.id = this.mashinesIndex;
+              this.machineService.resetMotorState(this.form.value).subscribe(
+                  () => {},
+                  error => this.processError(error),
+                  () => {
+                    this.notificationService.success('Update', 'Machine motors has been reset successfully');
+                  }
+              )},
+            () => {}
+          );
+        });
+  }
+
+  private processError(error) {
+    try {
+      let errorDetail = <ErrorDetail> error.json();
+      if (!errorDetail.detail)
+      //noinspection ExceptionCaughtLocallyJS
+        throw errorDetail;
+      this.notificationService.error('Error', errorDetail.detail);
+    } catch (err) {
+      console.log(err);
+      this.notificationService.error('Error', 'Error appeared, watch logs!');
+    }
   }
 
 }

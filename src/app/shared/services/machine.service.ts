@@ -27,4 +27,9 @@ export class MachineService extends CrudService<Machine> {
     return this.httpService.put(url, machine, MediaType.APPLICATION_JSON)
         .map(response => response.json());
   }
+
+  public resetMotorState(machine: Machine) {
+    let url = `${this.getUrl()}/${machine.id}/reset`;
+    return this.httpService.post(url, null, MediaType.APPLICATION_JSON);
+  }
 }
