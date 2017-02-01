@@ -7,18 +7,22 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Component } from "@angular/core";
+import { Component, ViewContainerRef } from "@angular/core";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { MachineService } from "../../shared/services/machine.service";
 import { NotificationsService } from "angular2-notifications";
 import { FormValidationStyles } from "../../shared/form-validation-styles";
 import { Router, ActivatedRoute } from "@angular/router";
+import { Modal } from "angular2-modal/plugins/bootstrap";
+import { Overlay } from "angular2-modal";
 export var EditMachineComponent = (function () {
-    function EditMachineComponent(machineService, notificationService, route, router) {
+    function EditMachineComponent(machineService, notificationService, route, router, modal, overlay, vcRef) {
         this.machineService = machineService;
         this.notificationService = notificationService;
         this.route = route;
         this.router = router;
+        this.modal = modal;
+        overlay.defaultViewContainer = vcRef;
     }
     EditMachineComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -74,20 +78,7 @@ export var EditMachineComponent = (function () {
     EditMachineComponent.prototype.submit = function () {
         var _this = this;
         this.form.value.id = this.mashinesIndex;
-        this.machineService.updateMachine(this.form.value).subscribe(function () {
-        }, function (error) {
-            try {
-                var errorDetail = error.json();
-                if (!errorDetail.detail)
-                    //noinspection ExceptionCaughtLocallyJS
-                    throw errorDetail;
-                _this.notificationService.error('Error', errorDetail.detail);
-            }
-            catch (err) {
-                console.log(err);
-                _this.notificationService.error('Error', 'Error appeared, watch logs!');
-            }
-        }, function () {
+        this.machineService.updateMachine(this.form.value).subscribe(function () { }, function (error) { return _this.processError(error); }, function () {
             _this.router.navigate(['/main/machines']);
             _this.notificationService.success('Update', 'Machine has been updated successfully');
             _this.resetForm();
@@ -133,13 +124,49 @@ export var EditMachineComponent = (function () {
     EditMachineComponent.prototype.cancel = function () {
         this.router.navigate(['/main/machines']);
     };
+    EditMachineComponent.prototype.resetMotorState = function () {
+        var _this = this;
+        this.modal.confirm()
+            .size('lg')
+            .isBlocking(true)
+            .showClose(true)
+            .keyboard(27)
+            .title('Reset machine motors')
+            .body('You have to switch machine to service mode before pressing this button!')
+            .okBtn('OK')
+            .okBtnClass('btn btn-success modal-footer-confirm-btn')
+            .cancelBtn('Cancel')
+            .cancelBtnClass('btn btn-secondary modal-footer-confirm-btn')
+            .open()
+            .then(function (response) {
+            response.result.then(function () {
+                _this.form.value.id = _this.mashinesIndex;
+                _this.machineService.resetMotorState(_this.form.value).subscribe(function () { }, function (error) { return _this.processError(error); }, function () {
+                    _this.notificationService.success('Update', 'Machine motors has been reset successfully');
+                });
+            }, function () { });
+        });
+    };
+    EditMachineComponent.prototype.processError = function (error) {
+        try {
+            var errorDetail = error.json();
+            if (!errorDetail.detail)
+                //noinspection ExceptionCaughtLocallyJS
+                throw errorDetail;
+            this.notificationService.error('Error', errorDetail.detail);
+        }
+        catch (err) {
+            console.log(err);
+            this.notificationService.error('Error', 'Error appeared, watch logs!');
+        }
+    };
     EditMachineComponent = __decorate([
         Component({
             selector: 'app-edit-machine',
             templateUrl: './edit-machine.component.html',
             styleUrls: ['./edit-machine.component.scss']
         }), 
-        __metadata('design:paramtypes', [MachineService, NotificationsService, ActivatedRoute, Router])
+        __metadata('design:paramtypes', [MachineService, NotificationsService, ActivatedRoute, Router, Modal, Overlay, ViewContainerRef])
     ], EditMachineComponent);
     return EditMachineComponent;
 }());

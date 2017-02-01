@@ -35,6 +35,10 @@ export var MachineService = (function (_super) {
         return this.httpService.put(url, machine, MediaType.APPLICATION_JSON)
             .map(function (response) { return response.json(); });
     };
+    MachineService.prototype.resetMotorState = function (machine) {
+        var url = this.getUrl() + "/" + machine.id + "/reset";
+        return this.httpService.post(url, null, MediaType.APPLICATION_JSON);
+    };
     MachineService = __decorate([
         Injectable(), 
         __metadata('design:paramtypes', [HttpService])
