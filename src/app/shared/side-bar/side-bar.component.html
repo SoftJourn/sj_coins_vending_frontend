@@ -3,13 +3,13 @@
 </button>
 <nav class="sidebar" [ngClass]="{'sidebarPushRight': isActive}">
   <ul class="list-group">
-    <li *ngIf="isVisible('/main')" >
+    <li *ngIf="isVisible('/main')">
       <a [routerLink]="['/main']" routerLinkActive="router-link-active"
          [routerLinkActiveOptions]="{exact: true}" (click)="hide()" class="list-group-item">
         <i class="fa fa-th fa-lg"></i>Dashboard
       </a>
     </li>
-    <li *ngIf="isVisible('/main/products')" >
+    <li *ngIf="isVisible('/main/products')">
       <a [routerLink]="['/main/products']"
          routerLinkActive="router-link-active"
          [routerLinkActiveOptions]="{exact: true}" class="list-group-item" (click)="hide()">
@@ -26,6 +26,12 @@
       <a [routerLink]="['/main/coins']" routerLinkActive="router-link-active"
          [routerLinkActiveOptions]="{exact: true}" class="list-group-item" (click)="hide()">
         <span><i class="fa fa-money fa-lg"></i>Coins management</span>
+      </a>
+    </li>
+    <li *ngIf="isVisible('/main/transactions')">
+      <a [routerLink]="['/main/transactions']" routerLinkActive="router-link-active"
+         [routerLinkActiveOptions]="{exact: true}" class="list-group-item" (click)="hide()">
+        <span><i class="fa fa-exchange fa-lg"></i>Transactions</span>
       </a>
     </li>
     <li *ngIf="isVisible('/main/categories')">

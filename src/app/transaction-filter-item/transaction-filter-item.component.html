@@ -1,0 +1,23 @@
+<div class="row" [formGroup]="filter">
+  <div class="col-xl-2">
+    <div class="input-group">
+      <div class="input-group-addon">Field</div>
+      <select id="fields" class="form-control" formControlName="field">
+        <option *ngFor="let field of fields;" [ngValue]="field">{{field | upperFirstSymbol}}</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-group col-sm-2 col-md-2 col-lg-2 col-xl-2">
+    <input class="form-control" *ngIf="getType(filter.controls['field'].value) == 'text'" type="text"
+           placeholder="Enter {{filter.controls['field'].value}}" formControlName="value">
+    <input class="form-control" *ngIf="getType(filter.controls['field'].value) == 'number'" type="number"
+           placeholder="Enter {{filter.controls['field'].value}}" formControlName="value">
+    <div class="input-group" *ngIf="getType(filter.controls['field'].value) == 'date'">
+      <input class="form-control" name="dp" ngbDatepicker
+             #d="ngbDatepicker" formControlName="value">
+      <div class="input-group-addon" (click)="d.toggle()">
+        <i class="fa fa-calendar fa-lg"></i>
+      </div>
+    </div>
+  </div>
+</div>

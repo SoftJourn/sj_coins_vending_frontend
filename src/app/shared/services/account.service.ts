@@ -1,15 +1,15 @@
-import { Injectable } from "@angular/core";
-import { Observable } from "rxjs/Rx";
-import { TokenService } from "./token.service";
-import { AppProperties } from "../app.properties";
-import { AppError } from "../app-error";
-import { Account } from "../entity/account";
-import { UsernamePasswordCredentials } from "../username-password-credentials";
-import { HttpService } from "./http.service";
+import {Injectable} from "@angular/core";
+import {Observable} from "rxjs/Rx";
+import {TokenService} from "./token.service";
+import {AppProperties} from "../app.properties";
+import {AppError} from "../app-error";
+import {Account} from "../entity/account";
+import {UsernamePasswordCredentials} from "../username-password-credentials";
+import {HttpService} from "./http.service";
 
-export const routes: { [key: string]: string[] } = {
-  "ROLE_BILLING": ["/main/coins"],
-  "ROLE_INVENTORY": ["/main","/main/products", "/main/machines", "/main/categories"],
+export const routes: {[key: string]: string[]} = {
+  "ROLE_BILLING": ["/main/coins", "/main/transactions"],
+  "ROLE_INVENTORY": ["/main", "/main/products", "/main/machines", "/main/categories"],
   "ROLE_USER_MANAGER": ["/main/users"],
   "ROLE_SUPER_ADMIN": ["/main/coins"]
     .concat(["/main/products", "/main/machines", "/main/categories"])
@@ -113,7 +113,7 @@ export class AccountService {
 
   public getRoutes(): Array<string> {
     let route = [];
-    this.getAccount().authorities.forEach(a=>route = routes[a.authority]?route.concat(routes[a.authority]):route);
+    this.getAccount().authorities.forEach(a => route = routes[a.authority] ? route.concat(routes[a.authority]) : route);
     //noinspection TypeScriptUnresolvedFunction
     return Array.from(new Set(route));
   }

@@ -13,10 +13,11 @@ export var PurchaseDatePipe = (function () {
         this.monthNames = ["January", "February", "March", "April", "May", "June",
             "July", "August", "September", "October", "November", "December"
         ];
+        this.days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     }
     PurchaseDatePipe.prototype.transform = function (dateString, args) {
         var date = new Date(dateString);
-        return this.monthNames[date.getMonth()] + " " + date.getDate() + ", " + date.getFullYear();
+        return this.days[date.getDay()] + " " + date.getDate() + " " + this.monthNames[date.getMonth()] + " " + date.getFullYear() + ", " + date.getHours() + ":" + ((date.getMinutes() < 10 ? '0' : '') + date.getMinutes());
     };
     PurchaseDatePipe = __decorate([
         Pipe({
