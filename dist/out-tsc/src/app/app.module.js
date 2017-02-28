@@ -51,9 +51,14 @@ import { CoinManagementComponent } from "./coin-management/coin-management.compo
 import { ModalModule } from "angular2-modal";
 import { BootstrapModalModule } from "angular2-modal/plugins/bootstrap";
 import { CoinService } from "./shared/services/coin.service";
-import { EditMachineComponent } from './machines/edit-machine/edit-machine.component';
-import { PurchaseDatePipe } from './purchases/shared/purchase-date.pipe';
+import { EditMachineComponent } from "./machines/edit-machine/edit-machine.component";
+import { DatePipe } from "./shared/pipes/date.pipe";
 import { GlobalErrorHandler } from "./shared/global-error-handler";
+import { TransactionsComponent } from "./transactions/transactions.component";
+import { TransactionService } from "./shared/services/transaction.service";
+import { UpperFirstSymbolPipe } from "./shared/pipes/upper-first-symbol.pipe";
+import { TransactionFilterItemComponent } from "./transaction-filter-item/transaction-filter-item.component";
+import { RlTagInputModule } from "angular2-tag-input";
 export var AppModule = (function () {
     function AppModule() {
     }
@@ -84,7 +89,10 @@ export var AppModule = (function () {
                 ImageCropperComponent,
                 CoinManagementComponent,
                 EditMachineComponent,
-                PurchaseDatePipe
+                DatePipe,
+                TransactionsComponent,
+                UpperFirstSymbolPipe,
+                TransactionFilterItemComponent
             ],
             imports: [
                 BrowserModule,
@@ -103,7 +111,8 @@ export var AppModule = (function () {
                 FormsModule,
                 NgbModule.forRoot(),
                 ModalModule.forRoot(),
-                BootstrapModalModule
+                BootstrapModalModule,
+                RlTagInputModule
             ],
             providers: [
                 TokenService,
@@ -119,6 +128,7 @@ export var AppModule = (function () {
                 ImageUploadService,
                 PurchaseService,
                 CoinService,
+                TransactionService,
                 { provide: ErrorHandler, useClass: GlobalErrorHandler },
                 { provide: LocationStrategy, useClass: HashLocationStrategy }
             ],

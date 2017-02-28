@@ -18,4 +18,24 @@ export class TransactionService {
     return this.httpService.get(this.getUrl()).map(response => response.json());
   }
 
+  getType(field: string): string {
+    let type;
+    switch (field) {
+      case 'account':
+      case 'destination':
+      case 'comment':
+      case 'status':
+      case 'error':
+        type = "text";
+        break;
+      case 'amount':
+        type = "number";
+        break;
+      case 'created':
+        type = "date";
+        break;
+    }
+    return type;
+  }
+
 }

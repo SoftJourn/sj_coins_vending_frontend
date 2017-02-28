@@ -12,6 +12,10 @@ import {
   Validators,
   FormArray
 } from "@angular/forms";
+import {Condition} from "./condition";
+import {NgbDateParserFormatter} from "@ng-bootstrap/ng-bootstrap";
+import {Pageable} from "./pageable";
+import {TransactionPageRequest} from "./transaction-page-request";
 
 @Component({
   selector: 'app-transactions',
@@ -33,7 +37,8 @@ export class TransactionsComponent implements OnInit {
   pageDirectionLinks: boolean = true;
   pageItemsSize: string = '';
 
-  constructor(private transactionService: TransactionService) {
+  constructor(private transactionService: TransactionService,
+              private parser: NgbDateParserFormatter) {
   }
 
   ngOnInit() {
@@ -76,15 +81,17 @@ export class TransactionsComponent implements OnInit {
   addFilter(): void {
     this.filterForm.push(new FormGroup({
       field: new FormControl('', Validators.required),
-      value: new FormControl('', Validators.required)
+      value: new FormControl('', Validators.required),
+      comparison: new FormControl('', Validators.required)
     }));
     this.filterForm.controls[this.filterForm.controls.length - 1].get('field').patchValue(this.fields[0]);
+    this.filterForm.controls[this.filterForm.controls.length - 1].get('comparison').patchValue("eq");
   }
+
 
   onSubmit(): void {
-    console.log(this.filterForm.value);
+    this.fetch(1, 10);
   }
-
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
@@ -97,6 +104,25 @@ export class TransactionsComponent implements OnInit {
 
   showFilter(): void {
     this.hideFilter = !this.hideFilter;
+  }
+
+  toTransactionFilter(formArray: FormArray): TransactionPageRequest {
+    let conditions = new Array<Condition>();
+    let values = formArray.value;
+    for (let value of values) {
+      if (this.transactionService.getType(value["field"]) == "date") {
+        conditions.push(new Condition(value["field"], new Date(this.parser.format(value["value"])).toISOString(), value["comparison"]));
+      } else {
+        conditions.push(new Condition(value["field"], value["value"], value["comparison"]));
+      }
+    }
+    let pageable = new Pageable(0, 10, []);
+    return new TransactionPageRequest(conditions, pageable);
+  }
+
+  fetch(page: number, size: number): void {
+    let filter = this.toTransactionFilter(this.filterForm);
+    console.log(filter);
   }
 
 }

@@ -4,6 +4,7 @@ import {
   Input
 } from "@angular/core";
 import {FormGroup} from "@angular/forms";
+import {TransactionService} from "../shared/services/transaction.service";
 
 @Component({
   selector: 'app-transaction-filter-item',
@@ -18,30 +19,32 @@ export class TransactionFilterItemComponent implements OnInit {
   @Input('formGroup')
   filter: FormGroup;
 
-  constructor() {
+  constructor(protected transactionService: TransactionService) {
   }
 
   ngOnInit() {
   }
 
-  getType(field: string): string {
-    let type;
-    switch (field) {
-      case 'account':
-      case 'destination':
-      case 'comment':
-      case 'status':
-      case 'error':
-        type = "text";
-        break;
-      case 'amount':
-        type = "number";
-        break;
-      case 'created':
-        type = "date";
-        break;
+  changeField(): void {
+    this.filter.get("value").patchValue("");
+    this.filter.get('comparison').patchValue("eq");
+  }
+
+  addWhileInclude(e): void {
+    let inputs;
+    if (this.filter.get("value").value == "") {
+      inputs = new Set();
+    } else {
+      inputs = new Set(this.filter.get("value").value);
     }
-    return type;
+    inputs.add(e);
+    this.filter.get("value").patchValue(Array.from(inputs));
+  }
+
+  removeWhileInclude(e): void {
+    let inputs = new Set(this.filter.get("value").value);
+    inputs.delete(e);
+    this.filter.get("value").patchValue(Array.from(inputs));
   }
 
 }

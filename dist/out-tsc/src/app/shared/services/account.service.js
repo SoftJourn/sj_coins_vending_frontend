@@ -15,7 +15,7 @@ import { AppError } from "../app-error";
 import { Account } from "../entity/account";
 import { HttpService } from "./http.service";
 export var routes = {
-    "ROLE_BILLING": ["/main/coins"],
+    "ROLE_BILLING": ["/main/coins", "/main/transactions"],
     "ROLE_INVENTORY": ["/main", "/main/products", "/main/machines", "/main/categories"],
     "ROLE_USER_MANAGER": ["/main/users"],
     "ROLE_SUPER_ADMIN": ["/main/coins"]
