@@ -76,7 +76,8 @@ import {GlobalErrorHandler} from "./shared/global-error-handler";
 import {TransactionsComponent} from "./transactions/transactions.component";
 import {TransactionService} from "./shared/services/transaction.service";
 import {UpperFirstSymbolPipe} from "./shared/pipes/upper-first-symbol.pipe";
-import { TransactionFilterItemComponent } from './transaction-filter-item/transaction-filter-item.component';
+import {TransactionFilterItemComponent} from "./transaction-filter-item/transaction-filter-item.component";
+import {RlTagInputModule} from "angular2-tag-input";
 
 @NgModule({
   declarations: [
@@ -126,7 +127,8 @@ import { TransactionFilterItemComponent } from './transaction-filter-item/transa
     FormsModule,
     NgbModule.forRoot(),
     ModalModule.forRoot(),
-    BootstrapModalModule
+    BootstrapModalModule,
+    RlTagInputModule
   ],
   providers: [
     TokenService,

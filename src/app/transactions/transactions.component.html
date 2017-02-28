@@ -13,7 +13,8 @@
 <hr>
 <div class="container-fluid">
   <div class="row" [hidden]="hideFilter">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+    <div class="col-lg-3 col-xl-3"></div>
+    <div class="col-lg-6 col-xl-6">
       <div class="card card-block card-outline-success">
         <form class="form" [formGroup]="filterForm">
           <div *ngFor="let filter of filterForm.controls; let i = index">
@@ -33,41 +34,37 @@
         </form>
       </div>
     </div>
+    <div class="col-lg-3 col-xl-3"></div>
   </div>
   <div class="row">
     <div class="col-xs-12 col-md-12 col-xl-12">
-      <table class="table table-hover">
+      <table class="table table-hover table-sortable">
         <thead class="thead-inverse">
         <tr>
-          <th class="column-visibility">#</th>
-          <th>Account</th>
-          <th>Destination</th>
-          <th class="column-visibility">Amount</th>
-          <th>Comment</th>
-          <th>Created</th>
-          <th>Status</th>
-          <th>Error</th>
+          <th>#</th>
+          <th *ngFor="let field of fields; let i = index" (click)="setSorting(field)">
+            {{field | upperFirstSymbol}} <i [class]="setSortClass(field)"></i></th>
         </tr>
         </thead>
         <tbody>
-        <tr *ngIf="transactions == ''">
+        <tr *ngIf="page?.content == ''">
           <th colspan=5>No data to display!</th>
         </tr>
-        <tr *ngFor="let transaction of transactions; let i = index">
+        <tr *ngFor="let content of page?.content; let i = index">
           <th scope="row">{{i + 1}}</th>
-          <td>{{transaction?.account}}</td>
-          <td>{{transaction?.destination}}</td>
-          <td>{{transaction?.amount}}</td>
-          <td>{{transaction?.comment}}</td>
-          <td>{{transaction?.created | DatePipe}}</td>
-          <td>{{transaction?.status}}</td>
-          <td>{{transaction?.error}}</td>
+          <td>{{content?.account}}</td>
+          <td>{{content?.destination}}</td>
+          <td>{{content?.amount}}</td>
+          <td>{{content?.comment}}</td>
+          <td>{{content?.created | DatePipe}}</td>
+          <td>{{content?.status}}</td>
+          <td>{{content?.error}}</td>
         </tr>
         </tbody>
       </table>
     </div>
   </div>
-  <div class="row" *ngIf="transactions != ''">
+  <div class="row" *ngIf="page?.content != ''">
     <form [formGroup]="pageForm">
       <div class="form-group row horizontal-alignment">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-10 col-xl-8 vertical-align">
@@ -78,10 +75,10 @@
               <option value="50">50</option>
             </select>
           </div>
-          <div class="col-xs-12 col-sm-12 col-md-10 col-lg-4 col-xl-4">
-            <ngb-pagination [collectionSize]="page.totalElements" [maxSize]="pageItems" [page]="page.number+1"
+          <div class="col-xs-12 col-sm-12 col-md-10 col-lg-5 col-xl-5">
+            <ngb-pagination [collectionSize]="page?.totalElements" [maxSize]="pageItems" [page]="page?.number+1"
                             [rotate]="true" [size]="pageItemsSize" [directionLinks]="pageDirectionLinks"
-                            [pageSize]="page.size" (pageChange)="changePage($event)">
+                            [pageSize]="page?.size" (pageChange)="changePage($event)">
             </ngb-pagination>
           </div>
         </div>

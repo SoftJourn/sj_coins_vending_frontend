@@ -4,7 +4,6 @@ import {
   HostListener
 } from "@angular/core";
 import {TransactionService} from "../shared/services/transaction.service";
-import {Transaction} from "../shared/entity/transaction";
 import {TransactionPage} from "./transaction-page";
 import {
   FormGroup,
@@ -12,6 +11,12 @@ import {
   Validators,
   FormArray
 } from "@angular/forms";
+import {Condition} from "./condition";
+import {NgbDateParserFormatter} from "@ng-bootstrap/ng-bootstrap";
+import {Pageable} from "./pageable";
+import {TransactionPageRequest} from "./transaction-page-request";
+import {Sort} from "./sort";
+import {Transaction} from "../shared/entity/transaction";
 
 @Component({
   selector: 'app-transactions',
@@ -23,8 +28,8 @@ export class TransactionsComponent implements OnInit {
   page: TransactionPage;
   pageForm: FormGroup;
   filterForm: FormArray;
-  transactions: Transaction[];
   fields: string[];
+  sorts: Sort[];
 
   hideFilter: boolean = true;
 
@@ -33,25 +38,23 @@ export class TransactionsComponent implements OnInit {
   pageDirectionLinks: boolean = true;
   pageItemsSize: string = '';
 
-  constructor(private transactionService: TransactionService) {
+  constructor(private transactionService: TransactionService,
+              private parser: NgbDateParserFormatter) {
   }
 
   ngOnInit() {
     this.buildPageSizeForm();
-    this.transactions = [new Transaction(1, "vkraietskyi", "vdanyliuk", 100, "filling coins", Date.now(), "SUCCESS", 0, ""),
-      new Transaction(2, "vdanyliuk", "vkraietskyi", 100, "give it back", Date.now(), "SUCCESS", 100, ""),
-      new Transaction(675, "omartynets", null, 0, null, Date.now(), "FAILED", null, "Account Machine 3 not found."),
-      new Transaction(1, "vkraietskyi", "vdanyliuk", 100, "filling coins", Date.now(), "SUCCESS", 0, ""),
-      new Transaction(2, "vdanyliuk", "vkraietskyi", 100, "give it back", Date.now(), "SUCCESS", 100, ""),
-      new Transaction(675, "omartynets", null, 0, null, Date.now(), "FAILED", null, "Account Machine 3 not found.")];
-    this.page = new TransactionPage(this.transactions, true, 10, 30, null, true, 0, 3, 0);
-    this.fields = [];
-    for (let field in this.transactions[0]) {
+    this.buildFilterForm();
+    this.fetch(1, this.pageSize);
+    this.fields = new Array<string>();
+    // just for getting field names
+    let transaction = new Transaction(1,'','',1,'',1,'','');
+    for (let field in transaction) {
       if (field != "id" && field != "remain") {
         this.fields.push(field);
       }
     }
-    this.buildFilterForm();
+    this.addFilter();
   }
 
   private buildPageSizeForm(): void {
@@ -65,26 +68,28 @@ export class TransactionsComponent implements OnInit {
     }
     this.pageForm.get('pageSize').valueChanges.subscribe(change => {
       this.pageSize = change;
+      this.fetch(1, this.pageSize);
     });
   }
 
   private buildFilterForm(): void {
     this.filterForm = new FormArray([]);
-    this.addFilter();
   }
 
   addFilter(): void {
     this.filterForm.push(new FormGroup({
       field: new FormControl('', Validators.required),
-      value: new FormControl('', Validators.required)
+      value: new FormControl('', Validators.required),
+      comparison: new FormControl('', Validators.required)
     }));
     this.filterForm.controls[this.filterForm.controls.length - 1].get('field').patchValue(this.fields[0]);
+    this.filterForm.controls[this.filterForm.controls.length - 1].get('comparison').patchValue("eq");
   }
+
 
   onSubmit(): void {
-    console.log(this.filterForm.value);
+    this.fetch(1, this.pageSize);
   }
-
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
@@ -97,6 +102,61 @@ export class TransactionsComponent implements OnInit {
 
   showFilter(): void {
     this.hideFilter = !this.hideFilter;
+  }
+
+  changePage(number: number): void {
+    this.fetch(number, this.pageSize);
+  }
+
+  setSortClass(column: string): string {
+    if (!this.sorts) {
+      this.sorts = new Array<Sort>();
+    }
+    let sort = this.sorts.filter(sort => sort.property == column);
+    if (sort.length > 0) {
+      return sort[0].direction == "ASC" ? "fa fa-sort-asc" : "fa fa-sort-desc";
+    } else {
+      return "fa fa-sort";
+    }
+  }
+
+  setSorting(column: string): void {
+    if (!this.sorts) {
+      this.sorts = new Array<Sort>();
+    }
+    let sort = this.sorts.filter(sort => sort.property == column);
+    if (sort.length < 1) {
+      this.sorts.push(new Sort("ASC", column));
+    } else {
+      sort[0].direction = sort[0].direction == "ASC" ? "DESC" : "ASC";
+    }
+  }
+
+  toTransactionFilter(formArray: FormArray): TransactionPageRequest {
+    let conditions = new Array<Condition>();
+    let values = formArray.value;
+    for (let value of values) {
+      if (value["value"] != "") {
+        if (this.transactionService.getType(value["field"]) == "date") {
+          conditions.push(new Condition(value["field"], new Date(this.parser.format(value["value"])).toISOString(), value["comparison"]));
+        } else {
+          conditions.push(new Condition(value["field"], value["value"], value["comparison"]));
+        }
+      }
+    }
+    let pageable = new Pageable(this.sorts);
+    return new TransactionPageRequest(conditions, pageable);
+  }
+
+  fetch(page: number, size: number): void {
+    let filter = this.toTransactionFilter(this.filterForm);
+    filter.pageable.page = page - 1;
+    filter.pageable.size = size;
+    this.transactionService.get(filter).subscribe((response: TransactionPage) => {
+      this.page = response;
+    }, error => {
+      console.error(error);
+    })
   }
 
 }
