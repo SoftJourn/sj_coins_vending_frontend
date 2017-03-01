@@ -17,13 +17,31 @@ import { ImageUploadService } from "../../shared/services/image-upload.service";
 })
 export class AddProductComponent implements OnInit {
 
-    public categories: Category[];
-    public product: Product;
+    categories: Category[];
+    product: Product;
     form: FormGroup;
     formStyles: FormValidationStyles;
-    public imagForCropper = null;
-    private imgName: string = null;
+    imageForCropper = null;
     showDialog = false;
+
+    private imgName: string = null;
+    private _filesPropertyName = 'file[]';
+    //Validators parameters
+    private _digitsPattern = '\\d+';
+    private _namePattern = '^[a-zA-Z0-9\u0400-\u04FF]+[ a-zA-Z0-9\u0400-\u04FF,-]*[a-zA-Z0-9\u0400-\u04FF,-]+';
+    private _maxPriceInputLength = 5;
+    private _maxNameInputLength = 50;
+
+    //Notification titles
+    private _createTitle = 'Create';
+    private _errorTitle = 'Error';
+
+    //Notification messages
+    private _successfulCreationMsg = 'Product has been created successfully';
+    private _errorWrongFormatMsg = 'This file format not supported!';
+    private _errorProductDuplicateMsg = 'Such product name exists!';
+    private _errorWatchLogsMsg = 'Error appeared, watch logs!';
+    private _errorNoImage = 'Please put product image!';
 
     constructor(private categoryService: CategoryService,
                 private productService: ProductService,
@@ -48,38 +66,22 @@ export class AddProductComponent implements OnInit {
               if (!errorDetail.detail)
               //noinspection ExceptionCaughtLocallyJS
                 throw errorDetail;
-              this.notificationService.error('Error', errorDetail.detail);
+              this.notificationService.error(this._errorTitle, errorDetail.detail);
             } catch (err) {
-              console.log(err);
-              this.notificationService.error('Error', 'Error appeared, watch logs!');
+              this.logError(err);
             }
           });
     }
 
-    private buildForm(): void {
-        this.form = new FormGroup({
-            name: new FormControl('', [Validators.required,
-                Validators.maxLength(50),
-                Validators.pattern('^[a-zA-Z0-9\u0400-\u04FF]+[ a-zA-Z0-9\u0400-\u04FF,-]*[a-zA-Z0-9\u0400-\u04FF,-]+')
-            ]),
-            price: new FormControl('', [Validators.required,
-                Validators.maxLength(5),
-                Validators.pattern('\\d+')]),
-            description: new FormControl(''),
-            category: new FormControl('', Validators.required)
-        });
 
-        this.formStyles = new FormValidationStyles(this.form);
-    }
-
-    submit() {
+  submit() {
         if (this.imageUpload.imageName != null && this.imageUpload.imageName != '') {
             this.productService.save(this.form.value)
                 .flatMap((product: Product) => {
-                    this.notificationService.success('Create', 'Product has been created successfully');
-                    var blob = this.imageUpload.dataURItoBlob(this.imageUpload.imageSrc);
+                    this.notificationService.success(this._createTitle, this._successfulCreationMsg);
+                    let blob = this.imageUpload.dataURItoBlob(this.imageUpload.imageSrc);
                     this.imageUpload.formData = new FormData();
-                    this.imageUpload.formData.append('file', blob, this.imageUpload.imageFile.name);
+                    this.imageUpload.formData.append(this._filesPropertyName, blob, this.imageUpload.imageFile.name);
                     return this.productService.updateImage(product.id, this.imageUpload.formData);
                 })
                 .subscribe(
@@ -89,22 +91,21 @@ export class AddProductComponent implements OnInit {
                     try {
                       let errorDetail = <ErrorDetail> error.json();
                       if (error.status == 415) {
-                        this.notificationService.error('Error', 'This file format not supported!');
+                        this.notificationService.error(this._errorTitle, this._errorWrongFormatMsg);
                       }
                       else {
                         if (errorDetail.code == 1062) {
-                          this.notificationService.error('Error', 'Such product name exists!');
+                          this.notificationService.error(this._errorTitle, this._errorProductDuplicateMsg);
                         }
                         else {
                           if (!errorDetail.detail)
                           //noinspection ExceptionCaughtLocallyJS
                             throw errorDetail;
-                          this.notificationService.error('Error', errorDetail.detail);
+                          this.notificationService.error(this._errorTitle, errorDetail.detail);
                         }
                       }
                     } catch (err) {
-                      console.log(err);
-                      this.notificationService.error('Error', 'Error appeared, watch logs!');
+                      this.logError(err);
                     }
                   },
                     () => {
@@ -120,26 +121,25 @@ export class AddProductComponent implements OnInit {
                 );
         }
         else {
-            this.notificationService.error('Error', 'Please put product image!');
+            this.notificationService.error(this._errorTitle, this._errorNoImage);
         }
     }
 
 
-    public reset(): void {
+    reset(): void {
         this.router.navigate(['/main/products']);
     }
 
-
-    public setDataForImage(value: string) {
+    setDataForImage(value: string) {
         this.imageUpload.handleImageLoad();
         this.imageUpload.imageSrc = value;
         this.imageUpload.imageName = this.imgName;
     }
 
-    public handleInputChange($event) {
+    handleInputChange($event) {
         this.imageUpload.fileChangeListener($event).subscribe(
             (img) => {
-                this.imagForCropper = img.src;
+                this.imageForCropper = img.src;
                 this.imgName = img.name;
                 this.showDialog = !this.showDialog;
             },
@@ -149,13 +149,33 @@ export class AddProductComponent implements OnInit {
               if (!errorDetail.detail)
               //noinspection ExceptionCaughtLocallyJS
                 throw errorDetail;
-              this.notificationService.error('Error', errorDetail.detail);
+              this.notificationService.error(this._errorTitle, errorDetail.detail);
             } catch (err) {
-              console.log(err);
-              this.notificationService.error('Error', 'Error appeared, watch logs!');
+              this.logError(err);
             }
           }
         );
 
     };
+
+    private buildForm(): void {
+        this.form = new FormGroup({
+            name: new FormControl('', [Validators.required,
+                Validators.maxLength(this._maxNameInputLength),
+                Validators.pattern(this._namePattern)
+            ]),
+            price: new FormControl('', [Validators.required,
+                Validators.maxLength(this._maxPriceInputLength),
+                Validators.pattern(this._digitsPattern)]),
+            description: new FormControl(''),
+            category: new FormControl('', Validators.required)
+        });
+
+        this.formStyles = new FormValidationStyles(this.form);
+    }
+
+    private logError(err) {
+      console.log(err);
+      this.notificationService.error(this._errorTitle, this._errorWatchLogsMsg);
+    }
 }
