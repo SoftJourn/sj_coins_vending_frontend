@@ -48,7 +48,7 @@ export class TransactionsComponent implements OnInit {
     this.fetch(1, this.pageSize);
     this.fields = new Array<string>();
     // just for getting field names
-    let transaction = new Transaction(1,'','',1,'',1,'','');
+    let transaction = new Transaction(1, '', '', 1, '', 1, '', '');
     for (let field in transaction) {
       if (field != "id" && field != "remain") {
         this.fields.push(field);
@@ -113,10 +113,12 @@ export class TransactionsComponent implements OnInit {
       this.sorts = new Array<Sort>();
     }
     let sort = this.sorts.filter(sort => sort.property == column);
-    if (sort.length > 0) {
-      return sort[0].direction == "ASC" ? "fa fa-sort-asc" : "fa fa-sort-desc";
-    } else {
+    if (sort.length < 1) {
       return "fa fa-sort";
+    } else if (sort[0].direction == "ASC") {
+      return "fa fa-sort-asc";
+    } else if (sort[0].direction == "DESC") {
+      return "fa fa-sort-desc";
     }
   }
 
@@ -127,9 +129,12 @@ export class TransactionsComponent implements OnInit {
     let sort = this.sorts.filter(sort => sort.property == column);
     if (sort.length < 1) {
       this.sorts.push(new Sort("ASC", column));
+    } else if (sort[0].direction == "ASC") {
+      sort[0].direction = "DESC";
     } else {
-      sort[0].direction = sort[0].direction == "ASC" ? "DESC" : "ASC";
+      this.sorts.splice(this.sorts.indexOf(sort[0], 0), 1);
     }
+    this.fetch(1, this.pageSize);
   }
 
   toTransactionFilter(formArray: FormArray): TransactionPageRequest {
