@@ -1,12 +1,11 @@
-import {Injectable} from '@angular/core';
-import {NotificationsService} from "angular2-notifications/components";
+import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
+import {NotificationsManager} from "../notifications.manager";
 
 @Injectable()
 export class ImageUploadService {
 
 
-    private loaded: boolean = false;
     public imageName: string = null;
     public defaultImageSrc = '/assets/images/default-product-350x350.jpg';
     public formData: FormData = null;
@@ -15,22 +14,24 @@ export class ImageUploadService {
     public imageLoaded: boolean = false;
     public imgFileForCroper = null;
 
-    constructor(private notificationService: NotificationsService) {
+  private loaded: boolean = false;
+  private _imageRegExp = /image\/(?:jpeg|png|jpg|apng|svg|bmp)/;
+
+  constructor(private notify: NotificationsManager) {
     }
 
-    public fileChangeListener($event) {
+  public fileChangeListener($event) {
         let self = this;
         return Observable.create(function (subscriber) {
             self.imageFile = $event.dataTransfer ? $event.dataTransfer.files[0] : $event.target.files[0];
-            var pattern = /image\/(?:jpeg|png|jpg|apng|svg|bmp)/;
-            var myReader: FileReader = new FileReader();
+            let myReader: FileReader = new FileReader();
             // check image pattern
-            if (!self.imageFile.type.match(pattern)) {
-                self.notificationService.error('Error', 'This file format not supported!');
+            if (!self.imageFile.type.match(this._imageRegExp)) {
+                self.notify.errorWrongFormatMsg();
                 self.cleanImageData();
                 $event.target.value = null;
 
-                subscriber.error('This file format not supported!');
+                subscriber.error(NotificationsManager.errorWrongFormatMsg);
             }
             else {
                 self.loaded = false;
@@ -52,20 +53,12 @@ export class ImageUploadService {
     }
 
     public dataURItoBlob(dataURI) {
-        var binary = atob(dataURI.split(',')[1]);
-        var array = [];
-        for (var i = 0; i < binary.length; i++) {
+        let binary = atob(dataURI.split(',')[1]);
+        let array = [];
+        for (let i = 0; i < binary.length; i++) {
             array.push(binary.charCodeAt(i));
         }
         return new Blob([new Uint8Array(array)], {type: 'image/jpeg'});
-    }
-
-    private _handleReaderLoaded(e) {
-        var reader = e.target;
-        this.imgFileForCroper = reader.result;
-        this.loaded = true;
-
-        return this.imgFileForCroper;
     }
 
     public cleanImageData(): void {
@@ -73,4 +66,12 @@ export class ImageUploadService {
         this.imageName = null;
         this.formData = null;
     }
+
+  private _handleReaderLoaded(e) {
+    let reader = e.target;
+    this.imgFileForCroper = reader.result;
+    this.loaded = true;
+
+    return this.imgFileForCroper;
+  }
 }

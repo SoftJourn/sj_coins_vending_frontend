@@ -45,6 +45,7 @@ import { CoinService } from "./shared/services/coin.service";
 import { EditMachineComponent } from './machines/edit-machine/edit-machine.component';
 import { PurchaseDatePipe } from './purchases/shared/purchase-date.pipe'
 import { GlobalErrorHandler } from "./shared/global-error-handler";
+import {NotificationsManager} from "./shared/notifications.manager";
 
 @NgModule({
   declarations: [
@@ -107,6 +108,7 @@ import { GlobalErrorHandler } from "./shared/global-error-handler";
     ImageUploadService,
     PurchaseService,
     CoinService,
+    NotificationsManager,
     {provide: ErrorHandler, useClass: GlobalErrorHandler},
     {provide: LocationStrategy, useClass: HashLocationStrategy}
   ],

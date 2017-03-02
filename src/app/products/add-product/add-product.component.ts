@@ -1,16 +1,15 @@
-import { Component, OnInit } from "@angular/core";
-import { FormGroup, Validators, FormControl } from "@angular/forms";
-import { Category } from "../../shared/entity/category";
-import { CategoryService } from "../../shared/services/category.service";
-import { Product } from "../../shared/entity/product";
-import { ProductService } from "../../shared/services/product.service";
-import { ErrorDetail } from "../../shared/entity/error-detail";
-import { NotificationsService } from "angular2-notifications/components";
-import { FormValidationStyles } from "../../shared/form-validation-styles";
-import { Router } from "@angular/router";
-import { ImageUploadService } from "../../shared/services/image-upload.service";
-import { UNSUPPORTED_MEDIA_TYPE} from "http-status-codes";
-var HttpStatus = require('http-status-codes');
+import {Component, OnInit} from "@angular/core";
+import {FormGroup, Validators, FormControl} from "@angular/forms";
+import {Category} from "../../shared/entity/category";
+import {CategoryService} from "../../shared/services/category.service";
+import {Product} from "../../shared/entity/product";
+import {ProductService} from "../../shared/services/product.service";
+import {ErrorDetail} from "../../shared/entity/error-detail";
+import {FormValidationStyles} from "../../shared/form-validation-styles";
+import {Router} from "@angular/router";
+import {ImageUploadService} from "../../shared/services/image-upload.service";
+import {UNSUPPORTED_MEDIA_TYPE} from "http-status-codes";
+import {NotificationsManager} from "../../shared/notifications.manager";
 
 @Component({
     selector: 'add-product',
@@ -31,24 +30,16 @@ export class AddProductComponent implements OnInit {
     private _filesPropertyName = 'file[]';
     //Validators parameters
     private _digitsPattern = '\\d+';
-    private _namePattern = '^[a-zA-Z0-9\u0400-\u04FF]+[ a-zA-Z0-9\u0400-\u04FF,-]*[a-zA-Z0-9\u0400-\u04FF,-]+';
+    private _wordsWithNumbersPattern = '^[a-zA-Z0-9\u0400-\u04FF]+[ a-zA-Z0-9\u0400-\u04FF,-]*[a-zA-Z0-9\u0400-\u04FF,-]+';
     private _maxPriceInputLength = 5;
     private _maxNameInputLength = 50;
 
-    //Notification titles
-    private _createTitle = 'Create';
-    private _errorTitle = 'Error';
 
-    //Notification messages
-    private _successfulCreationMsg = 'Product has been created successfully';
-    private _errorWrongFormatMsg = 'This file format not supported!';
-    private _errorProductDuplicateMsg = 'Such product name exists!';
-    private _errorWatchLogsMsg = 'Error appeared, watch logs!';
-    private _errorNoImage = 'Please put product image!';
+    private _productDuplicateCode = 1062;
 
     constructor(private categoryService: CategoryService,
                 private productService: ProductService,
-                private notificationService: NotificationsService,
+                private notify: NotificationsManager,
                 private router: Router,
                 private imageUpload: ImageUploadService) {
 
@@ -65,23 +56,18 @@ export class AddProductComponent implements OnInit {
             },
           error => {
             try {
-              let errorDetail = <ErrorDetail> error.json();
-              if (!errorDetail.detail)
-              //noinspection ExceptionCaughtLocallyJS
-                throw errorDetail;
-              this.notificationService.error(this._errorTitle, errorDetail.detail);
+              this.notify.errorDetailedMsg(error.json());
             } catch (err) {
-              this.logError(err);
+              this.notify.logError(err);
             }
           });
     }
-
 
   submit() {
         if (this.imageUpload.imageName) {
             this.productService.save(this.form.value)
                 .flatMap((product: Product) => {
-                    this.notificationService.success(this._createTitle, this._successfulCreationMsg);
+                    this.notify.createSuccessfulMsg();
                     let blob = this.imageUpload.dataURItoBlob(this.imageUpload.imageSrc);
                     this.imageUpload.formData = new FormData();
                     this.imageUpload.formData.append(this._filesPropertyName, blob, this.imageUpload.imageFile.name);
@@ -94,21 +80,18 @@ export class AddProductComponent implements OnInit {
                     try {
                       let errorDetail = <ErrorDetail> error.json();
                       if (error.status == UNSUPPORTED_MEDIA_TYPE) {
-                        this.notificationService.error(this._errorTitle, this._errorWrongFormatMsg);
+                        this.notify.errorWrongFormatMsg();
                       }
                       else {
-                        if (errorDetail.code == 1062) {
-                          this.notificationService.error(this._errorTitle, this._errorProductDuplicateMsg);
+                        if (errorDetail.code == this._productDuplicateCode) {
+                          this.notify.errorProductDuplicateMsg();
                         }
                         else {
-                          if (!errorDetail.detail)
-                          //noinspection ExceptionCaughtLocallyJS
-                            throw errorDetail;
-                          this.notificationService.error(this._errorTitle, errorDetail.detail);
+                         this.notify.errorDetailedMsg(error.json());
                         }
                       }
                     } catch (err) {
-                      this.logError(err);
+                      this.notify.logError(err);
                     }
                   },
                     () => {
@@ -124,7 +107,7 @@ export class AddProductComponent implements OnInit {
                 );
         }
         else {
-            this.notificationService.error(this._errorTitle, this._errorNoImage);
+          this.notify.errorNoImage();
         }
     }
 
@@ -148,13 +131,9 @@ export class AddProductComponent implements OnInit {
             },
           error => {
             try {
-              let errorDetail = <ErrorDetail> error.json();
-              if (!errorDetail.detail)
-              //noinspection ExceptionCaughtLocallyJS
-                throw errorDetail;
-              this.notificationService.error(this._errorTitle, errorDetail.detail);
+              this.notify.errorDetailedMsg(error.json());
             } catch (err) {
-              this.logError(err);
+              this.notify.logError(err);
             }
           }
         );
@@ -165,7 +144,7 @@ export class AddProductComponent implements OnInit {
         this.form = new FormGroup({
             name: new FormControl('', [Validators.required,
                 Validators.maxLength(this._maxNameInputLength),
-                Validators.pattern(this._namePattern)
+                Validators.pattern(this._wordsWithNumbersPattern)
             ]),
             price: new FormControl('', [Validators.required,
                 Validators.maxLength(this._maxPriceInputLength),
@@ -177,8 +156,5 @@ export class AddProductComponent implements OnInit {
         this.formStyles = new FormValidationStyles(this.form);
     }
 
-    private logError(err) {
-      console.log(err);
-      this.notificationService.error(this._errorTitle, this._errorWatchLogsMsg);
-    }
+
 }
