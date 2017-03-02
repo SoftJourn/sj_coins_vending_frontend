@@ -1,0 +1,1 @@
+{"version":3,"file":"transaction-page-request.js","sourceRoot":"","sources":["../../../app/transactions/transaction-page-request.ts"],"names":[],"mappings":"AAEA;IAME,gCAAY,UAAuB,EAAE,QAAkB;QACrD,IAAI,CAAC,UAAU,GAAG,UAAU,CAAC;QAC7B,IAAI,CAAC,QAAQ,GAAG,QAAQ,CAAC;IAC3B,CAAC;IACH,6BAAC;AAAD,CAAC,AAVD,IAUC"}

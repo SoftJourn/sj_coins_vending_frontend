@@ -91,6 +91,11 @@ export class TransactionsComponent implements OnInit {
     this.fetch(1, this.pageSize);
   }
 
+  onCancel(): void {
+    this.filterForm.controls = [];
+    this.addFilter();
+  }
+
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     if (event.target.innerWidth > 767) {
