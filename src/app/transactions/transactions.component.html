@@ -50,7 +50,7 @@
         <tr *ngIf="page?.content == ''">
           <th colspan=5>No data to display!</th>
         </tr>
-        <tr *ngFor="let content of page?.content; let i = index">
+        <tr *ngFor="let content of page?.content; let i = index" (click)="openTransaction(content?.id)">
           <th scope="row">{{i + 1}}</th>
           <td>{{content?.account}}</td>
           <td>{{content?.destination}}</td>

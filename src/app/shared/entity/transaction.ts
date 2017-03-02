@@ -5,12 +5,12 @@ export class Transaction {
   destination?: string;
   amount?: number;
   comment?: string;
-  created?: number;
+  created?: string;
   status?: string;
   error?: string;
 
 
-  constructor(id: number, account: string, destination: string, amount: number, comment: string, created: number, status: string, error: string) {
+  constructor(id: number, account: string, destination: string, amount: number, comment: string, created: string, status: string, error: string) {
     this.id = id;
     this.account = account;
     this.destination = destination;

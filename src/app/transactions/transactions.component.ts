@@ -17,6 +17,7 @@ import {Pageable} from "./pageable";
 import {TransactionPageRequest} from "./transaction-page-request";
 import {Sort} from "./sort";
 import {Transaction} from "../shared/entity/transaction";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-transactions',
@@ -39,7 +40,8 @@ export class TransactionsComponent implements OnInit {
   pageItemsSize: string = '';
 
   constructor(private transactionService: TransactionService,
-              private parser: NgbDateParserFormatter) {
+              private parser: NgbDateParserFormatter,
+              private router: Router) {
   }
 
   ngOnInit() {
@@ -48,12 +50,12 @@ export class TransactionsComponent implements OnInit {
     this.fetch(1, this.pageSize);
     this.fields = new Array<string>();
     // just for getting field names
-    let transaction = new Transaction(1, '', '', 1, '', 1, '', '');
-    for (let field in transaction) {
-      if (field != "id" && field != "remain") {
-        this.fields.push(field);
+    let transaction = new Transaction(1, '', '', 1, '', '', '', '');
+    this.fields = Object.keys(transaction).filter(key => {
+      if (key != "id" && key != "remain") {
+        return key;
       }
-    }
+    });
     this.addFilter();
   }
 
@@ -94,6 +96,7 @@ export class TransactionsComponent implements OnInit {
   onCancel(): void {
     this.filterForm.controls = [];
     this.addFilter();
+    this.fetch(1, this.pageSize);
   }
 
   @HostListener('window:resize', ['$event'])
@@ -107,6 +110,10 @@ export class TransactionsComponent implements OnInit {
 
   showFilter(): void {
     this.hideFilter = !this.hideFilter;
+  }
+
+  openTransaction(id: number): void {
+    this.router.navigate(['/main/transactions/' + id]);
   }
 
   changePage(number: number): void {

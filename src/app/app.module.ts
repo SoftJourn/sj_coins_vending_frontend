@@ -76,8 +76,9 @@ import {GlobalErrorHandler} from "./shared/global-error-handler";
 import {TransactionsComponent} from "./transactions/transactions.component";
 import {TransactionService} from "./shared/services/transaction.service";
 import {UpperFirstSymbolPipe} from "./shared/pipes/upper-first-symbol.pipe";
-import {TransactionFilterItemComponent} from "./transaction-filter-item/transaction-filter-item.component";
+import {TransactionFilterItemComponent} from "./transactions/transaction-filter-item/transaction-filter-item.component";
 import {RlTagInputModule} from "angular2-tag-input";
+import { TransactionComponent } from './transactions/transaction/transaction.component';
 
 @NgModule({
   declarations: [
@@ -108,7 +109,8 @@ import {RlTagInputModule} from "angular2-tag-input";
     DatePipe,
     TransactionsComponent,
     UpperFirstSymbolPipe,
-    TransactionFilterItemComponent
+    TransactionFilterItemComponent,
+    TransactionComponent
   ],
   imports: [
     BrowserModule,

@@ -4,6 +4,7 @@ import {Observable} from "rxjs";
 import {Transaction} from "../entity/transaction";
 import {AppProperties} from "../app.properties";
 import {TransactionPageRequest} from "../../transactions/transaction-page-request";
+import {FullTransaction} from "../entity/full-transaction";
 
 @Injectable()
 export class TransactionService {
@@ -15,12 +16,12 @@ export class TransactionService {
   constructor(private httpService: HttpService) {
   }
 
-  public getAll(): Observable<Transaction[]> {
-    return this.httpService.get(this.getUrl()).map(response => response.json());
-  }
-
   public get(transactionPageRequest: TransactionPageRequest): Observable<Transaction[]> {
     return this.httpService.post(this.getUrl(), transactionPageRequest).map(response => response.json());
+  }
+
+  public getById(id: number): Observable<FullTransaction> {
+    return this.httpService.get(this.getUrl() + "/" + id).map(response => response.json());
   }
 
   getType(field: string): string {
@@ -37,6 +38,7 @@ export class TransactionService {
         type = "number";
         break;
       case 'created':
+      case 'time':
         type = "date";
         break;
     }

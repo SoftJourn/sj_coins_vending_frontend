@@ -1,0 +1,42 @@
+<div class="row" [formGroup]="filter">
+  <div class="col-xl-4">
+    <div class="input-group">
+      <div class="input-group-addon">Field</div>
+      <select id="fields" class="form-control" formControlName="field" (change)="changeField()">
+        <option *ngFor="let field of fields;" [ngValue]="field">{{field | upperFirstSymbol}}</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-group col-xl-4">
+    <input class="form-control" *ngIf="transactionService.getType(filter.controls['field'].value) == 'text' &&
+     filter.controls['comparison'].value != 'in'" type="text"
+           placeholder="Enter {{filter.controls['field'].value}}" formControlName="value">
+    <input class="form-control" *ngIf="transactionService.getType(filter.controls['field'].value) == 'number' &&
+     filter.controls['comparison'].value != 'in'"
+           type="number"
+           placeholder="Enter {{filter.controls['field'].value}}" formControlName="value">
+    <div class="input-group" *ngIf="transactionService.getType(filter.controls['field'].value) == 'date'">
+      <input class="form-control" name="dp" ngbDatepicker
+             #d="ngbDatepicker" formControlName="value">
+      <div class="input-group-addon" (click)="d.toggle()">
+        <i class="fa fa-calendar fa-lg"></i>
+      </div>
+    </div>
+    <rl-tag-input *ngIf="filter.controls['comparison'].value == 'in'"
+                  placeholder="Enter {{filter.controls['field'].value}}"
+                  (addTag)="addWhileInclude($event)" (removeTag)="removeWhileInclude($event)"></rl-tag-input>
+  </div>
+  <div class="col-xl-4">
+    <div class="input-group">
+      <div class="input-group-addon">Condition</div>
+      <select id="condition" class="form-control" formControlName="comparison">
+        <option value="eq">Equal</option>
+        <option value="gt" *ngIf="transactionService.getType(filter.controls['field'].value) != 'text'">Greater than
+        </option>
+        <option value="lt" *ngIf="transactionService.getType(filter.controls['field'].value) != 'text'">Less than
+        </option>
+        <option value="in" *ngIf="transactionService.getType(filter.controls['field'].value) != 'date'">Include</option>
+      </select>
+    </div>
+  </div>
+</div>

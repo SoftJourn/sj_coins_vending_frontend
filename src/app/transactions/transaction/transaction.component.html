@@ -1,0 +1,83 @@
+<div class="container-fluid">
+  <div class="col-xs-12 col-md-12 col-xl-12 row header-container">
+    <div class="col-xs-8 col-md-8 col-xl-8">
+      <h2>Transaction</h2>
+    </div>
+  </div>
+</div>
+<hr>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-4 col-xl-4">
+      <table class="table table-hover">
+        <thead class="thead-inverse">
+        <tr>
+          <th colspan="2">
+            General
+          </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let general of generalFields">
+          <th>{{general}}</th>
+          <td *ngIf="transactionService.getType(general) != 'date'">{{transaction[general]}}</td>
+          <td *ngIf="transactionService.getType(general) == 'date'">{{transaction[general] | DatePipe}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-lg-4 col-xl-4" *ngIf="blockFields">
+      <table class="table table-hover">
+        <thead class="thead-inverse">
+        <tr>
+          <th colspan="2">Block data</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let detail of blockFields">
+          <th>{{detail}}</th>
+          <td>
+            <p *ngIf="transactionService.getType(detail) != 'date'">
+              {{transaction.transactionStoring[detail]}}</p>
+            <p *ngIf="transactionService.getType(detail) == 'date'">
+              {{transaction.transactionStoring[detail] | DatePipe}}</p></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-lg-4 col-xl-4" *ngIf="callingFields">
+      <table class="table table-hover">
+        <thead class="thead-inverse">
+        <tr>
+          <th colspan="2">Calling data</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let calling of callingFields">
+          <th>{{calling}}</th>
+          <td>
+            {{transaction.transactionStoring.callingValue[calling]}}
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="row" *ngIf="erisFields">
+    <div class="col-lg-12 col-xl-12">
+      <table class="table table-hover">
+        <thead class="thead-inverse">
+        <tr>
+          <th colspan="2">Eris transaction data</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let eris of erisFields">
+          <th>{{eris}}</th>
+          <td>{{transaction.transactionStoring.transaction[eris]}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

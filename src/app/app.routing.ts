@@ -24,6 +24,7 @@ import {UsersComponent} from "./users/users.component";
 import {CoinManagementComponent} from "./coin-management/coin-management.component";
 import {EditMachineComponent} from "./machines/edit-machine/edit-machine.component";
 import {TransactionsComponent} from "./transactions/transactions.component";
+import {TransactionComponent} from "./transactions/transaction/transaction.component";
 
 const routes: Routes = [
   {path: '', pathMatch: 'full', redirectTo: 'main'},
@@ -37,6 +38,7 @@ const routes: Routes = [
     {path: 'machines/fill/:id', component: FillMachineComponent, canActivate: [AuthGuard]},
     {path: 'coins', component: CoinManagementComponent, canActivate: [AuthGuard]},
     {path: 'transactions', component: TransactionsComponent, canActivate: [AuthGuard]},
+    {path: 'transactions/:id', component: TransactionComponent, canActivate: [AuthGuard]},
     {path: 'categories', component: CategoriesComponent, canActivate: [AuthGuard]},
     {path: 'categories/add', component: AddCategoryComponent, canActivate: [AuthGuard]},
     {path: 'users', component: UsersComponent, canActivate: [AuthGuard]},
