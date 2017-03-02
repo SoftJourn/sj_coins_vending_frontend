@@ -3,6 +3,13 @@
   cursor: pointer;
 }
 
+.text-overflow{
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 div.horizontal-alignment {
   select.form-control {
     width: auto;
