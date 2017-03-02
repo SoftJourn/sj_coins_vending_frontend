@@ -9,6 +9,8 @@ import { NotificationsService } from "angular2-notifications/components";
 import { FormValidationStyles } from "../../shared/form-validation-styles";
 import { Router } from "@angular/router";
 import { ImageUploadService } from "../../shared/services/image-upload.service";
+import { UNSUPPORTED_MEDIA_TYPE} from "http-status-codes";
+var HttpStatus = require('http-status-codes');
 
 @Component({
     selector: 'add-product',
@@ -24,6 +26,7 @@ export class AddProductComponent implements OnInit {
     imageForCropper = null;
     showDialog = false;
 
+    private _mainProductURI = '/main/products';
     private imgName: string = null;
     private _filesPropertyName = 'file[]';
     //Validators parameters
@@ -75,7 +78,7 @@ export class AddProductComponent implements OnInit {
 
 
   submit() {
-        if (this.imageUpload.imageName != null && this.imageUpload.imageName != '') {
+        if (this.imageUpload.imageName) {
             this.productService.save(this.form.value)
                 .flatMap((product: Product) => {
                     this.notificationService.success(this._createTitle, this._successfulCreationMsg);
@@ -90,7 +93,7 @@ export class AddProductComponent implements OnInit {
                   error => {
                     try {
                       let errorDetail = <ErrorDetail> error.json();
-                      if (error.status == 415) {
+                      if (error.status == UNSUPPORTED_MEDIA_TYPE) {
                         this.notificationService.error(this._errorTitle, this._errorWrongFormatMsg);
                       }
                       else {
@@ -127,7 +130,7 @@ export class AddProductComponent implements OnInit {
 
 
     reset(): void {
-        this.router.navigate(['/main/products']);
+        this.router.navigate([this._mainProductURI]);
     }
 
     setDataForImage(value: string) {
