@@ -1,5 +1,5 @@
 <div class="row" [formGroup]="filter">
-  <div class="col-xl-3">
+  <div class="col-md-3 col-lg-3 col-xl-3">
     <div class="input-group">
       <div class="input-group-addon">Field</div>
       <select id="fields" class="form-control" formControlName="field" (change)="changeField()">
@@ -7,7 +7,7 @@
       </select>
     </div>
   </div>
-  <div class="form-group col-xl-5">
+  <div class="form-group col-md-5 col-lg-5 col-xl-5">
     <input class="form-control" *ngIf="transactionService.getType(filter.controls['field'].value) == 'text' &&
      filter.controls['comparison'].value != 'in'" type="text"
            placeholder="Enter {{filter.controls['field'].value}}" formControlName="value">
@@ -16,8 +16,8 @@
            type="number"
            placeholder="Enter {{filter.controls['field'].value}}" formControlName="value">
     <div class="input-group" *ngIf="transactionService.getType(filter.controls['field'].value) == 'date'">
-      <input class="form-control" formControlName="value" *ngIf="datetimeValue" [value]="datetimeValue | DatePipe">
-      <input class="form-control" formControlName="value" *ngIf="!datetimeValue">
+      <input class="form-control" formControlName="value" disabled *ngIf="datetimeValue" [value]="datetimeValue | DatePipe">
+      <input class="form-control" formControlName="value" disabled *ngIf="!datetimeValue">
       <md2-datepicker type="datetime" [isOpen]="isOpen" (change)="dateTimeSelected($event)" style="display: none"></md2-datepicker>
       <div class="input-group-addon" (click)="openDatepicker()">
         <i class="fa fa-calendar fa-lg"></i>
@@ -27,7 +27,7 @@
                   placeholder="Enter {{filter.controls['field'].value}}"
                   (addTag)="addWhileInclude($event)" (removeTag)="removeWhileInclude($event)"></rl-tag-input>
   </div>
-  <div class="col-xl-4">
+  <div class="col-md-4 col-lg-4 col-xl-4">
     <div class="input-group">
       <div class="input-group-addon">Condition</div>
       <select id="condition" class="form-control" formControlName="comparison">

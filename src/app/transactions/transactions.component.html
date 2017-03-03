@@ -13,8 +13,8 @@
 <hr>
 <div class="container-fluid">
   <div class="row" [hidden]="hideFilter">
-    <div class="col-lg-3 col-xl-3"></div>
-    <div class="col-lg-6 col-xl-6">
+    <div class="col-md-2 col-lg-2 col-xl-2"></div>
+    <div class="col-md-8 col-lg-8 col-xl-8">
       <div class="card card-block card-outline-success">
         <form class="form" [formGroup]="filterForm">
           <div *ngFor="let filter of filterForm.controls; let i = index">
@@ -27,14 +27,14 @@
               <button type="submit" class="btn btn-success" (click)="addFilter()"><i
                 class="fa fa-plus fa-lg btn-icon"></i>Add
               </button>
-              <button type="submit" class="btn btn-success" (click)="onSubmit()">Submit</button>
+              <button type="submit" class="btn btn-success" [disabled]="!filterForm.valid" (click)="onSubmit()">Submit</button>
               <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
             </div>
           </div>
         </form>
       </div>
     </div>
-    <div class="col-lg-3 col-xl-3"></div>
+    <div class="col-md-2 col-lg-2 col-xl-2"></div>
   </div>
   <div class="row">
     <div class="col-xs-12 col-md-12 col-xl-12">
@@ -48,7 +48,7 @@
         </thead>
         <tbody>
         <tr *ngIf="page?.content == ''">
-          <th colspan=5>No data to display!</th>
+          <th colspan=8>No data to display!</th>
         </tr>
         <tr *ngFor="let content of page?.content; let i = index" (click)="openTransaction(content?.id)">
           <th scope="row">{{i + 1}}</th>

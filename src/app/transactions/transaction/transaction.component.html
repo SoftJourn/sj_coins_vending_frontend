@@ -8,13 +8,11 @@
 <hr>
 <div class="container-fluid">
   <div class="row">
-    <div class="col-lg-4 col-xl-4">
+    <div class="col-md-4 col-lg-4 col-xl-4">
       <table class="table table-hover">
         <thead class="thead-inverse">
         <tr>
-          <th colspan="2">
-            General
-          </th>
+          <th colspan="2">General</th>
         </tr>
         </thead>
         <tbody>
@@ -26,7 +24,7 @@
         </tbody>
       </table>
     </div>
-    <div class="col-lg-4 col-xl-4" *ngIf="blockFields">
+    <div class="col-md-4 col-lg-4 col-xl-4" *ngIf="blockFields">
       <table class="table table-hover">
         <thead class="thead-inverse">
         <tr>
@@ -36,16 +34,17 @@
         <tbody>
         <tr *ngFor="let detail of blockFields">
           <th>{{detail}}</th>
-          <td>
-            <p *ngIf="transactionService.getType(detail) != 'date'">
-              {{transaction.transactionStoring[detail]}}</p>
-            <p *ngIf="transactionService.getType(detail) == 'date'">
-              {{transaction.transactionStoring[detail] | DatePipe}}</p></td>
+          <td *ngIf="transactionService.getType(detail) != 'date'">
+            {{transaction.transactionStoring[detail]}}
+          </td>
+          <td *ngIf="transactionService.getType(detail) == 'date'">
+            {{transaction.transactionStoring[detail] | DatePipe}}
+          </td>
         </tr>
         </tbody>
       </table>
     </div>
-    <div class="col-lg-4 col-xl-4" *ngIf="callingFields">
+    <div class="col-md-4 col-lg-4 col-xl-4" *ngIf="callingFields">
       <table class="table table-hover">
         <thead class="thead-inverse">
         <tr>

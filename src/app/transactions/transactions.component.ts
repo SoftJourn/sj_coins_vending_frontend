@@ -155,6 +155,10 @@ export class TransactionsComponent implements OnInit {
       if (value["value"] != "") {
         if (this.transactionService.getType(value["field"]) == "date") {
           conditions.push(new Condition(value["field"], new Date(value["value"]).toISOString(), value["comparison"]));
+        } else if (this.transactionService.getType(value["field"]) == "number" && Array.isArray(value["field"])) {
+          conditions.push(new Condition(value["field"], value["value"].map(item => {
+            return parseInt(item)
+          }), value["comparison"]));
         } else {
           conditions.push(new Condition(value["field"], value["value"], value["comparison"]));
         }
