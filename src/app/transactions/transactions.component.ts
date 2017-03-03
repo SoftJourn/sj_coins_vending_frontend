@@ -40,7 +40,6 @@ export class TransactionsComponent implements OnInit {
   pageItemsSize: string = '';
 
   constructor(private transactionService: TransactionService,
-              private parser: NgbDateParserFormatter,
               private router: Router) {
   }
 
@@ -155,7 +154,7 @@ export class TransactionsComponent implements OnInit {
     for (let value of values) {
       if (value["value"] != "") {
         if (this.transactionService.getType(value["field"]) == "date") {
-          conditions.push(new Condition(value["field"], new Date(this.parser.format(value["value"])).toISOString(), value["comparison"]));
+          conditions.push(new Condition(value["field"], new Date(value["value"]).toISOString(), value["comparison"]));
         } else {
           conditions.push(new Condition(value["field"], value["value"], value["comparison"]));
         }

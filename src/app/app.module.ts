@@ -79,6 +79,7 @@ import {UpperFirstSymbolPipe} from "./shared/pipes/upper-first-symbol.pipe";
 import {TransactionFilterItemComponent} from "./transactions/transaction-filter-item/transaction-filter-item.component";
 import {RlTagInputModule} from "angular2-tag-input";
 import { TransactionComponent } from './transactions/transaction/transaction.component';
+import {Md2Module} from "md2";
 
 @NgModule({
   declarations: [
@@ -110,7 +111,7 @@ import { TransactionComponent } from './transactions/transaction/transaction.com
     TransactionsComponent,
     UpperFirstSymbolPipe,
     TransactionFilterItemComponent,
-    TransactionComponent
+    TransactionComponent,
   ],
   imports: [
     BrowserModule,
@@ -130,7 +131,8 @@ import { TransactionComponent } from './transactions/transaction/transaction.com
     NgbModule.forRoot(),
     ModalModule.forRoot(),
     BootstrapModalModule,
-    RlTagInputModule
+    RlTagInputModule,
+    Md2Module.forRoot()
   ],
   providers: [
     TokenService,

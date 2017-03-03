@@ -19,6 +19,9 @@ export class TransactionFilterItemComponent implements OnInit {
   @Input('formGroup')
   filter: FormGroup;
 
+  isOpen: boolean;
+  datetimeValue: string;
+
   constructor(protected transactionService: TransactionService) {
   }
 
@@ -45,6 +48,18 @@ export class TransactionFilterItemComponent implements OnInit {
     let inputs = new Set(this.filter.get("value").value);
     inputs.delete(e);
     this.filter.get("value").patchValue(Array.from(inputs));
+  }
+
+  openDatepicker() {
+    this.isOpen = true;
+    setTimeout(() => {
+      this.isOpen = false;
+    }, 1000);
+  }
+
+  dateTimeSelected(result): void {
+    this.datetimeValue = result["value"];
+    this.filter.get("value").patchValue(result["value"]);
   }
 
 }
