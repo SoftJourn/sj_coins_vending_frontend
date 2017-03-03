@@ -4,6 +4,30 @@
   justify-content: center;
 }
 
+// for datetimepicker
+.md2-datepicker-header {
+  background-color: #373a3c !important;
+}
+
+.md2-calendar-day.selected {
+  background-color: #373a3c !important;
+}
+
+md2-datepicker:focus:not(.md2-datepicker-disabled) {
+  color: #373a3c !important;
+  border-color: #373a3c !important;
+}
+
+md2-datepicker:focus:not(.md2-datepicker-disabled) {
+  color: #373a3c !important;
+}
+
+.md2-datepicker-actions {
+  .md2-button {
+    color: #373a3c !important;
+  }
+}
+
 .full-height {
   height: 100vh;
 }
@@ -24,7 +48,7 @@ button {
   text-align: right !important;
 }
 
-body{
+body {
   overflow-y: auto !important;
 }
 
