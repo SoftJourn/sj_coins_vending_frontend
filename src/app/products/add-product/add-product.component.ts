@@ -22,11 +22,8 @@ export class AddProductComponent implements OnInit {
     product: Product;
     form: FormGroup;
     formStyles: FormValidationStyles;
-    imageForCropper = null;
-    showDialog = false;
 
     private _mainProductURI = '/main/products';
-    private imgName: string = null;
     private _filesPropertyName = 'file[]';
     //Validators parameters
     private _digitsPattern = '\\d+';
@@ -68,7 +65,7 @@ export class AddProductComponent implements OnInit {
             this.productService.save(this.form.value)
                 .flatMap((product: Product) => {
                     this.notify.createSuccessfulMsg();
-                    let blob = this.imageUpload.dataURItoBlob(this.imageUpload.imageSrc);
+                    let blob = ImageUploadService.dataURItoBlob(this.imageUpload.imageSrc);
                     this.imageUpload.formData = new FormData();
                     this.imageUpload.formData.append(this._filesPropertyName, blob, this.imageUpload.imageFile.name);
                     return this.productService.updateImage(product.id, this.imageUpload.formData);
@@ -115,30 +112,6 @@ export class AddProductComponent implements OnInit {
     reset(): void {
         this.router.navigate([this._mainProductURI]);
     }
-
-    setDataForImage(value: string) {
-        this.imageUpload.handleImageLoad();
-        this.imageUpload.imageSrc = value;
-        this.imageUpload.imageName = this.imgName;
-    }
-
-    handleInputChange($event) {
-        this.imageUpload.fileChangeListener($event).subscribe(
-            (img) => {
-                this.imageForCropper = img.src;
-                this.imgName = img.name;
-                this.showDialog = !this.showDialog;
-            },
-          error => {
-            try {
-              this.notify.errorDetailedMsg(error.json());
-            } catch (err) {
-              this.notify.logError(err);
-            }
-          }
-        );
-
-    };
 
     private buildForm(): void {
         this.form = new FormGroup({
