@@ -46,6 +46,8 @@ import { EditMachineComponent } from './machines/edit-machine/edit-machine.compo
 import { PurchaseDatePipe } from './purchases/shared/purchase-date.pipe'
 import { GlobalErrorHandler } from "./shared/global-error-handler";
 import {NotificationsManager} from "./shared/notifications.manager";
+import { UploadItemComponent } from './shared/image-loader/upload-item/upload-item.component';
+import { ImageLoaderComponent } from './shared/image-loader/image-loader.component';
 
 @NgModule({
   declarations: [
@@ -73,8 +75,11 @@ import {NotificationsManager} from "./shared/notifications.manager";
     ImageCropperComponent,
     CoinManagementComponent,
     EditMachineComponent,
-    PurchaseDatePipe
+    PurchaseDatePipe,
+    UploadItemComponent,
+    ImageLoaderComponent
   ],
+  entryComponents: [UploadItemComponent],
   imports: [
     BrowserModule,
     CommonModule,

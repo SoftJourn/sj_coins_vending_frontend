@@ -57,40 +57,17 @@
               </div>
             </div>
           </div>
-          <!--right column-->
-          <div class="col-xl-6">
-            <div align="center" class="form-group row">
-              <img height="205px" width="205px"
-                   [src]="imageUpload.imageSrc"
-                   [class.loaded]="imageUpload.imageLoaded">
-            </div>
-            <div class="form-group row">
-              <div class="input-group col-xs-12">
-                <span class="input-group-addon"><i class="fa fa-picture-o fa-lg"></i></span>
-                <input type="text" class="form-control" readonly [value]="imageUpload.imageName">
-                <label class="input-group-btn">
-                    <span class="btn btn-info">
-                      <i class="fa fa-search btn-icon"></i>Browse
-                        <input type="file" style="display: none;" (change)=" handleInputChange($event)"
-                               accept="image/*">
-                    </span>
-                </label>
-              </div>
-            </div>
-            <div class="form-group row">
-              <div class="col-sm-12 form-buttons-container">
-                <button class="btn btn-success" [disabled]="!form.valid" type="submit">Submit</button>
-                <button class="btn btn-secondary" type="button" (click)="reset()">Cancel</button>
-              </div>
-            </div>
+          <!--image uploader-->
+          <app-image-loader class="col-xl-6"></app-image-loader>
+        </div>
+        <div class="form-group row">
+          <div class="col-sm-12 form-buttons-container">
+            <button class="btn btn-success" [disabled]="!form.valid" type="submit">Submit</button>
+            <button class="btn btn-secondary" type="button" (click)="reset()">Cancel</button>
           </div>
         </div>
       </form>
 
-      <app-modal-img-cropper [(visible)]="showDialog" [cropper_img]="imageForCropper"
-                             (setImageForSave)="setDataForImage($event)">
-
-      </app-modal-img-cropper>
 
     </div>
   </div>

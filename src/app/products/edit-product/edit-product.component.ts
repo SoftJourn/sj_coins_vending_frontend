@@ -117,7 +117,7 @@ export class EditProductComponent implements OnInit {
                 .flatMap((product: Product) => {
                     this.router.navigate(['/main/products'])
                     this.notificationService.success('Update', 'Product has been updated successfully');
-                    var blob = this.imageUpload.dataURItoBlob(this.imageUpload.imageSrc);
+                    var blob = ImageUploadService.dataURItoBlob(this.imageUpload.imageSrc);
                     this.imageUpload.formData = new FormData();
                     this.imageUpload.formData.append('file', blob, this.imageUpload.imageFile.name);
                     return this.productService.updateImage(this.productIndex, this.imageUpload.formData)

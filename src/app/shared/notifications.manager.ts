@@ -15,6 +15,7 @@ export class NotificationsManager {
   static errorProductDuplicateMsg = 'Such product name exists!';
   static errorWatchLogsMsg = 'Error appeared, watch logs!';
   static errorNoImage = 'Please put product image!';
+  static errorLargeImgSizeMsg = 'This image size is too big!';
 
   constructor(private notificationsService: NotificationsService) {
   }
@@ -49,7 +50,12 @@ export class NotificationsManager {
     this.notificationsService.error(NotificationsManager.errorTitle, NotificationsManager.errorWatchLogsMsg);
   }
 
-  errorNoImage() {
+  errorNoImageMsg() {
     this.notificationsService.error(NotificationsManager.errorTitle, NotificationsManager.errorNoImage);
+  }
+
+  errorLargeImgSizeMsg() {
+    this.notificationsService.error(NotificationsManager.errorTitle, NotificationsManager.errorLargeImgSizeMsg);
+
   }
 }

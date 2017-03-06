@@ -107,7 +107,7 @@ export class AddProductComponent implements OnInit {
                 );
         }
         else {
-          this.notify.errorNoImage();
+          this.notify.errorNoImageMsg();
         }
     }
 

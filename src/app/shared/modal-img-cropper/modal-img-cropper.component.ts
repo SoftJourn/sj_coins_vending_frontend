@@ -1,11 +1,20 @@
 import {
-    Component, Input, Output, EventEmitter,
-    trigger, state, style, animate, transition, ViewChild, Type,
-    AnimationTransitionEvent
-} from '@angular/core';
-import {ImageCropperComponent, CropperSettings, Bounds} from 'ng2-img-cropper';
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  trigger,
+  style,
+  animate,
+  transition,
+  ViewChild,
+  Type,
+  AnimationTransitionEvent
+} from "@angular/core";
+import {ImageCropperComponent, CropperSettings} from "ng2-img-cropper";
 import {ImageUploadService} from "../../shared/services/image-upload.service";
 import {NotificationsService} from "angular2-notifications/components";
+import {NotificationsManager} from "../notifications.manager";
 
 @Component({
     selector: 'app-modal-img-cropper',
@@ -33,13 +42,13 @@ export class ModalImgCropperComponent extends Type {
     @Input() closable = true;
     @Input() visible: boolean;
     @Output() visibleChange: EventEmitter<boolean> = new EventEmitter<boolean>();
-    @Output() setImageForSave: EventEmitter<any> = new EventEmitter;
-    @Input() cropper_img;
+    @Output() onCrop: EventEmitter<any> = new EventEmitter;
+    @Input() cropImage;
 
-    constructor(private imageUpload: ImageUploadService, private notificationService: NotificationsService) {
+  constructor(private notify: NotificationsManager) {
 
         super();
-        var screenWidth = window.screen.availWidth;
+        let screenWidth = window.screen.availWidth;
 
         this.cropperSettings = new CropperSettings();
         if (screenWidth < 768) {
@@ -66,23 +75,21 @@ export class ModalImgCropperComponent extends Type {
 
     animationDone(event: AnimationTransitionEvent) {
         let image = new Image();
-        image.src = this.cropper_img;
-        if (this.cropper_img && this.cropper) {
+        image.src = this.cropImage;
+        if (this.cropImage && this.cropper) {
             this.cropper.setImage(image);
         }
     }
 
-    setImageData() {
-        // check image size
-        let blob = this.imageUpload.dataURItoBlob(this.data.image);
-        if (blob.size > 1024 * 256) {
-            this.notificationService.error('Error', 'This image size is too big!');
-            this.close();
+
+  setImageData() {
+        if(ImageUploadService.isImageSizeAcceptable(this.data.image)){
+          this.onCrop.emit(this.data.image);
         } else {
-            this.setImageForSave.emit(this.data.image);
-            this.close();
+          this.notify.errorLargeImgSizeMsg();
         }
-    }
+        this.close();
+  }
 
     close() {
         this.visible = false;

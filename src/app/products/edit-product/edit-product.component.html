@@ -83,8 +83,8 @@
             </div>
         </form>
 
-        <app-modal-img-cropper [(visible)]="showDialog" [cropper_img]="imagForCropper"
-                               (setImageForSave)="setDataForImage($event)">
+        <app-modal-img-cropper [(visible)]="showDialog" [cropImage]="imagForCropper"
+                               (onCrop)="setDataForImage($event)">
 
         </app-modal-img-cropper>
 
