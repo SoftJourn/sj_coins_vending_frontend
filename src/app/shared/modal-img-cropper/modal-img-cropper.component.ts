@@ -42,8 +42,8 @@ export class ModalImgCropperComponent extends Type {
     @Input() closable = true;
     @Input() visible: boolean;
     @Output() visibleChange: EventEmitter<boolean> = new EventEmitter<boolean>();
-    @Output() onCrop: EventEmitter<any> = new EventEmitter;
-    @Input() cropImage;
+    @Output() onCrop: EventEmitter<HTMLImageElement> = new EventEmitter<HTMLImageElement>();
+    @Input() cropImage: HTMLImageElement;
 
   constructor(private notify: NotificationsManager) {
 
@@ -74,17 +74,18 @@ export class ModalImgCropperComponent extends Type {
     }
 
     animationDone(event: AnimationTransitionEvent) {
-        let image = new Image();
-        image.src = this.cropImage;
         if (this.cropImage && this.cropper) {
-            this.cropper.setImage(image);
+            this.cropper.setImage(this.cropImage);
         }
     }
 
 
   setImageData() {
         if(ImageUploadService.isImageSizeAcceptable(this.data.image)){
-          this.onCrop.emit(this.data.image);
+          let resultImg = new Image();
+          resultImg.src = this.data.image;
+          resultImg.name = this.cropImage.name;
+          this.onCrop.emit(resultImg);
         } else {
           this.notify.errorLargeImgSizeMsg();
         }
