@@ -32,13 +32,13 @@ export class TransactionComponent implements OnInit {
         this.transactionService.getById(params['id']).subscribe(response => {
           this.transaction = response;
           this.generalFields = Object.keys(this.transaction).filter(key => {
-            if (key != "transactionStoring") {
+            if (key != "transactionStoring" && key!= "id") {
               return key;
             }
           });
           if (this.transaction["transactionStoring"]) {
             this.blockFields = Object.keys(this.transaction.transactionStoring).filter(key => {
-              if (key != "transaction" && key != "callingValue")
+              if (key != "transaction" && key != "callingValue" && key!= "id")
                 return key;
             });
             this.erisFields = Object.keys(this.transaction.transactionStoring.transaction).filter(key => {

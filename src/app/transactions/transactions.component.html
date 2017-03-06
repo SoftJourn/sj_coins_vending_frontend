@@ -1,9 +1,9 @@
 <div class="container-fluid">
-  <div class="col-xs-12 col-md-12 col-xl-12 row header-container">
-    <div class="col-xs-8 col-md-8 col-xl-8">
+  <div class="col-md-12 col-lg-12 col-xl-12 row header-container">
+    <div class="col-md-8 col-lg-8 col-xl-8">
       <h2>Transactions</h2>
     </div>
-    <div class="col-xs-4 col-md-4 col-xl-4 header-buttons-container">
+    <div class="col-md-4 col-lg-4 col-xl-4 header-buttons-container">
       <button class="btn btn-success" (click)="showFilter()">
         <i class="fa fa-filter btn-icon"></i>Filter
       </button>
@@ -13,31 +13,32 @@
 <hr>
 <div class="container-fluid">
   <div class="row" [hidden]="hideFilter">
-    <div class="col-md-2 col-lg-2 col-xl-2"></div>
-    <div class="col-md-8 col-lg-8 col-xl-8">
+    <div class="col-xl-1"></div>
+    <div class="col-md-12 col-lg-12 col-xl-10">
       <div class="card card-block card-outline-success">
-        <form class="form" [formGroup]="filterForm">
+        <form class="form" [formGroup]="filterForm" (ngSubmit)="onSubmit()">
           <div *ngFor="let filter of filterForm.controls; let i = index">
             <div [formGroupName]="i">
               <app-transaction-filter-item [fields]="fields" [formGroup]="filter"></app-transaction-filter-item>
             </div>
           </div>
           <div class="row">
-            <div class="col-xs-12 col-md-12 col-lg-12 header-buttons-container">
+            <div class="col-md-12 col-lg-12 col-xl-12 header-buttons-container">
               <button type="submit" class="btn btn-success" (click)="addFilter()"><i
                 class="fa fa-plus fa-lg btn-icon"></i>Add
               </button>
-              <button type="submit" class="btn btn-success" [disabled]="!filterForm.valid" (click)="onSubmit()">Submit</button>
+              <button type="submit" class="btn btn-success" [disabled]="!filterForm.valid">Submit
+              </button>
               <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
             </div>
           </div>
         </form>
       </div>
     </div>
-    <div class="col-md-2 col-lg-2 col-xl-2"></div>
+    <div class="col-xl-1"></div>
   </div>
   <div class="row">
-    <div class="col-xs-12 col-md-12 col-xl-12">
+    <div class="col-md-12 col-lg-12 col-xl-12 x-scroll">
       <table class="table table-hover">
         <thead class="thead-inverse">
         <tr>
@@ -67,15 +68,15 @@
   <div class="row" *ngIf="page?.content != ''">
     <form [formGroup]="pageForm">
       <div class="form-group row horizontal-alignment">
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-10 col-xl-8 vertical-align">
-          <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2 col-xl-2">
+        <div class="col-md-12 col-lg-10 col-xl-8 vertical-align">
+          <div class="col-md-2 col-lg-2 col-xl-2">
             <select id="size" class="form-control" formControlName="pageSize" data-dropup-auto="false">
               <option value="10">10</option>
               <option value="25">25</option>
               <option value="50">50</option>
             </select>
           </div>
-          <div class="col-xs-12 col-sm-12 col-md-10 col-lg-6 col-xl-6">
+          <div class="col-md-10 col-lg-6 col-xl-6">
             <ngb-pagination [collectionSize]="page?.totalElements" [maxSize]="pageItems" [page]="page?.number+1"
                             [rotate]="true" [size]="pageItemsSize" [directionLinks]="pageDirectionLinks"
                             [pageSize]="page?.size" (pageChange)="changePage($event)">

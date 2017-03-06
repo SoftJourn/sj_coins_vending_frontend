@@ -1,0 +1,11 @@
+@media (max-width: 1025px) {
+  div.x-scroll{
+    overflow-x: scroll;
+    -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+  }
+  table{
+    width: 200%;
+    max-width: inherit;
+  }
+}
