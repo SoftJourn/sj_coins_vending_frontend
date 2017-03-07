@@ -55,6 +55,12 @@ export class ImageLoaderComponent implements OnInit {
       image.src = reader.result;
       self.setUpCropper(image);
     };
+    // Without this line event would not fire for the same file
+    $event.value = null;
+  }
+
+  isEmpty(): boolean{
+    return this.imageComponents.length <= 0 ;
   }
 
   private setUpCropper(image: HTMLImageElement) {
