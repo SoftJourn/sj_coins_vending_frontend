@@ -16,10 +16,12 @@ import { TransactionPageRequest } from "./transaction-page-request";
 import { Sort } from "./sort";
 import { Transaction } from "../shared/entity/transaction";
 import { Router } from "@angular/router";
+import { NotificationsService } from "angular2-notifications";
 export var TransactionsComponent = (function () {
-    function TransactionsComponent(transactionService, router) {
+    function TransactionsComponent(transactionService, router, notificationService) {
         this.transactionService = transactionService;
         this.router = router;
+        this.notificationService = notificationService;
         this.hideFilter = true;
         this.pageSize = 10;
         this.pageItems = 5;
@@ -28,8 +30,8 @@ export var TransactionsComponent = (function () {
     }
     TransactionsComponent.prototype.ngOnInit = function () {
         this.buildPageSizeForm();
-        this.buildFilterForm();
         this.fetch(1, this.pageSize);
+        this.buildFilterForm();
         this.fields = new Array();
         // just for getting field names
         var transaction = new Transaction(1, '', '', 1, '', '', '', '');
@@ -61,7 +63,7 @@ export var TransactionsComponent = (function () {
     TransactionsComponent.prototype.addFilter = function () {
         this.filterForm.push(new FormGroup({
             field: new FormControl('', Validators.required),
-            value: new FormControl('', Validators.required),
+            value: new FormControl('', [Validators.required, Validators.nullValidator]),
             comparison: new FormControl('', Validators.required)
         }));
         this.filterForm.controls[this.filterForm.controls.length - 1].get('field').patchValue(this.fields[0]);
@@ -124,25 +126,41 @@ export var TransactionsComponent = (function () {
     };
     TransactionsComponent.prototype.toTransactionFilter = function (formArray) {
         var conditions = new Array();
-        var values = formArray.value;
-        for (var _i = 0, values_1 = values; _i < values_1.length; _i++) {
-            var value = values_1[_i];
-            if (value["value"] != "") {
-                if (this.transactionService.getType(value["field"]) == "date") {
-                    conditions.push(new Condition(value["field"], new Date(value["value"]).toISOString(), value["comparison"]));
+        if (formArray) {
+            try {
+                var values = formArray.value;
+                this.validateInclude(values);
+                for (var _i = 0, values_1 = values; _i < values_1.length; _i++) {
+                    var value = values_1[_i];
+                    if (this.transactionService.getType(value["field"]) == "date") {
+                        conditions.push(new Condition(value["field"], new Date(value["value"]).toISOString(), value["comparison"]));
+                    }
+                    else if (this.transactionService.getType(value["field"]) == "number" && Array.isArray(value["field"])) {
+                        conditions.push(new Condition(value["field"], value["value"].map(function (item) {
+                            return parseInt(item);
+                        }), value["comparison"]));
+                    }
+                    else {
+                        conditions.push(new Condition(value["field"], value["value"], value["comparison"]));
+                    }
                 }
-                else if (this.transactionService.getType(value["field"]) == "number" && Array.isArray(value["field"])) {
-                    conditions.push(new Condition(value["field"], value["value"].map(function (item) {
-                        return parseInt(item);
-                    }), value["comparison"]));
-                }
-                else {
-                    conditions.push(new Condition(value["field"], value["value"], value["comparison"]));
-                }
+            }
+            catch (error) {
+                this.notificationService.error("Error", error.message);
             }
         }
         var pageable = new Pageable(this.sorts);
         return new TransactionPageRequest(conditions, pageable);
+    };
+    TransactionsComponent.prototype.validateInclude = function (values) {
+        for (var _i = 0, values_2 = values; _i < values_2.length; _i++) {
+            var value = values_2[_i];
+            if (this.transactionService.getType(value["field"]) == "number" && value["comparison"] == "in") {
+                if (isNaN(value["value"])) {
+                    throw new Error("Field " + value["field"] + "does n ot belongs to type number");
+                }
+            }
+        }
     };
     TransactionsComponent.prototype.fetch = function (page, size) {
         var _this = this;
@@ -152,7 +170,7 @@ export var TransactionsComponent = (function () {
         this.transactionService.get(filter).subscribe(function (response) {
             _this.page = response;
         }, function (error) {
-            console.error(error);
+            _this.notificationService.error("Error", error.detail);
         });
     };
     __decorate([
@@ -167,7 +185,7 @@ export var TransactionsComponent = (function () {
             templateUrl: './transactions.component.html',
             styleUrls: ['./transactions.component.scss']
         }), 
-        __metadata('design:paramtypes', [TransactionService, Router])
+        __metadata('design:paramtypes', [TransactionService, Router, NotificationsService])
     ], TransactionsComponent);
     return TransactionsComponent;
 }());

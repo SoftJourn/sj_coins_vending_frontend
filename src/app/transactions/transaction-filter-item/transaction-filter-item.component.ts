@@ -47,7 +47,11 @@ export class TransactionFilterItemComponent implements OnInit {
   removeWhileInclude(e): void {
     let inputs = new Set(this.filter.get("value").value);
     inputs.delete(e);
-    this.filter.get("value").patchValue(Array.from(inputs));
+    if (inputs.size == 0) {
+      this.filter.get("value").patchValue(null);
+    } else {
+      this.filter.get("value").patchValue(Array.from(inputs));
+    }
   }
 
   openDatepicker() {

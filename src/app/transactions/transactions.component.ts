@@ -17,6 +17,8 @@ import {TransactionPageRequest} from "./transaction-page-request";
 import {Sort} from "./sort";
 import {Transaction} from "../shared/entity/transaction";
 import {Router} from "@angular/router";
+import {NotificationsService} from "angular2-notifications";
+import {ErrorDetail} from "../shared/entity/error-detail";
 
 @Component({
   selector: 'app-transactions',
@@ -39,13 +41,14 @@ export class TransactionsComponent implements OnInit {
   pageItemsSize: string = '';
 
   constructor(private transactionService: TransactionService,
-              private router: Router) {
+              private router: Router,
+              private notificationService: NotificationsService) {
   }
 
   ngOnInit() {
     this.buildPageSizeForm();
-    this.buildFilterForm();
     this.fetch(1, this.pageSize);
+    this.buildFilterForm();
     this.fields = new Array<string>();
     // just for getting field names
     let transaction = new Transaction(1, '', '', 1, '', '', '', '');
@@ -79,7 +82,7 @@ export class TransactionsComponent implements OnInit {
   addFilter(): void {
     this.filterForm.push(new FormGroup({
       field: new FormControl('', Validators.required),
-      value: new FormControl('', Validators.required),
+      value: new FormControl('', [Validators.required, Validators.nullValidator]),
       comparison: new FormControl('', Validators.required)
     }));
     this.filterForm.controls[this.filterForm.controls.length - 1].get('field').patchValue(this.fields[0]);
@@ -149,22 +152,37 @@ export class TransactionsComponent implements OnInit {
 
   toTransactionFilter(formArray: FormArray): TransactionPageRequest {
     let conditions = new Array<Condition>();
-    let values = formArray.value;
-    for (let value of values) {
-      if (value["value"] != "") {
-        if (this.transactionService.getType(value["field"]) == "date") {
-          conditions.push(new Condition(value["field"], new Date(value["value"]).toISOString(), value["comparison"]));
-        } else if (this.transactionService.getType(value["field"]) == "number" && Array.isArray(value["field"])) {
-          conditions.push(new Condition(value["field"], value["value"].map(item => {
-            return parseInt(item)
-          }), value["comparison"]));
-        } else {
-          conditions.push(new Condition(value["field"], value["value"], value["comparison"]));
+    if (formArray) {
+      try {
+        let values = formArray.value;
+        this.validateInclude(values);
+        for (let value of values) {
+          if (this.transactionService.getType(value["field"]) == "date") {
+            conditions.push(new Condition(value["field"], new Date(value["value"]).toISOString(), value["comparison"]));
+          } else if (this.transactionService.getType(value["field"]) == "number" && Array.isArray(value["field"])) {
+            conditions.push(new Condition(value["field"], value["value"].map(item => {
+              return parseInt(item)
+            }), value["comparison"]));
+          } else {
+            conditions.push(new Condition(value["field"], value["value"], value["comparison"]));
+          }
         }
+      } catch (error) {
+        this.notificationService.error("Error", error.message);
       }
     }
     let pageable = new Pageable(this.sorts);
     return new TransactionPageRequest(conditions, pageable);
+  }
+
+  validateInclude(values): void {
+    for (let value of values) {
+      if (this.transactionService.getType(value["field"]) == "number" && value["comparison"] == "in") {
+        if (isNaN(value["value"])) {
+          throw new Error("Field " + value["field"] + "does n ot belongs to type number");
+        }
+      }
+    }
   }
 
   fetch(page: number, size: number): void {
@@ -173,8 +191,8 @@ export class TransactionsComponent implements OnInit {
     filter.pageable.size = size;
     this.transactionService.get(filter).subscribe((response: TransactionPage) => {
       this.page = response;
-    }, error => {
-      console.error(error);
+    }, (error: ErrorDetail) => {
+      this.notificationService.error("Error", error.detail);
     })
   }
 

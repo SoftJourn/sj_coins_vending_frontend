@@ -34,7 +34,12 @@ export var TransactionFilterItemComponent = (function () {
     TransactionFilterItemComponent.prototype.removeWhileInclude = function (e) {
         var inputs = new Set(this.filter.get("value").value);
         inputs.delete(e);
-        this.filter.get("value").patchValue(Array.from(inputs));
+        if (inputs.size == 0) {
+            this.filter.get("value").patchValue(null);
+        }
+        else {
+            this.filter.get("value").patchValue(Array.from(inputs));
+        }
     };
     TransactionFilterItemComponent.prototype.openDatepicker = function () {
         var _this = this;
