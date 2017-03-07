@@ -27,7 +27,6 @@ export class AddProductComponent implements OnInit {
   formStyles: FormValidationStyles;
 
   private _mainProductURI = '/main/products';
-  private _filesPropertyName = 'file';
   //Validators parameters
   private _digitsPattern = '\\d+';
   private _wordsWithNumbersPattern = '^[a-zA-Z0-9\u0400-\u04FF]+[ a-zA-Z0-9\u0400-\u04FF,-]*[a-zA-Z0-9\u0400-\u04FF,-]+';
@@ -40,27 +39,22 @@ export class AddProductComponent implements OnInit {
   constructor(private categoryService: CategoryService,
               private productService: ProductService,
               private notify: NotificationsManager,
-              private router: Router,
-              private imageUpload: ImageUploadService) {
+              private router: Router) {
 
-    this.imageUpload.imageName = null;
   }
 
   ngOnInit() {
-    this.imageUpload.imageSrc = this.imageUpload.defaultImageSrc;
     this.buildForm();
     this.findAllCategories();
   }
 
   submitImage(productId: number) {
-    let blob = ImageUploadService.dataURItoBlob(this.imageLoader.image.src);
-    let formData = new FormData();
-    formData.append(this._filesPropertyName, blob, this.imageLoader.image.name);
+    let formData = this.imageLoader.getImageFormData('file');
     return this.productService.updateImage(productId, formData);
   }
 
   submitDescriptionImages(productId: number){
-
+    let formData = this.imageLoader.getDescriptionImagesFormData("file[]")
   }
 
   submit() {

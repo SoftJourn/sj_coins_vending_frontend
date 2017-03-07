@@ -1,6 +1,7 @@
 import {Component, OnInit, ViewContainerRef, ComponentFactoryResolver, ViewChild, ComponentRef} from "@angular/core";
 import {UploadItemComponent} from "./upload-item/upload-item.component";
 import {ModalImgCropperComponent} from "../modal-img-cropper/modal-img-cropper.component";
+import {NotificationsManager} from "../notifications.manager";
 
 @Component({
   selector: 'app-image-loader',
@@ -19,9 +20,20 @@ export class ImageLoaderComponent implements OnInit {
   height: number;
   width: number;
 
+  private _maxImageSize = 1024 * 256;
   private _defaultSource = "/assets/images/default-product-350x350.jpg";
 
-  constructor(private componentFactoryResolver: ComponentFactoryResolver) {
+  private static dataURItoBlob(dataURI) {
+    let binary = atob(dataURI.split(',')[1]);
+    let array = [];
+    for (let i = 0; i < binary.length; i++) {
+      array.push(binary.charCodeAt(i));
+    }
+    return new Blob([new Uint8Array(array)], {type: 'image/jpeg'});
+  }
+
+  constructor(private componentFactoryResolver: ComponentFactoryResolver,
+              private notify: NotificationsManager) {
     this.height = 205;
     this.width = 205;
   }
@@ -30,10 +42,11 @@ export class ImageLoaderComponent implements OnInit {
     this.imageComponents = [];
     this.setDefaultImage();
     this.cropper.visible = false;
-    this.cropper.onCrop.subscribe((image) => this.addImageItem(image))
+    this.cropper.onCrop.subscribe((image) => this.handleCropImage(image))
   }
 
   addImageItem(image: HTMLImageElement) {
+    this.hasValidSize(image);
     this.image = image;
     const factory = this.componentFactoryResolver.resolveComponentFactory(UploadItemComponent);
     const ref = this.imgList.createComponent(factory);
@@ -59,8 +72,28 @@ export class ImageLoaderComponent implements OnInit {
     $event.target.value = null;
   }
 
-  isEmpty(): boolean{
-    return this.imageComponents.length <= 0 ;
+  isEmpty(): boolean {
+    return this.imageComponents.length <= 0;
+  }
+
+  getImageFormData(propertyName: string) {
+    let formData = new FormData();
+    let blob = ImageLoaderComponent.dataURItoBlob(this.image.src);
+    return formData.append(propertyName, blob, this.image.name);
+  }
+
+  getDescriptionImagesFormData(propName: string) {
+    let formData = new FormData();
+    this.imageComponents
+      .map(component => component.image)
+      .filter(image => image !== this.image)
+      .forEach(image => this.appendImage(formData, propName, image));
+    return formData;
+  }
+
+  private appendImage(formData: FormData, propName: string, image: HTMLImageElement) {
+    let blob = ImageLoaderComponent.dataURItoBlob(this.image.src);
+    return formData.append(propName, blob, this.image.name);
   }
 
   private setUpCropper(image: HTMLImageElement) {
@@ -85,4 +118,15 @@ export class ImageLoaderComponent implements OnInit {
     ref.destroy();
   }
 
+  private hasValidSize(image: HTMLImageElement): boolean {
+    let blob = ImageLoaderComponent.dataURItoBlob(image.src);
+    return blob.size <= this._maxImageSize;
+  }
+
+  private handleCropImage(image: any) {
+    if (this.hasValidSize(image))
+      this.addImageItem(image);
+    else
+      this.notify.errorLargeImgSizeMsg();
+  }
 }

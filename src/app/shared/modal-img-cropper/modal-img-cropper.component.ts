@@ -12,7 +12,6 @@ import {
   AnimationTransitionEvent
 } from "@angular/core";
 import {ImageCropperComponent, CropperSettings} from "ng2-img-cropper";
-import {ImageUploadService} from "../../shared/services/image-upload.service";
 import {NotificationsService} from "angular2-notifications/components";
 import {NotificationsManager} from "../notifications.manager";
 
@@ -81,14 +80,10 @@ export class ModalImgCropperComponent extends Type {
 
 
   setImageData() {
-        if(ImageUploadService.isImageSizeAcceptable(this.data.image)){
           let resultImg = new Image();
           resultImg.src = this.data.image;
           resultImg.name = this.cropImage.name;
           this.onCrop.emit(resultImg);
-        } else {
-          this.notify.errorLargeImgSizeMsg();
-        }
         this.close();
   }
 

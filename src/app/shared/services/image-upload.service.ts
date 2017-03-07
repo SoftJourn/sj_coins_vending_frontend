@@ -17,15 +17,13 @@ export class ImageUploadService {
 
   private _loaded: boolean = false;
   private _imageRegExp = /image\/(?:jpeg|png|jpg|apng|svg|bmp)/;
-
-
-  public static dataURItoBlob(dataURI) {
-      let binary = atob(dataURI.split(',')[1]);
-      let array = [];
-      for (let i = 0; i < binary.length; i++) {
-          array.push(binary.charCodeAt(i));
-      }
-      return new Blob([new Uint8Array(array)], {type: 'image/jpeg'});
+  static dataURItoBlob(dataURI) {
+    let binary = atob(dataURI.split(',')[1]);
+    let array = [];
+    for (let i = 0; i < binary.length; i++) {
+      array.push(binary.charCodeAt(i));
+    }
+    return new Blob([new Uint8Array(array)], {type: 'image/jpeg'});
   }
   constructor(private notify: NotificationsManager) {
     }
@@ -78,7 +76,6 @@ export class ImageUploadService {
   }
 
   static isImageSizeAcceptable(image: any): boolean {
-    let blob = ImageUploadService.dataURItoBlob(image);
-    return blob.size <= this._maxImageSize;
+    return true;
   }
 }
