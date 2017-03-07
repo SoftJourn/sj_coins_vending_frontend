@@ -56,7 +56,7 @@ export class ImageLoaderComponent implements OnInit {
       self.setUpCropper(image);
     };
     // Without this line event would not fire for the same file
-    $event.value = null;
+    $event.target.value = null;
   }
 
   isEmpty(): boolean{
