@@ -12,7 +12,6 @@ import {
   FormArray
 } from "@angular/forms";
 import {Condition} from "./condition";
-import {NgbDateParserFormatter} from "@ng-bootstrap/ng-bootstrap";
 import {Pageable} from "./pageable";
 import {TransactionPageRequest} from "./transaction-page-request";
 import {Sort} from "./sort";
@@ -62,10 +61,10 @@ export class TransactionsComponent implements OnInit {
     this.pageForm = new FormGroup({
       pageSize: new FormControl('10')
     });
-    if (window.innerWidth < 767) {
+    if (window.innerWidth <= 800) {
       this.pageItems = 3;
       this.pageItemsSize = 'sm';
-      this.pageDirectionLinks = false;
+      this.pageDirectionLinks = true;
     }
     this.pageForm.get('pageSize').valueChanges.subscribe(change => {
       this.pageSize = change;
@@ -100,7 +99,7 @@ export class TransactionsComponent implements OnInit {
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    if (event.target.innerWidth > 767) {
+    if (event.target.innerWidth > 800) {
       this.pageItems = 5;
       this.pageItemsSize = '';
       this.pageDirectionLinks = true;

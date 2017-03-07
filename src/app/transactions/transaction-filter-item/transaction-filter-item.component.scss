@@ -1,3 +1,9 @@
 rl-tag-input {
   padding: 0;
 }
+
+@media (max-width: 700px) {
+  .col-sm-4{
+    width: 100%;
+  }
+}

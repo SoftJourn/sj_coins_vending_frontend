@@ -1,5 +1,5 @@
 <div class="row" [formGroup]="filter">
-  <div class="col-md-4 col-lg-4 col-xl-3">
+  <div class="form-group col-sm-4 col-md-4 col-lg-4 col-xl-3">
     <div class="input-group">
       <div class="input-group-addon">Field</div>
       <select id="fields" class="form-control" formControlName="field" (change)="changeField()">
@@ -7,7 +7,7 @@
       </select>
     </div>
   </div>
-  <div class="form-group col-md-4 col-lg-4 col-xl-5">
+  <div class="form-group col-sm-4 col-md-4 col-lg-4 col-xl-5">
     <input class="form-control" *ngIf="transactionService.getType(filter.controls['field'].value) == 'text' &&
      filter.controls['comparison'].value != 'in'" type="text"
            placeholder="Enter {{filter.controls['field'].value}}" formControlName="value">
@@ -27,7 +27,7 @@
                   placeholder="Enter {{filter.controls['field'].value}}"
                   (addTag)="addWhileInclude($event)" (removeTag)="removeWhileInclude($event)"></rl-tag-input>
   </div>
-  <div class="col-md-4 col-lg-4 col-xl-4">
+  <div class="form-group col-sm-4 col-md-4 col-lg-4 col-xl-4">
     <div class="input-group">
       <div class="input-group-addon">Condition</div>
       <select id="condition" class="form-control" formControlName="comparison">
