@@ -127,11 +127,9 @@ export var TransactionsComponent = (function () {
     TransactionsComponent.prototype.toTransactionFilter = function (formArray) {
         var conditions = new Array();
         if (formArray) {
-            try {
-                var values = formArray.value;
-                this.validateInclude(values);
-                for (var _i = 0, values_1 = values; _i < values_1.length; _i++) {
-                    var value = values_1[_i];
+            for (var _i = 0, _a = formArray.value; _i < _a.length; _i++) {
+                var value = _a[_i];
+                if (value["value"] != "") {
                     if (this.transactionService.getType(value["field"]) == "date") {
                         conditions.push(new Condition(value["field"], new Date(value["value"]).toISOString(), value["comparison"]));
                     }
@@ -145,26 +143,35 @@ export var TransactionsComponent = (function () {
                     }
                 }
             }
-            catch (error) {
-                this.notificationService.error("Error", error.message);
-            }
         }
         var pageable = new Pageable(this.sorts);
         return new TransactionPageRequest(conditions, pageable);
     };
-    TransactionsComponent.prototype.validateInclude = function (values) {
-        for (var _i = 0, values_2 = values; _i < values_2.length; _i++) {
-            var value = values_2[_i];
-            if (this.transactionService.getType(value["field"]) == "number" && value["comparison"] == "in") {
-                if (isNaN(value["value"])) {
-                    throw new Error("Field " + value["field"] + "does n ot belongs to type number");
+    TransactionsComponent.prototype.validateInclude = function (formArray) {
+        if (formArray) {
+            for (var _i = 0, _a = formArray.value; _i < _a.length; _i++) {
+                var value = _a[_i];
+                if (this.transactionService.getType(value["field"]) == "number" && value["comparison"] == "in") {
+                    for (var _b = 0, _c = value["value"]; _b < _c.length; _b++) {
+                        var number = _c[_b];
+                        if (isNaN(number)) {
+                            throw new Error("Field " + value["field"] + "does not belong to type number");
+                        }
+                    }
                 }
             }
         }
     };
     TransactionsComponent.prototype.fetch = function (page, size) {
         var _this = this;
-        var filter = this.toTransactionFilter(this.filterForm);
+        var filter;
+        try {
+            this.validateInclude(this.filterForm);
+            filter = this.toTransactionFilter(this.filterForm);
+        }
+        catch (error) {
+            this.notificationService.error("Error", error.message);
+        }
         filter.pageable.page = page - 1;
         filter.pageable.size = size;
         this.transactionService.get(filter).subscribe(function (response) {

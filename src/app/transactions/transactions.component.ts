@@ -153,10 +153,8 @@ export class TransactionsComponent implements OnInit {
   toTransactionFilter(formArray: FormArray): TransactionPageRequest {
     let conditions = new Array<Condition>();
     if (formArray) {
-      try {
-        let values = formArray.value;
-        this.validateInclude(values);
-        for (let value of values) {
+      for (let value of formArray.value) {
+        if (value["value"] != "") {
           if (this.transactionService.getType(value["field"]) == "date") {
             conditions.push(new Condition(value["field"], new Date(value["value"]).toISOString(), value["comparison"]));
           } else if (this.transactionService.getType(value["field"]) == "number" && Array.isArray(value["field"])) {
@@ -167,26 +165,34 @@ export class TransactionsComponent implements OnInit {
             conditions.push(new Condition(value["field"], value["value"], value["comparison"]));
           }
         }
-      } catch (error) {
-        this.notificationService.error("Error", error.message);
       }
     }
     let pageable = new Pageable(this.sorts);
     return new TransactionPageRequest(conditions, pageable);
   }
 
-  validateInclude(values): void {
-    for (let value of values) {
-      if (this.transactionService.getType(value["field"]) == "number" && value["comparison"] == "in") {
-        if (isNaN(value["value"])) {
-          throw new Error("Field " + value["field"] + "does n ot belongs to type number");
+  validateInclude(formArray: FormArray): void {
+    if (formArray) {
+      for (let value of formArray.value) {
+        if (this.transactionService.getType(value["field"]) == "number" && value["comparison"] == "in") {
+          for (let number of value["value"]) {
+            if (isNaN(number)) {
+              throw new Error("Field " + value["field"] + "does not belong to type number");
+            }
+          }
         }
       }
     }
   }
 
   fetch(page: number, size: number): void {
-    let filter = this.toTransactionFilter(this.filterForm);
+    let filter;
+    try {
+      this.validateInclude(this.filterForm);
+      filter = this.toTransactionFilter(this.filterForm);
+    } catch (error) {
+      this.notificationService.error("Error", error.message);
+    }
     filter.pageable.page = page - 1;
     filter.pageable.size = size;
     this.transactionService.get(filter).subscribe((response: TransactionPage) => {
