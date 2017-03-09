@@ -190,16 +190,16 @@ export class TransactionsComponent implements OnInit {
     try {
       this.validateInclude(this.filterForm);
       filter = this.toTransactionFilter(this.filterForm);
+      filter.pageable.page = page - 1;
+      filter.pageable.size = size;
+      this.transactionService.get(filter).subscribe((response: TransactionPage) => {
+        this.page = response;
+      }, (error: ErrorDetail) => {
+        this.notificationService.error("Error", error.detail);
+      });
     } catch (error) {
       this.notificationService.error("Error", error.message);
     }
-    filter.pageable.page = page - 1;
-    filter.pageable.size = size;
-    this.transactionService.get(filter).subscribe((response: TransactionPage) => {
-      this.page = response;
-    }, (error: ErrorDetail) => {
-      this.notificationService.error("Error", error.detail);
-    })
   }
 
 }
