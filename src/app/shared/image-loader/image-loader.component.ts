@@ -78,22 +78,21 @@ export class ImageLoaderComponent implements OnInit {
 
   getImageFormData(propertyName: string) {
     let formData = new FormData();
-    let blob = ImageLoaderComponent.dataURItoBlob(this.image.src);
-    return formData.append(propertyName, blob, this.image.name);
+    this.appendImageToFormData(formData,'file', this.image);
+    return formData;
   }
 
   getDescriptionImagesFormData(propName: string) {
     let formData = new FormData();
-    this.imageComponents
-      .map(component => component.image)
-      .filter(image => image !== this.image)
-      .forEach(image => this.appendImage(formData, propName, image));
+    for(let component of this.imageComponents){
+      this.appendImageToFormData(formData, propName, component.image);
+    }
     return formData;
   }
 
-  private appendImage(formData: FormData, propName: string, image: HTMLImageElement) {
-    let blob = ImageLoaderComponent.dataURItoBlob(this.image.src);
-    return formData.append(propName, blob, this.image.name);
+  private appendImageToFormData(formData: FormData, propName: string, image: HTMLImageElement) {
+    let blob = ImageLoaderComponent.dataURItoBlob(image.src);
+    return formData.append(propName, blob, image.name);
   }
 
   private setUpCropper(image: HTMLImageElement) {

@@ -54,19 +54,19 @@ export class AddProductComponent implements OnInit {
   }
 
   submitDescriptionImages(productId: number){
-    let formData = this.imageLoader.getDescriptionImagesFormData("file[]")
+    let formData = this.imageLoader.getDescriptionImagesFormData("files");
+    return this.productService.updateImages(productId, formData);
   }
 
   submit() {
     if (!this.imageLoader.isEmpty()) {
-      this.productService.save(this.form.value)
-        .flatMap((product: Product) => this.submitImage(product.id))
-        .subscribe(
-          value => {
-          },
-          error => this.errorHandle(error),
-          () => this.reset()
-        );
+      this.productService.save(this.form.value).subscribe(
+        product => {
+          this.submitImage(product.id).subscribe(() => {},this.errorHandle);
+          this.submitDescriptionImages(product.id).subscribe(() => {},this.errorHandle);
+        },
+        error => this.errorHandle(error)
+      );
     }
     else {
       this.notify.errorNoImageMsg();

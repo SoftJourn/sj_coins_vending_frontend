@@ -28,4 +28,11 @@ export class ProductService extends CrudService<Product> {
     return this.httpService.post(url, file)
       .flatMap(response => Observable.empty())
   }
+
+  public updateImages(id: number, file: any): Observable<void> {
+    let url = `${this.getUrl()}/${id}/images`;
+
+    return this.httpService.post(url, file)
+      .flatMap(response => Observable.empty())
+  }
 }
