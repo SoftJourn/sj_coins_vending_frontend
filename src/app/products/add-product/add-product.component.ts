@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from "@angular/core";
-import {FormGroup, Validators, FormControl} from "@angular/forms";
+import {FormGroup, Validators, FormControl, NgForm} from "@angular/forms";
 import {Category} from "../../shared/entity/category";
 import {CategoryService} from "../../shared/services/category.service";
 import {Product} from "../../shared/entity/product";
@@ -7,7 +7,6 @@ import {ProductService} from "../../shared/services/product.service";
 import {ErrorDetail} from "../../shared/entity/error-detail";
 import {FormValidationStyles} from "../../shared/form-validation-styles";
 import {Router} from "@angular/router";
-import {ImageUploadService} from "../../shared/services/image-upload.service";
 import {UNSUPPORTED_MEDIA_TYPE} from "http-status-codes";
 import {NotificationsManager} from "../../shared/notifications.manager";
 import {ImageLoaderComponent} from "../../shared/image-loader/image-loader.component";
@@ -33,9 +32,6 @@ export class AddProductComponent implements OnInit {
   private _maxPriceInputLength = 5;
   private _maxNameInputLength = 50;
 
-
-  private _productDuplicateCode = 1062;
-
   constructor(private categoryService: CategoryService,
               private productService: ProductService,
               private notify: NotificationsManager,
@@ -48,12 +44,12 @@ export class AddProductComponent implements OnInit {
     this.findAllCategories();
   }
 
-  submitImage(productId: number) {
+  submitCoverImage(productId: number) {
     let formData = this.imageLoader.getImageFormData('file');
     return this.productService.updateImage(productId, formData);
   }
 
-  submitDescriptionImages(productId: number){
+  submitDescriptionImages(productId: number) {
     let formData = this.imageLoader.getDescriptionImagesFormData("files");
     return this.productService.updateImages(productId, formData);
   }
@@ -62,10 +58,11 @@ export class AddProductComponent implements OnInit {
     if (!this.imageLoader.isEmpty()) {
       this.productService.save(this.form.value).subscribe(
         product => {
-          this.submitImage(product.id).subscribe(() => {},this.errorHandle);
-          this.submitDescriptionImages(product.id).subscribe(() => {},this.errorHandle);
+          this.submitCoverImage(product.id)
+            .merge(this.submitDescriptionImages(product.id))
+            .subscribe(undefined, this.errorHandle, () => this.reset());
         },
-        error => this.errorHandle(error)
+        this.errorHandle
       );
     }
     else {
@@ -78,13 +75,14 @@ export class AddProductComponent implements OnInit {
   }
 
   private errorHandle(error) {
+    let _productDuplicateCode = 1052;
     try {
       let errorDetail = <ErrorDetail> error.json();
       if (error.status == UNSUPPORTED_MEDIA_TYPE) {
         this.notify.errorWrongFormatMsg();
       }
       else {
-        if (errorDetail.code == this._productDuplicateCode) {
+        if (errorDetail.code == _productDuplicateCode) {
           this.notify.errorProductDuplicateMsg();
         }
         else {
