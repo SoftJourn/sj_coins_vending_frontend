@@ -13,10 +13,10 @@
         <!--left column-->
         <app-product-form #productForm class="col-xl-6"></app-product-form>
         <!--right column-->
-        <app-image-loader  class="col-xl-6"></app-image-loader>
+        <app-image-loader #imageLoader class="col-xl-6"></app-image-loader>
         <div class="form-group row">
           <div class="col-sm-12 form-buttons-container">
-            <button class="btn btn-success" [disabled]="" type="submit">Submit</button>
+            <button class="btn btn-success" [disabled]="" type="submit" (click)="submit()">Submit</button>
             <button class="btn btn-secondary" type="button" (click)="reset()">Cancel</button>
           </div>
         </div>

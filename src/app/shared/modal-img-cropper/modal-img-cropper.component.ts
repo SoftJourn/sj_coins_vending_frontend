@@ -14,6 +14,7 @@ import {
 import {ImageCropperComponent, CropperSettings} from "ng2-img-cropper";
 import {NotificationsService} from "angular2-notifications/components";
 import {NotificationsManager} from "../notifications.manager";
+import {ImageLoaderComponent} from "../image-loader/image-loader.component";
 
 @Component({
     selector: 'app-modal-img-cropper',
@@ -37,7 +38,8 @@ export class ModalImgCropperComponent extends Type {
     cropperSettings: CropperSettings;
 
     @ViewChild('cropper') cropper: ImageCropperComponent;
-
+    @Input() maxImageSize = 1024 * 256;
+  //TODO reorganize position
     @Input() closable = true;
     @Input() visible: boolean;
     @Output() visibleChange: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -80,11 +82,14 @@ export class ModalImgCropperComponent extends Type {
 
 
   setImageData() {
-          let resultImg = new Image();
-          resultImg.src = this.data.image;
-          resultImg.name = this.cropImage.name;
-          this.onCrop.emit(resultImg);
-        this.close();
+    let resultImg = new Image();
+    resultImg.src = this.data.image;
+    resultImg.name = this.cropImage.name;
+    if (this.hasValidSize(resultImg))
+      this.onCrop.emit(resultImg);
+    else
+      this.notify.errorLargeImgSizeMsg();
+    this.close();
   }
 
     close() {
@@ -92,4 +97,35 @@ export class ModalImgCropperComponent extends Type {
         this.visibleChange.emit(this.visible);
     }
 
+  /**
+   * This method return blob image in case of valid data:URL param
+   * data:[<data type>][;base64],<data>
+   * @throws Error in case not valid data:URL
+   * @param dataURI
+   * @returns {Blob}
+   */
+  static dataURItoBlob(dataURI) {
+    let splitter = ',';
+    if(this.notValidDataURI(dataURI)){
+      let message = "Data URI is not valid. Required format is data:[<data type>][;base64],<data>";
+      throw Error(message);
+    }
+    let binary = atob(dataURI.split(splitter)[1]);
+    let array = [];
+    for (let i = 0; i < binary.length; i++) {
+      array.push(binary.charCodeAt(i));
+    }
+    return new Blob([new Uint8Array(array)], {type: 'image/jpeg'});
+  }
+
+  private static notValidDataURI(dataURI): boolean {
+    let regex = /^data:(.*);base64,/i;
+    let match = dataURI.match(regex);
+    return !match;
+  }
+
+  private hasValidSize(image: HTMLImageElement): boolean {
+    let blob = ModalImgCropperComponent.dataURItoBlob(image.src);
+    return blob.size <= this.maxImageSize;
+  }
 }

@@ -11,7 +11,9 @@ import {NotificationsManager} from "../notifications.manager";
 export class ImageLoaderComponent implements OnInit {
 
 
+  //TODO use @ViewChildren. Make research
   imageComponents: UploadItemComponent[];
+  //TODO rename image to cover
   image: HTMLImageElement;
 
   @ViewChild('imgList', {read: ViewContainerRef}) imgList;
@@ -20,17 +22,8 @@ export class ImageLoaderComponent implements OnInit {
   height: number;
   width: number;
 
-  private _maxImageSize = 1024 * 256;
   private _defaultSource = "/assets/images/default-product-350x350.jpg";
 
-  private static dataURItoBlob(dataURI) {
-    let binary = atob(dataURI.split(',')[1]);
-    let array = [];
-    for (let i = 0; i < binary.length; i++) {
-      array.push(binary.charCodeAt(i));
-    }
-    return new Blob([new Uint8Array(array)], {type: 'image/jpeg'});
-  }
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver,
               private notify: NotificationsManager) {
@@ -42,11 +35,10 @@ export class ImageLoaderComponent implements OnInit {
     this.imageComponents = [];
     this.setDefaultImage();
     this.cropper.visible = false;
-    this.cropper.onCrop.subscribe((image) => this.handleCropImage(image))
+    this.cropper.onCrop.subscribe((image) => this.addImageItem(image))
   }
 
   addImageItem(image: HTMLImageElement) {
-    this.hasValidSize(image);
     this.image = image;
     const factory = this.componentFactoryResolver.resolveComponentFactory(UploadItemComponent);
     const ref = this.imgList.createComponent(factory);
@@ -56,7 +48,7 @@ export class ImageLoaderComponent implements OnInit {
     ref.instance.onClick.subscribe((next) => this.image = ref.instance.image);
     ref.changeDetectorRef.detectChanges();
   }
-
+  //TODO rename on file load
   acceptFile($event) {
     let imageFile = $event.dataTransfer ? $event.dataTransfer.files[0] : $event.target.files[0];
     let reader: FileReader = new FileReader();
@@ -90,8 +82,13 @@ export class ImageLoaderComponent implements OnInit {
     return formData;
   }
 
+  //TODO delete image item components
+  reset() {
+
+  }
+
   private appendImageToFormData(formData: FormData, propName: string, image: HTMLImageElement) {
-    let blob = ImageLoaderComponent.dataURItoBlob(image.src);
+    let blob = ModalImgCropperComponent.dataURItoBlob(image.src);
     return formData.append(propName, blob, image.name);
   }
 
@@ -117,15 +114,4 @@ export class ImageLoaderComponent implements OnInit {
     ref.destroy();
   }
 
-  private hasValidSize(image: HTMLImageElement): boolean {
-    let blob = ImageLoaderComponent.dataURItoBlob(image.src);
-    return blob.size <= this._maxImageSize;
-  }
-
-  private handleCropImage(image: any) {
-    if (this.hasValidSize(image))
-      this.addImageItem(image);
-    else
-      this.notify.errorLargeImgSizeMsg();
-  }
 }

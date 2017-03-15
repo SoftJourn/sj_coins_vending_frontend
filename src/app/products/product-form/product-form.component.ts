@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, OnInit, Input} from "@angular/core";
 import {Category} from "../../shared/entity/category";
 import {FormGroup, Validators, FormBuilder} from "@angular/forms";
 import {FormValidationStyles} from "../../shared/form-validation-styles";
@@ -13,9 +13,8 @@ import {Product} from "../../shared/entity/product";
 })
 export class ProductFormComponent implements OnInit {
 
-  categories: Category[];
-
-  product: Product;
+  @Input() categories: Category[];
+  @Input() product: Product;
 
   form: FormGroup;
   formStyles: FormValidationStyles;
@@ -36,7 +35,6 @@ export class ProductFormComponent implements OnInit {
     this.product = new Product();
     this.form = this.buildForm();
     this.formStyles = new FormValidationStyles(this.form);
-    // this.findAllCategories();
   }
 
   buildForm(): FormGroup {
@@ -58,29 +56,25 @@ export class ProductFormComponent implements OnInit {
     return this.form.valid;
   }
 
-  private findAllCategories() {
-    this.categoryService.findAll().subscribe(
-      categories => {
-        this.categories = categories;
-        this.product.category = this.product.category?this.product.category: categories[0];
-      },
-      error => this.notify.errorDetailedMsgOrConsoleLog(error)
-    );
+  reset(): void {
+    let emptyProduct = new Product();
+    if (this.categories.length > 0)
+      emptyProduct.category = this.categories[0];
+    this.form.reset(emptyProduct);
+    //TODO check if need this message
+    this.notify.createSuccessfulMsg();
   }
 
   setProduct(product: Product, categories: Category[]) {
     this.product = product;
     this.categories = categories;
 
-  //  this.setCategory(this.product.category);
+    let selected = this.categories.filter(category => ProductFormComponent.isEquals(category, product.category));
+    if (selected)
+      this.product.category = selected[0];
   }
 
-  private setCategory(category: Category) {
-    this.product.category = this.categories
-      .filter(value => this.isEquals(value, category))[0]
-  }
-
-  private  isEquals(category1: Category, category2: Category): boolean {
+  private static isEquals(category1: Category, category2: Category): boolean {
     return category1.name == category1.name && category2.id == category2.id;
   }
 }

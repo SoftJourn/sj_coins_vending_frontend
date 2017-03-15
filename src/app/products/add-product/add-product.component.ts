@@ -1,15 +1,14 @@
 import {Component, OnInit, ViewChild} from "@angular/core";
-import {FormGroup, Validators, FormControl, NgForm} from "@angular/forms";
 import {Category} from "../../shared/entity/category";
 import {CategoryService} from "../../shared/services/category.service";
 import {Product} from "../../shared/entity/product";
 import {ProductService} from "../../shared/services/product.service";
 import {ErrorDetail} from "../../shared/entity/error-detail";
-import {FormValidationStyles} from "../../shared/form-validation-styles";
 import {Router} from "@angular/router";
 import {UNSUPPORTED_MEDIA_TYPE} from "http-status-codes";
 import {NotificationsManager} from "../../shared/notifications.manager";
 import {ImageLoaderComponent} from "../../shared/image-loader/image-loader.component";
+import {ProductFormComponent} from "../product-form/product-form.component";
 
 @Component({
   selector: 'add-product',
@@ -18,19 +17,13 @@ import {ImageLoaderComponent} from "../../shared/image-loader/image-loader.compo
 })
 export class AddProductComponent implements OnInit {
 
-  @ViewChild("imageLoader") imageLoader: ImageLoaderComponent;
+  @ViewChild("imageLoader") imageLoaderComponent: ImageLoaderComponent;
+  @ViewChild("productForm") formComponent: ProductFormComponent;
 
-  categories: Category[];
+  categories: Category[] = [];
   product: Product;
-  form: FormGroup;
-  formStyles: FormValidationStyles;
 
   private _mainProductURI = '/main/products';
-  //Validators parameters
-  private _digitsPattern = '\\d+';
-  private _wordsWithNumbersPattern = '^[a-zA-Z0-9\u0400-\u04FF]+[ a-zA-Z0-9\u0400-\u04FF,-]*[a-zA-Z0-9\u0400-\u04FF,-]+';
-  private _maxPriceInputLength = 5;
-  private _maxNameInputLength = 50;
 
   constructor(private categoryService: CategoryService,
               private productService: ProductService,
@@ -40,23 +33,23 @@ export class AddProductComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.buildForm();
-    this.findAllCategories();
+    this.initFromComponent();
   }
 
   submitCoverImage(productId: number) {
-    let formData = this.imageLoader.getImageFormData('file');
+    let formData = this.imageLoaderComponent.getImageFormData('file');
     return this.productService.updateImage(productId, formData);
   }
 
   submitDescriptionImages(productId: number) {
-    let formData = this.imageLoader.getDescriptionImagesFormData("files");
+    let formData = this.imageLoaderComponent.getDescriptionImagesFormData("files");
     return this.productService.updateImages(productId, formData);
   }
 
   submit() {
-    if (!this.imageLoader.isEmpty()) {
-      this.productService.save(this.form.value).subscribe(
+    if (!this.imageLoaderComponent.isEmpty()) {
+      let formData = this.formComponent.form.value;
+      this.productService.save(formData).subscribe(
         product => {
           this.submitCoverImage(product.id)
             .merge(this.submitDescriptionImages(product.id))
@@ -72,6 +65,16 @@ export class AddProductComponent implements OnInit {
 
   cancel(): void {
     this.router.navigate([this._mainProductURI]);
+  }
+
+  getCardOutlineClass(){
+    if(this.formComponent && this.formComponent.formStyles)
+      return this.formComponent.formStyles.getCardOutlineClass();
+  }
+
+  isValid(): boolean{
+    return this.formComponent && this.imageLoaderComponent
+      && this.formComponent.isValid() && !this.imageLoaderComponent.isEmpty();
   }
 
   private errorHandle(error) {
@@ -94,46 +97,24 @@ export class AddProductComponent implements OnInit {
     }
   }
 
-  private reset(): void {
-    this.form.reset({
-      name: '',
-      price: '',
-      description: '',
-      category: this.categories[0]
-    });
-    this.notify.createSuccessfulMsg();
-  }
-
-  private buildForm(): void {
-    this.form = new FormGroup({
-      name: new FormControl('', [Validators.required,
-        Validators.maxLength(this._maxNameInputLength),
-        Validators.pattern(this._wordsWithNumbersPattern)
-      ]),
-      price: new FormControl('', [Validators.required,
-        Validators.maxLength(this._maxPriceInputLength),
-        Validators.pattern(this._digitsPattern)]),
-      description: new FormControl(''),
-      category: new FormControl('', Validators.required)
-    });
-
-    this.formStyles = new FormValidationStyles(this.form);
-  }
-
-  private findAllCategories() {
+  private initFromComponent() {
     this.categoryService.findAll().subscribe(
-      categories => {
-        this.categories = categories;
-        this.form.get('category').patchValue(categories[0]);
-      },
-      error => {
-        try {
-          this.notify.errorDetailedMsg(error.json());
-        } catch (err) {
-          this.notify.logError(err);
-        }
-      });
+      categories => this.setCategoriesAndEmptyProduct(categories),
+      error => this.notify.errorDetailedMsgOrConsoleLog(error)
+    );
   }
 
+  private setCategoriesAndEmptyProduct(categories) {
+    this.categories = categories;
+    this.product = new Product();
+    if (this.categories.length > 0)
+      this.product.category = this.categories[0];
+  }
 
+  private reset() {
+    if(this.formComponent)
+      this.formComponent.reset();
+    if(this.imageLoaderComponent)
+      this.imageLoaderComponent.reset()
+  }
 }

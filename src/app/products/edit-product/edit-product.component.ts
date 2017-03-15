@@ -10,6 +10,8 @@ import {NotificationsManager} from "../../shared/notifications.manager";
 import {UNSUPPORTED_MEDIA_TYPE} from "http-status-codes";
 import {ProductFormComponent} from "../product-form/product-form.component";
 import {Category} from "../../shared/entity/category";
+import {ImageLoaderComponent} from "../../shared/image-loader/image-loader.component";
+import {AppProperties} from "../../shared/app.properties";
 
 @Component({
   selector: 'app-edit-product',
@@ -19,15 +21,17 @@ import {Category} from "../../shared/entity/category";
 export class EditProductComponent implements OnInit {
 
   @ViewChild("productForm") formComponent: ProductFormComponent;
+  @ViewChild("imageLoader") imageLoaderComponent: ImageLoaderComponent;
 
   product: Product;
 
 
   private subscription: Subscription;
   private productIndex: number;
+
   private _productUrl = '/main/products';
 
-  private categories:Category[] = [];
+  private categories: Category[] = [];
 
 
   constructor(private categoryService: CategoryService,
@@ -44,35 +48,65 @@ export class EditProductComponent implements OnInit {
     this.subscription = this.route.params.subscribe(
       (params: any) => {
         this.productIndex = +params['id'];
-
-        let productSource = this.productService.findOne(this.productIndex).map( product =>{
-          this.product = product;
-          return {product:product, categories: this.categories }
-        });
-        let categorySource = this.categoryService.findAll().map( categories => {
-          this.categories = categories;
-          return {product:this.product, categories: categories }
-        });
-
-        let finaleSource = productSource.merge(categorySource);
-
-        finaleSource.subscribe(obj => {
-          if(obj.product && obj.categories &&  obj.categories.length)
-            this.formComponent.setProduct(obj.product, obj.categories)
-        });
-
-        // .subscribe(
-        //   product => {
-        //     this.product = product;
-        //     this.formComponent.setProduct(product);
-        //     // console.log(this.imageFile);
-        //   },
-        //   this.notify.errorDetailedMsgOrConsoleLog);errorDetailedMsgOrConsoleLog
+        let finaleSource = this.formFinalSource(this.productIndex);
+        finaleSource.subscribe((obj) => this.setData(obj));
       }
     );
   }
 
+  private formFinalSource(productId: number) {
+    let productSource = this.productService.findOne(productId).map(product => {
+      this.product = product;
+      this.fillImageComponent(product);
+      return {product: product, categories: this.categories}
+    });
+    let categorySource = this.categoryService.findAll().map(categories => {
+      this.categories = categories;
+      return {product: this.product, categories: categories}
+    });
+    return productSource.merge(categorySource);
+  }
+
+  private fillImageComponent(product: Product) {
+    let urls = product.imageUrls;
+    if (urls && urls.length) {
+      for (let i = 0; i < urls.length; i++) {
+        let image = new Image();
+        image.src = EditProductComponent.getAbsolutePath(urls[i]);
+        image.name = "image" + i;
+        this.imageLoaderComponent.addImageItem(image);
+      }
+    }
+  }
+
+  private static getAbsolutePath(relativePath: string): string {
+    return AppProperties.API_VENDING_ENDPOINT + '/' + relativePath;
+  }
+
+  private setData(obj) {
+    if (obj.product && obj.categories && obj.categories.length) {
+      this.formComponent.setProduct(obj.product, obj.categories)
+    }
+  }
+
   submit() {
+
+    if (!this.imageLoaderComponent.isEmpty()) {
+      let formData = this.formComponent.form.value;
+      this.productService.update(this.productIndex, formData).subscribe(
+        product => {
+          this.submitCoverImage(product.id)
+            .merge(this.submitDescriptionImages(product.id))
+            .subscribe(undefined, this.errorHandle, () => this.reset());
+        },
+        this.errorHandle
+      );
+    }
+    else {
+      this.notify.errorNoImageMsg();
+    }
+
+
     // if (this.imageUpload.imageName != null && this.imageUpload.imageName != '') {
     //   this.productService.update(this.productIndex, this.form.value)
     //     .flatMap((product: Product) => {
@@ -103,6 +137,16 @@ export class EditProductComponent implements OnInit {
     // else {
     //   this.notify.errorNoImageMsg();
     // }
+  }
+
+  submitCoverImage(productId: number) {
+    let formData = this.imageLoaderComponent.getImageFormData('file');
+    return this.productService.updateImage(productId, formData);
+  }
+
+  submitDescriptionImages(productId: number) {
+    let formData = this.imageLoaderComponent.getDescriptionImagesFormData("files");
+    return this.productService.updateImages(productId, formData);
   }
 
   private errorHandle(error) {

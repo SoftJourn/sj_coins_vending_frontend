@@ -28,8 +28,8 @@
   <div class="form-group row">
     <label for="product-category" class="col-sm-2 col-form-label">Category</label>
     <div class="col-sm-10">
-      <select id="product-category" class="form-control" formControlName="category"  [(ngModel)]="product.category">
-        <option *ngFor="let category of categories;" [ngValue]="category.id">
+      <select id="product-category" class="form-control" formControlName="category" [(ngModel)]="product.category">
+        <option *ngFor="let category of categories;" [ngValue]="category">
           {{category?.name}}
         </option>
       </select>
@@ -38,9 +38,8 @@
   <div class="form-group row">
     <label for="product-description" class="col-sm-2 col-form-label">Description</label>
     <div class="col-sm-10">
-              <textarea class="form-control" id="product-description" rows="3"
+              <textarea class="form-control" id="product-description" rows="3" [(ngModel)]="product.description"
                         placeholder="Enter description" formControlName="description"></textarea>
     </div>
   </div>
-  <button (click)="isValid()">click</button>
 </form>

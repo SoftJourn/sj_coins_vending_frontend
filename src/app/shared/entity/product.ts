@@ -6,7 +6,7 @@ export class Product {
               public price : number = 0,
               public name : string = '',
               public imageUrl : string = '',
-              public imageUrls : string = '',
+              public imageUrls : Array<string> = [],
               public description : string = '',
               public category : Category = new Category()) {
   }
