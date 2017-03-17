@@ -1,0 +1,45 @@
+<form (ngSubmit)="submit()" [formGroup]="form" enctype="multipart/form-data">
+  <div class="form-group row" [ngClass]="formStyles.getValidationClass('name')">
+    <label for="product-name" class="col-sm-2 col-form-label">Name</label>
+    <div class="col-sm-10">
+      <input class="form-control" type="text" placeholder="Enter name" id="product-name"
+             formControlName="name" [(ngModel)]="product.name"
+             [ngClass]="formStyles.getValidationIcon('name')">
+
+      <label [hidden]="formStyles.isValidOrPristine('name')" class="form-control-feedback pull-right">
+        Enter valid name!
+      </label>
+    </div>
+  </div>
+  <div class="form-group row" [ngClass]="formStyles.getValidationClass('price')">
+    <label for="product-price" class="col-sm-2 col-form-label">Price</label>
+    <div class="col-sm-10">
+      <div class="input-group">
+        <div class="input-group-addon"><i class="fa fa-bitcoin fa-lg"></i></div>
+        <input class="form-control" type="number" placeholder="Enter price" id="product-price"
+               formControlName="price" [(ngModel)]="product.price" [ngClass]="formStyles.getValidationIcon('price')">
+      </div>
+      <label [hidden]="formStyles.isValidOrPristine('price')"
+             class="form-control-feedback pull-right">
+        Enter valid price!
+      </label>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="product-category" class="col-sm-2 col-form-label">Category</label>
+    <div class="col-sm-10">
+      <select id="product-category" class="form-control" formControlName="category" [(ngModel)]="product.category">
+        <option *ngFor="let category of categories;" [ngValue]="category">
+          {{category?.name}}
+        </option>
+      </select>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="product-description" class="col-sm-2 col-form-label">Description</label>
+    <div class="col-sm-10">
+              <textarea class="form-control" id="product-description" rows="3" [(ngModel)]="product.description"
+                        placeholder="Enter description" formControlName="description"></textarea>
+    </div>
+  </div>
+</form>

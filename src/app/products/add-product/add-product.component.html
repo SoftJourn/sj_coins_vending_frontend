@@ -8,90 +8,23 @@
 <hr>
 <div class="container-fluid">
   <div class="col-xs-12 col-lg-12">
-    <div class="card card-block" [ngClass]="formStyles.getCardOutlineClass()">
-      <form (ngSubmit)="submit()" [formGroup]="form" enctype="multipart/form-data">
+    <div class="card card-block" [ngClass]="getCardOutlineClass()">
         <div class="row">
           <!--left column-->
-          <div class="col-xl-6">
-            <div class="form-group row" [ngClass]="formStyles.getValidationClass('name')">
-              <label for="product-name" class="col-sm-2 col-form-label">Name</label>
-              <div class="col-sm-10">
-                <input class="form-control" type="text" placeholder="Enter name" id="product-name"
-                       formControlName="name"
-                       [ngClass]="formStyles.getValidationIcon('name')">
-                <label [hidden]="formStyles.isValidOrPristine('name')"
-                       class="form-control-feedback pull-right">Enter
-                  valid
-                  name!</label>
-              </div>
-            </div>
-            <div class="form-group row" [ngClass]="formStyles.getValidationClass('price')">
-              <label for="product-price" class="col-sm-2 col-form-label">Price</label>
-              <div class="col-sm-10">
-                <div class="input-group">
-                  <div class="input-group-addon"><i class="fa fa-bitcoin fa-lg"></i></div>
-                  <input class="form-control" type="text" placeholder="Enter price" id="product-price"
-                         formControlName="price" [ngClass]="formStyles.getValidationIcon('price')">
-                </div>
-                <label [hidden]="formStyles.isValidOrPristine('price')"
-                       class="form-control-feedback pull-right">Enter
-                  valid
-                  price!</label>
-              </div>
-            </div>
-            <div class="form-group row">
-              <label for="product-category" class="col-sm-2 col-form-label">Category</label>
-              <div class="col-sm-10">
-                <select id="product-category" class="form-control" formControlName="category">
-                  <option *ngFor="let category of categories;" [ngValue]="category">
-                    {{category?.name}}
-                  </option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group row">
-              <label for="product-description" class="col-sm-2 col-form-label">Description</label>
-              <div class="col-sm-10">
-              <textarea class="form-control" id="product-description" rows="3"
-                        placeholder="Enter description" formControlName="description"></textarea>
-              </div>
-            </div>
-          </div>
-          <!--right column-->
-          <div class="col-xl-6">
-            <div align="center" class="form-group row">
-              <img height="205px" width="205px"
-                   [src]="imageUpload.imageSrc"
-                   [class.loaded]="imageUpload.imageLoaded">
-            </div>
-            <div class="form-group row">
-              <div class="input-group col-xs-12">
-                <span class="input-group-addon"><i class="fa fa-picture-o fa-lg"></i></span>
-                <input type="text" class="form-control" readonly [value]="imageUpload.imageName">
-                <label class="input-group-btn">
-                    <span class="btn btn-info">
-                      <i class="fa fa-search btn-icon"></i>Browse
-                        <input type="file" style="display: none;" (change)=" handleInputChange($event)"
-                               accept="image/*">
-                    </span>
-                </label>
-              </div>
-            </div>
-            <div class="form-group row">
-              <div class="col-sm-12 form-buttons-container">
-                <button class="btn btn-success" [disabled]="!form.valid" type="submit">Submit</button>
-                <button class="btn btn-secondary" type="button" (click)="reset()">Cancel</button>
-              </div>
-            </div>
+          <app-product-form #productForm [product]="product" [categories]="categories" class="col-xl-6"></app-product-form>
+          <!--image uploader-->
+          <app-image-loader #imageLoader class="col-xl-6"></app-image-loader>
+        </div>
+        <div class="form-group row">
+          <div class="col-sm-12 form-buttons-container">
+            <button class="btn btn-success" [disabled]="!isValid()" type="submit" (click)="submit()">
+              Submit
+            </button>
+            <button class="btn btn-secondary" type="button" (click)="cancel()">
+              Cancel
+            </button>
           </div>
         </div>
-      </form>
-
-      <app-modal-img-cropper [(visible)]="showDialog" [cropper_img]="imagForCropper"
-                             (setImageForSave)="setDataForImage($event)">
-
-      </app-modal-img-cropper>
-
     </div>
   </div>
 </div>

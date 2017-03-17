@@ -1,161 +1,120 @@
-import { Component, OnInit } from "@angular/core";
-import { FormGroup, Validators, FormControl } from "@angular/forms";
-import { Category } from "../../shared/entity/category";
-import { CategoryService } from "../../shared/services/category.service";
-import { Product } from "../../shared/entity/product";
-import { ProductService } from "../../shared/services/product.service";
-import { ErrorDetail } from "../../shared/entity/error-detail";
-import { NotificationsService } from "angular2-notifications/components";
-import { FormValidationStyles } from "../../shared/form-validation-styles";
-import { Router } from "@angular/router";
-import { ImageUploadService } from "../../shared/services/image-upload.service";
+import {Component, OnInit, ViewChild} from "@angular/core";
+import {Category} from "../../shared/entity/category";
+import {CategoryService} from "../../shared/services/category.service";
+import {Product} from "../../shared/entity/product";
+import {ProductService} from "../../shared/services/product.service";
+import {ErrorDetail} from "../../shared/entity/error-detail";
+import {Router} from "@angular/router";
+import {UNSUPPORTED_MEDIA_TYPE} from "http-status-codes";
+import {NotificationsManager} from "../../shared/notifications.manager";
+import {ImageLoaderComponent} from "../../shared/image-loader/image-loader.component";
+import {ProductFormComponent} from "../product-form/product-form.component";
 
 @Component({
-    selector: 'add-product',
-    templateUrl: './add-product.component.html',
-    styleUrls: ['./add-product.component.scss']
+  selector: 'add-product',
+  templateUrl: './add-product.component.html',
+  styleUrls: ['./add-product.component.scss']
 })
 export class AddProductComponent implements OnInit {
 
-    public categories: Category[];
-    public product: Product;
-    form: FormGroup;
-    formStyles: FormValidationStyles;
-    public imagForCropper = null;
-    private imgName: string = null;
-    showDialog = false;
+  @ViewChild("imageLoader") imageLoaderComponent: ImageLoaderComponent;
+  @ViewChild("productForm") formComponent: ProductFormComponent;
 
-    constructor(private categoryService: CategoryService,
-                private productService: ProductService,
-                private notificationService: NotificationsService,
-                private router: Router,
-                private imageUpload: ImageUploadService) {
+  categories: Category[] = [];
+  product: Product;
 
-        this.imageUpload.imageName = null;
+  private _mainProductURI = '/main/products';
+
+  constructor(private categoryService: CategoryService,
+              private productService: ProductService,
+              private notify: NotificationsManager,
+              private router: Router) {
+
+  }
+
+  ngOnInit() {
+    this.initFromComponent();
+  }
+
+  submitCoverImage(productId: number) {
+    let formData = this.imageLoaderComponent.getImageFormData('file');
+    return this.productService.updateImage(productId, formData);
+  }
+
+  submitDescriptionImages(productId: number) {
+    let formData = this.imageLoaderComponent.getDescriptionImagesFormData("files");
+    return this.productService.updateImages(productId, formData);
+  }
+
+  submit() {
+    if (!this.imageLoaderComponent.isEmpty()) {
+      let formData = this.formComponent.form.value;
+      this.productService.save(formData).subscribe(
+        product => {
+          this.submitCoverImage(product.id)
+            .merge(this.submitDescriptionImages(product.id))
+            .subscribe(undefined, this.errorHandle, () => this.reset());
+        },
+        error => this.errorHandle(error)
+      )
     }
-
-    ngOnInit() {
-        this.imageUpload.imageSrc = this.imageUpload.defaultImageSrc;
-        this.buildForm();
-        this.categoryService.findAll().subscribe(
-            categories => {
-                this.categories = categories;
-                this.form.get('category').patchValue(categories[0]);
-            },
-          error => {
-            try {
-              let errorDetail = <ErrorDetail> error.json();
-              if (!errorDetail.detail)
-              //noinspection ExceptionCaughtLocallyJS
-                throw errorDetail;
-              this.notificationService.error('Error', errorDetail.detail);
-            } catch (err) {
-              console.log(err);
-              this.notificationService.error('Error', 'Error appeared, watch logs!');
-            }
-          });
+    else {
+      this.notify.errorNoImageMsg();
     }
+  }
 
-    private buildForm(): void {
-        this.form = new FormGroup({
-            name: new FormControl('', [Validators.required,
-                Validators.maxLength(50),
-                Validators.pattern('^[a-zA-Z0-9\u0400-\u04FF]+[ a-zA-Z0-9\u0400-\u04FF,-]*[a-zA-Z0-9\u0400-\u04FF,-]+')
-            ]),
-            price: new FormControl('', [Validators.required,
-                Validators.maxLength(5),
-                Validators.pattern('\\d+')]),
-            description: new FormControl(''),
-            category: new FormControl('', Validators.required)
-        });
+  cancel(): void {
+    this.router.navigate([this._mainProductURI]);
+  }
 
-        this.formStyles = new FormValidationStyles(this.form);
-    }
+  getCardOutlineClass(){
+    if(this.formComponent && this.formComponent.formStyles)
+      return this.formComponent.formStyles.getCardOutlineClass();
+  }
 
-    submit() {
-        if (this.imageUpload.imageName != null && this.imageUpload.imageName != '') {
-            this.productService.save(this.form.value)
-                .flatMap((product: Product) => {
-                    this.notificationService.success('Create', 'Product has been created successfully');
-                    var blob = this.imageUpload.dataURItoBlob(this.imageUpload.imageSrc);
-                    this.imageUpload.formData = new FormData();
-                    this.imageUpload.formData.append('file', blob, this.imageUpload.imageFile.name);
-                    return this.productService.updateImage(product.id, this.imageUpload.formData);
-                })
-                .subscribe(
-                    () => {
-                    },
-                  error => {
-                    try {
-                      let errorDetail = <ErrorDetail> error.json();
-                      if (error.status == 415) {
-                        this.notificationService.error('Error', 'This file format not supported!');
-                      }
-                      else {
-                        if (errorDetail.code == 1062) {
-                          this.notificationService.error('Error', 'Such product name exists!');
-                        }
-                        else {
-                          if (!errorDetail.detail)
-                          //noinspection ExceptionCaughtLocallyJS
-                            throw errorDetail;
-                          this.notificationService.error('Error', errorDetail.detail);
-                        }
-                      }
-                    } catch (err) {
-                      console.log(err);
-                      this.notificationService.error('Error', 'Error appeared, watch logs!');
-                    }
-                  },
-                    () => {
-                        this.imageUpload.cleanImageData();
-                        this.imageUpload.imageSrc = this.imageUpload.defaultImageSrc;
-                        this.form.reset({
-                            name: '',
-                            price: '',
-                            description: '',
-                            category: this.categories[0]
-                        });
-                    }
-                );
+  isValid(): boolean{
+    return this.formComponent && this.imageLoaderComponent
+      && this.formComponent.isValid() && !this.imageLoaderComponent.isEmpty();
+  }
+
+  private errorHandle(error) {
+    let _productDuplicateCode = 1052;
+    try {
+      let errorDetail = <ErrorDetail> error.json();
+      if (error.status == UNSUPPORTED_MEDIA_TYPE) {
+        this.notify.errorWrongFormatMsg();
+      }
+      else {
+        if (errorDetail.code == _productDuplicateCode) {
+          this.notify.errorProductDuplicateMsg();
         }
         else {
-            this.notificationService.error('Error', 'Please put product image!');
+          this.notify.errorDetailedMsg(error.json());
         }
+      }
+    } catch (err) {
+      this.notify.logError(err);
     }
+  }
 
+  private initFromComponent() {
+    this.categoryService.findAll().subscribe(
+      categories => this.setCategoriesAndEmptyProduct(categories),
+      error => this.notify.errorDetailedMsgOrConsoleLog(error)
+    );
+  }
 
-    public reset(): void {
-        this.router.navigate(['/main/products']);
-    }
+  private setCategoriesAndEmptyProduct(categories) {
+    this.categories = categories;
+    this.product = new Product();
+    if (this.categories.length > 0)
+      this.product.category = this.categories[0];
+  }
 
-
-    public setDataForImage(value: string) {
-        this.imageUpload.handleImageLoad();
-        this.imageUpload.imageSrc = value;
-        this.imageUpload.imageName = this.imgName;
-    }
-
-    public handleInputChange($event) {
-        this.imageUpload.fileChangeListener($event).subscribe(
-            (img) => {
-                this.imagForCropper = img.src;
-                this.imgName = img.name;
-                this.showDialog = !this.showDialog;
-            },
-          error => {
-            try {
-              let errorDetail = <ErrorDetail> error.json();
-              if (!errorDetail.detail)
-              //noinspection ExceptionCaughtLocallyJS
-                throw errorDetail;
-              this.notificationService.error('Error', errorDetail.detail);
-            } catch (err) {
-              console.log(err);
-              this.notificationService.error('Error', 'Error appeared, watch logs!');
-            }
-          }
-        );
-
-    };
+  private reset() {
+    if(this.formComponent)
+      this.formComponent.reset();
+    if(this.imageLoaderComponent)
+      this.imageLoaderComponent.reset()
+  }
 }

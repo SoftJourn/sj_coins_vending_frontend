@@ -1,6 +1,7 @@
 export class AppProperties {
-  static API_VENDING_ENDPOINT = 'https://sjcoins-testing.softjourn.if.ua/vending/v1';
+  static API_VENDING_ENDPOINT = 'http://192.168.102.45:8222/v1';//'https://sjcoins-testing.softjourn.if.ua/vending/v1';//
   static API_COINS_ENDPOINT = 'https://sjcoins-testing.softjourn.if.ua/coins/api/v1';
+  // static AUTH_SERVER = 'http://localhost:8111';//'http://localhost:8111';//
   static AUTH_SERVER = 'https://sjcoins-testing.softjourn.if.ua/auth';
   // static API_VENDING_ENDPOINT = 'https://vending.softjourn.if.ua/api/vending/v1';
   // static API_COINS_ENDPOINT = 'https://vending.softjourn.if.ua/api/coins/api/v1';

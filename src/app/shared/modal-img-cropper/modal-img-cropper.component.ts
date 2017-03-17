@@ -1,11 +1,20 @@
 import {
-    Component, Input, Output, EventEmitter,
-    trigger, state, style, animate, transition, ViewChild, Type,
-    AnimationTransitionEvent
-} from '@angular/core';
-import {ImageCropperComponent, CropperSettings, Bounds} from 'ng2-img-cropper';
-import {ImageUploadService} from "../../shared/services/image-upload.service";
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  trigger,
+  style,
+  animate,
+  transition,
+  ViewChild,
+  Type,
+  AnimationTransitionEvent
+} from "@angular/core";
+import {ImageCropperComponent, CropperSettings} from "ng2-img-cropper";
 import {NotificationsService} from "angular2-notifications/components";
+import {NotificationsManager} from "../notifications.manager";
+import {ImageLoaderComponent} from "../image-loader/image-loader.component";
 
 @Component({
     selector: 'app-modal-img-cropper',
@@ -29,17 +38,18 @@ export class ModalImgCropperComponent extends Type {
     cropperSettings: CropperSettings;
 
     @ViewChild('cropper') cropper: ImageCropperComponent;
-
+    @Input() maxImageSize = 1024 * 256;
+  //TODO reorganize position
     @Input() closable = true;
     @Input() visible: boolean;
     @Output() visibleChange: EventEmitter<boolean> = new EventEmitter<boolean>();
-    @Output() setImageForSave: EventEmitter<any> = new EventEmitter;
-    @Input() cropper_img;
+    @Output() onCrop: EventEmitter<HTMLImageElement> = new EventEmitter<HTMLImageElement>();
+    @Input() cropImage: HTMLImageElement;
 
-    constructor(private imageUpload: ImageUploadService, private notificationService: NotificationsService) {
+  constructor(private notify: NotificationsManager) {
 
         super();
-        var screenWidth = window.screen.availWidth;
+        let screenWidth = window.screen.availWidth;
 
         this.cropperSettings = new CropperSettings();
         if (screenWidth < 768) {
@@ -65,30 +75,58 @@ export class ModalImgCropperComponent extends Type {
     }
 
     animationDone(event: AnimationTransitionEvent) {
-        let image = new Image();
-        image.src = this.cropper_img;
-        if (this.cropper_img && this.cropper) {
-            this.cropper.setImage(image);
+        if (this.cropImage && this.cropper) {
+            this.cropper.setImage(this.cropImage);
         }
     }
 
-    setImageData() {
-        // check image size
-        let blob = this.imageUpload.dataURItoBlob(this.data.image);
-        if (blob.size > 1024 * 256) {
-            this.notificationService.error('Error', 'This image size is too big!');
-            this.close();
-        } else {
-            this.setImageForSave.emit(this.data.image);
-            let image = new Image();
-            image.src = this.data.image;
-            this.close();
-        }
-    }
+
+  setImageData() {
+    let resultImg = new Image();
+    resultImg.src = this.data.image;
+    resultImg.name = this.cropImage.name;
+    if (this.hasValidSize(resultImg))
+      this.onCrop.emit(resultImg);
+    else
+      this.notify.errorLargeImgSizeMsg();
+    this.close();
+  }
 
     close() {
         this.visible = false;
         this.visibleChange.emit(this.visible);
     }
 
+  /**
+   * This method return blob image in case of valid data:URL param
+   * data:[<data type>][;base64],<data>
+   * @throws Error in case not valid data:URL
+   * @param dataURI
+   * @returns {Blob}k
+   */
+  // TODO Set type depends on dataURI
+  static dataURItoBlob(dataURI) {
+    let splitter = ',';
+    if(this.notValidDataURI(dataURI)){
+      let message = "Data URI is not valid. Required format is data:[<data type>][;base64],<data>";
+      throw Error(message);
+    }
+    let binary = atob(dataURI.split(splitter)[1]);
+    let array = [];
+    for (let i = 0; i < binary.length; i++) {
+      array.push(binary.charCodeAt(i));
+    }
+    return new Blob([new Uint8Array(array)], {type: 'image/jpeg'});
+  }
+
+  private static notValidDataURI(dataURI): boolean {
+    let regex = /^data:(.*);base64,/i;
+    let match = dataURI.match(regex);
+    return !match;
+  }
+
+  private hasValidSize(image: HTMLImageElement): boolean {
+    let blob = ModalImgCropperComponent.dataURItoBlob(image.src);
+    return blob.size <= this.maxImageSize;
+  }
 }
