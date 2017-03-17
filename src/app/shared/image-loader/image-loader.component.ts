@@ -48,6 +48,7 @@ export class ImageLoaderComponent implements OnInit {
     ref.instance.onClick.subscribe((next) => this.image = ref.instance.image);
     ref.changeDetectorRef.detectChanges();
   }
+
   //TODO rename on file load
   acceptFile($event) {
     let imageFile = $event.dataTransfer ? $event.dataTransfer.files[0] : $event.target.files[0];
@@ -69,14 +70,14 @@ export class ImageLoaderComponent implements OnInit {
   }
 
   /**
-   * Create cover file that will be send to the server
+   * Form with cover file that was uploaded view model cropper
    * @param propertyName
    * @returns {FormData}
    */
   getImageFormData(propertyName: string): FormData {
     let formData = new FormData();
     let appended = ImageLoaderComponent.appendImageToFormData(formData, propertyName, this.image);
-    if(!appended)
+    if (!appended)
       return null;
     return formData;
   }
@@ -90,13 +91,28 @@ export class ImageLoaderComponent implements OnInit {
   getDescriptionImagesFormData(propName: string): FormData {
     let formData = new FormData();
     let isEmpty = true;
-    for(let component of this.imageComponents){
+    for (let component of this.imageComponents) {
       let appended = ImageLoaderComponent.appendImageToFormData(formData, propName, component.image);
       isEmpty = isEmpty && !appended;
     }
-    if(isEmpty)
+    if (isEmpty)
       return null;
     return formData;
+  }
+
+  getDeletedUrls(originUrls: Array<string>): Array<string>{
+    let storedArray = this.getStoredUrlsWithExternalSource();
+    if(storedArray && originUrls)
+      return originUrls.filter( url => storedArray.every(stored => stored.localeCompare(url) != 0));
+    else
+      return [];
+  }
+
+  private getStoredUrlsWithExternalSource(): Array<string> {
+    let externalUrlRegex = /https*:/i;
+    return this.imageComponents
+      .map(component => component.image.src)
+      .filter(src => src.match(externalUrlRegex))
   }
 
   //TODO delete image item components
@@ -114,11 +130,11 @@ export class ImageLoaderComponent implements OnInit {
    * @returns {boolean} Returns true if successfully created blob and append it to formData
    */
   private static appendImageToFormData(formData: FormData, propName: string, image: HTMLImageElement): boolean {
-    try{
+    try {
       let blob = ModalImgCropperComponent.dataURItoBlob(image.src);
       formData.append(propName, blob, image.name);
       return true;
-    } catch(error) {
+    } catch (error) {
       return false;
     }
   }

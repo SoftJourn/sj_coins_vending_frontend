@@ -104,6 +104,7 @@ export class ModalImgCropperComponent extends Type {
    * @param dataURI
    * @returns {Blob}k
    */
+  // TODO Set type depends on dataURI
   static dataURItoBlob(dataURI) {
     let splitter = ',';
     if(this.notValidDataURI(dataURI)){

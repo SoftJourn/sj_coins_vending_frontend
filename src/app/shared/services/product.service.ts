@@ -35,4 +35,9 @@ export class ProductService extends CrudService<Product> {
     return this.httpService.post(url, file)
       .flatMap(response => Observable.empty())
   }
+
+  public deleteImage(url: string): Observable<void>{
+    return this.httpService.delete(url)
+      .flatMap(response => Observable.empty());
+  }
 }
