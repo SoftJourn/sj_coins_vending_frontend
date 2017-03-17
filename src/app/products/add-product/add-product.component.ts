@@ -53,7 +53,7 @@ export class AddProductComponent implements OnInit {
         product => {
           this.submitCoverImage(product.id)
             .merge(this.submitDescriptionImages(product.id))
-            .subscribe(undefined, this.errorHandle, () => this.reset());
+            .subscribe(undefined, error => this.errorHandle(error), () => this.reset());
         },
         error => this.errorHandle(error)
       )
