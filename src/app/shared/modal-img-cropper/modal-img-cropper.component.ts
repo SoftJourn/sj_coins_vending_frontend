@@ -102,7 +102,7 @@ export class ModalImgCropperComponent extends Type {
    * data:[<data type>][;base64],<data>
    * @throws Error in case not valid data:URL
    * @param dataURI
-   * @returns {Blob}
+   * @returns {Blob}k
    */
   static dataURItoBlob(dataURI) {
     let splitter = ',';

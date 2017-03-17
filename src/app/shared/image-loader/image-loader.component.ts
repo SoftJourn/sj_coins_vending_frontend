@@ -68,17 +68,34 @@ export class ImageLoaderComponent implements OnInit {
     return this.imageComponents.length <= 0;
   }
 
-  getImageFormData(propertyName: string) {
+  /**
+   * Create cover file that will be send to the server
+   * @param propertyName
+   * @returns {FormData}
+   */
+  getImageFormData(propertyName: string): FormData {
     let formData = new FormData();
-    this.appendImageToFormData(formData,'file', this.image);
+    let appended = ImageLoaderComponent.appendImageToFormData(formData, propertyName, this.image);
+    if(!appended)
+      return null;
     return formData;
   }
 
-  getDescriptionImagesFormData(propName: string) {
+
+  /**
+   * Create array of files that will be send to the server
+   * @param propName
+   * @returns {FormData} null in case if component is empty or all stored images loaded from server
+   */
+  getDescriptionImagesFormData(propName: string): FormData {
     let formData = new FormData();
+    let isEmpty = true;
     for(let component of this.imageComponents){
-      this.appendImageToFormData(formData, propName, component.image);
+      let appended = ImageLoaderComponent.appendImageToFormData(formData, propName, component.image);
+      isEmpty = isEmpty && !appended;
     }
+    if(isEmpty)
+      return null;
     return formData;
   }
 
@@ -87,9 +104,23 @@ export class ImageLoaderComponent implements OnInit {
 
   }
 
-  private appendImageToFormData(formData: FormData, propName: string, image: HTMLImageElement) {
-    let blob = ModalImgCropperComponent.dataURItoBlob(image.src);
-    return formData.append(propName, blob, image.name);
+  //TODO analyze if need to move this logic to parent component
+  // + used only for edit and create. Less same code
+
+  /**
+   * @param formData
+   * @param propName
+   * @param image
+   * @returns {boolean} Returns true if successfully created blob and append it to formData
+   */
+  private static appendImageToFormData(formData: FormData, propName: string, image: HTMLImageElement): boolean {
+    try{
+      let blob = ModalImgCropperComponent.dataURItoBlob(image.src);
+      formData.append(propName, blob, image.name);
+      return true;
+    } catch(error) {
+      return false;
+    }
   }
 
   private setUpCropper(image: HTMLImageElement) {

@@ -3,7 +3,7 @@ import {CategoryService} from "../../shared/services/category.service";
 import {Product} from "../../shared/entity/product";
 import {ProductService} from "../../shared/services/product.service";
 import {ErrorDetail} from "../../shared/entity/error-detail";
-import {Subscription} from "rxjs";
+import {Subscription, Observable} from "rxjs";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ImageUploadService} from "../../shared/services/image-upload.service";
 import {NotificationsManager} from "../../shared/notifications.manager";
@@ -69,14 +69,24 @@ export class EditProductComponent implements OnInit {
 
   private fillImageComponent(product: Product) {
     let urls = product.imageUrls;
-    if (urls && urls.length) {
-      for (let i = 0; i < urls.length; i++) {
-        let image = new Image();
-        image.src = EditProductComponent.getAbsolutePath(urls[i]);
-        image.name = "image" + i;
-        this.imageLoaderComponent.addImageItem(image);
+    let i = 0 ;
+    if (urls && urls.length ) {
+      for (i ; i < urls.length; i++) {
+        this.addImageItem(urls[i], i);
       }
     }
+
+    let coverUrl = product.imageUrl;
+    if(coverUrl && coverUrl.length){
+      this.addImageItem(coverUrl, i)
+    }
+  }
+
+  private addImageItem(url: string, i: number): void {
+    let image = new Image();
+    image.src = EditProductComponent.getAbsolutePath(url);
+    image.name = "image" + i;
+    this.imageLoaderComponent.addImageItem(image);
   }
 
   private static getAbsolutePath(relativePath: string): string {
@@ -92,12 +102,12 @@ export class EditProductComponent implements OnInit {
   submit() {
 
     if (!this.imageLoaderComponent.isEmpty()) {
-      let formData = this.formComponent.form.value;
-      this.productService.update(this.productIndex, formData).subscribe(
+      let productEntity = this.formComponent.form.value;
+      this.productService.update(this.productIndex, productEntity).subscribe(
         product => {
-          this.submitCoverImage(product.id)
-            .merge(this.submitDescriptionImages(product.id))
-            .subscribe(undefined, this.errorHandle, () => this.reset());
+          this.coverImageProvider(product.id)
+            .merge(this.descriptionImagesProvider(product.id))
+            .subscribe(undefined, error => this.errorHandle(error), () => this.reset());
         },
         this.errorHandle
       );
@@ -107,46 +117,24 @@ export class EditProductComponent implements OnInit {
     }
 
 
-    // if (this.imageUpload.imageName != null && this.imageUpload.imageName != '') {
-    //   this.productService.update(this.productIndex, this.form.value)
-    //     .flatMap((product: Product) => {
-    //       this.router.navigate([this._productUrl]);
-    //       this.notify.updateSuccessfulMsg();
-    //       let blob = ImageUploadService.dataURItoBlob(this.imageUpload.imageSrc);
-    //       this.imageUpload.formData = new FormData();
-    //       this.imageUpload.formData.append('file', blob, this.imageUpload.imageFile.name);
-    //       return this.productService.updateImage(this.productIndex, this.imageUpload.formData)
-    //     })
-    //     .subscribe(
-    //       undefined,
-    //       this.errorHandle
-    //     );
-    // }
-    // else if (this.product.imageUrl) {
-    //   this.productService.update(this.productIndex, this.form.value)
-    //     .do((product: Product) => {
-    //     })
-    //     .subscribe(
-    //       () => {
-    //         this.router.navigate([this._productUrl]);
-    //         this.notify.updateSuccessfulMsg();
-    //       },
-    //       this.errorHandle
-    //     );
-    // }
-    // else {
-    //   this.notify.errorNoImageMsg();
-    // }
+
   }
 
-  submitCoverImage(productId: number) {
-    let formData = this.imageLoaderComponent.getImageFormData('file');
-    return this.productService.updateImage(productId, formData);
+  coverImageProvider(productId: number): Observable<any> {
+    let propertyName = 'file';
+    let formData = this.imageLoaderComponent.getImageFormData(propertyName);
+    if(formData)
+      return this.productService.updateImage(productId, formData);
+    else
+      return Observable.empty();
   }
 
-  submitDescriptionImages(productId: number) {
+  descriptionImagesProvider(productId: number): Observable<any> {
     let formData = this.imageLoaderComponent.getDescriptionImagesFormData("files");
-    return this.productService.updateImages(productId, formData);
+    if(formData)
+      return this.productService.updateImages(productId, formData);
+    else
+      return Observable.empty();
   }
 
   private errorHandle(error) {
