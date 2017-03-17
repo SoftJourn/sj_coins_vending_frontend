@@ -73,10 +73,18 @@ export class EditProductComponent implements OnInit {
 
   coverImageProvider(productId: number): Observable<any> {
     let formData = this.imageLoaderComponent.getImageFormData('file');
-    if (formData)
+    if (formData) {
       return this.productService.updateImage(productId, formData);
-    else
-      return Observable.empty();
+    } else {
+      return this.productService.getImageBlob(this.imageLoaderComponent.image.src)
+        .flatMap(
+        blob => {
+          let form = new FormData();
+          form.append('file', blob);
+          return this.productService.updateImage(productId, form);
+        }
+      );
+    }
   }
 
   descriptionImagesProvider(productId: number): Observable<any> {

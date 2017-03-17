@@ -108,11 +108,21 @@ export class ImageLoaderComponent implements OnInit {
       return [];
   }
 
+  getCoverBlobFile(): Blob {
+    if(this.image && this.image.src && ImageLoaderComponent.isUrl(this.image.src)){
+        return new Blob([this.image.src],{type:'image/jpeg'});
+    }
+  }
+
   private getStoredUrlsWithExternalSource(): Array<string> {
-    let externalUrlRegex = /https*:/i;
     return this.imageComponents
       .map(component => component.image.src)
-      .filter(src => src.match(externalUrlRegex))
+      .filter(src => ImageLoaderComponent.isUrl(src))
+  }
+
+  private static isUrl(text : string): boolean{
+    let externalUrlRegex = /https*:/i;
+    return !!text.match(externalUrlRegex);
   }
 
   //TODO delete image item components

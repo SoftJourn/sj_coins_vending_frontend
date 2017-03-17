@@ -4,11 +4,12 @@ import { Observable } from "rxjs";
 import { Product } from "../entity/product";
 import { AppProperties } from "../app.properties";
 import { CrudService } from "./crud.service";
+import {Http, ResponseContentType, RequestOptions, Headers} from "@angular/http";
 
 @Injectable()
 export class ProductService extends CrudService<Product> {
 
-  constructor(protected httpService: HttpService) {
+  constructor(public http: Http,protected httpService: HttpService) {
     super(httpService);
   }
 
@@ -39,5 +40,15 @@ export class ProductService extends CrudService<Product> {
   public deleteImage(url: string): Observable<void>{
     return this.httpService.delete(url)
       .flatMap(response => Observable.empty());
+  }
+
+  public getImageBlob(url: string): Observable<Blob>{
+    let header = new Headers();
+    header.append('Content-Type','image/jpg');
+    return this.http.get(url, {
+      headers: header, responseType: ResponseContentType.Blob
+    }).map(
+      response => response.blob()
+    );
   }
 }
