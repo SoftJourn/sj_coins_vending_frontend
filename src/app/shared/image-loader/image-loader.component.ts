@@ -92,6 +92,8 @@ export class ImageLoaderComponent implements OnInit {
     let formData = new FormData();
     let isEmpty = true;
     for (let component of this.imageComponents) {
+      if(component.image == this.image)
+        continue;
       let appended = ImageLoaderComponent.appendImageToFormData(formData, propName, component.image);
       isEmpty = isEmpty && !appended;
     }
@@ -100,18 +102,23 @@ export class ImageLoaderComponent implements OnInit {
     return formData;
   }
 
+  /**
+   * Find matches between stored urls in component and original
+   * Stored urls is array that contains images with URL address SRC (component can have blob images they are not mentioned)
+   *
+   * @param originUrls
+   * @returns {any} missed urls that exists in origin and deleted in component storage
+   * ALSO !!!
+   * Return COVER image url due to it is another call TEMPORARY SOLUTION
+   */
   getDeletedUrls(originUrls: Array<string>): Array<string>{
     let storedArray = this.getStoredUrlsWithExternalSource();
     if(storedArray && originUrls)
-      return originUrls.filter( url => storedArray.every(stored => stored.localeCompare(url) != 0));
+      return originUrls
+        .filter( url => storedArray
+          .every(stored => stored.localeCompare(url) != 0 || this.image.src.localeCompare(url) == 0));
     else
       return [];
-  }
-
-  getCoverBlobFile(): Blob {
-    if(this.image && this.image.src && ImageLoaderComponent.isUrl(this.image.src)){
-        return new Blob([this.image.src],{type:'image/jpeg'});
-    }
   }
 
   private getStoredUrlsWithExternalSource(): Array<string> {

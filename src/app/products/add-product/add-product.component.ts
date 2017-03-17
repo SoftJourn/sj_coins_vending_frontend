@@ -55,8 +55,8 @@ export class AddProductComponent implements OnInit {
             .merge(this.submitDescriptionImages(product.id))
             .subscribe(undefined, this.errorHandle, () => this.reset());
         },
-        this.errorHandle
-      );
+        error => this.errorHandle(error)
+      )
     }
     else {
       this.notify.errorNoImageMsg();

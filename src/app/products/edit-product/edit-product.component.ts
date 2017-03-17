@@ -76,6 +76,7 @@ export class EditProductComponent implements OnInit {
     if (formData) {
       return this.productService.updateImage(productId, formData);
     } else {
+      //TODO Update cover image by image id. Involved back-end changes. This is temporary solution
       return this.productService.getImageBlob(this.imageLoaderComponent.image.src)
         .flatMap(
         blob => {
@@ -101,6 +102,17 @@ export class EditProductComponent implements OnInit {
     deletedUrls
       .forEach(url => this.productService.deleteImage(url).subscribe());
     return;
+  }
+
+  //TODO is valid not working
+  //Error: Expression has changed after it was checked. Previous value: 'true'. Current value: 'false'
+  isValid(): boolean{
+    return this.formComponent && this.imageLoaderComponent
+      && this.formComponent.isValid() && !this.imageLoaderComponent.isEmpty();
+  }
+
+  reset(): void {
+    this.router.navigate([this._productUrl]);
   }
 
   private formFinalSource(productId: number) {
@@ -170,8 +182,5 @@ export class EditProductComponent implements OnInit {
     }
   }
 
-  public reset(): void {
-    this.router.navigate([this._productUrl]);
-  }
 
 }

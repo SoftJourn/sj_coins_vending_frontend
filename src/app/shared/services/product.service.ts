@@ -42,6 +42,7 @@ export class ProductService extends CrudService<Product> {
       .flatMap(response => Observable.empty());
   }
 
+  //TODO Remove this method and related. This is temporary solution
   public getImageBlob(url: string): Observable<Blob>{
     let header = new Headers();
     header.append('Content-Type','image/jpg');
