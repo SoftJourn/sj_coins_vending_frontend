@@ -9,6 +9,7 @@ import {UNSUPPORTED_MEDIA_TYPE} from "http-status-codes";
 import {NotificationsManager} from "../../shared/notifications.manager";
 import {ImageLoaderComponent} from "../../shared/image-loader/image-loader.component";
 import {ProductFormComponent} from "../product-form/product-form.component";
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'add-product',
@@ -36,14 +37,20 @@ export class AddProductComponent implements OnInit {
     this.initFromComponent();
   }
 
-  submitCoverImage(productId: number) {
+  submitCoverImage(productId: number): Observable<any> {
     let formData = this.imageLoaderComponent.getImageFormData('file');
-    return this.productService.updateImage(productId, formData);
+    if(formData)
+      return this.productService.updateImage(productId, formData);
+    else
+      return Observable.empty();
   }
 
-  submitDescriptionImages(productId: number) {
+  submitDescriptionImages(productId: number): Observable<any> {
     let formData = this.imageLoaderComponent.getDescriptionImagesFormData("files");
-    return this.productService.updateImages(productId, formData);
+    if(formData)
+      return this.productService.updateImages(productId, formData);
+    else
+      return Observable.empty();
   }
 
   submit() {
