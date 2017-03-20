@@ -75,6 +75,6 @@ export class ProductFormComponent implements OnInit {
   }
 
   private static isEquals(category1: Category, category2: Category): boolean {
-    return category1.name == category1.name && category2.id == category2.id;
+    return category1.name == category2.name && category1.id == category2.id;
   }
 }
