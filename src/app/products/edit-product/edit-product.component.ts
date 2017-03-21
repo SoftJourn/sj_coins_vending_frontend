@@ -131,25 +131,23 @@ export class EditProductComponent implements OnInit {
   private fillImageComponent(product: Product) {
     let urls = product.imageUrls;
     let i = 0;
+    this._originCover = EditProductComponent.getAbsolutePath(product.imageUrl);
     if (urls && urls.length) {
       this._originImages = urls.map(url => EditProductComponent.getAbsolutePath(url));
       for (i; i < urls.length; i++) {
-        this.addImageItem(urls[i], i);
+        let image = this.formatImage(urls[i], i);
+        if(image.src.localeCompare(this._originCover) != 0)
+        this.imageLoaderComponent.addImageItem(image);
       }
     }
-
-    let coverUrl = product.imageUrl;
-    this._originCover = EditProductComponent.getAbsolutePath(coverUrl);
-    if (coverUrl && coverUrl.length) {
-      this.addImageItem(coverUrl, i)
-    }
+    this.imageLoaderComponent.addImageItem(this.formatImage(product.imageUrl,i));
   }
 
-  private addImageItem(url: string, i: number): void {
+  private formatImage(url: string, i: number): HTMLImageElement {
     let image = new Image();
     image.src = EditProductComponent.getAbsolutePath(url);
     image.name = "image" + i;
-    this.imageLoaderComponent.addImageItem(image);
+    return image;
   }
 
   private static getAbsolutePath(relativePath: string): string {
@@ -181,6 +179,5 @@ export class EditProductComponent implements OnInit {
       this.notify.logError(err);
     }
   }
-
 
 }

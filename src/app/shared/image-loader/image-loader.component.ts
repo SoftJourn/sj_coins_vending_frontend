@@ -121,6 +121,11 @@ export class ImageLoaderComponent implements OnInit {
       return [];
   }
 
+  setImages(cover: HTMLImageElement, all: Array<HTMLImageElement>){
+    all.forEach(image => this.addImageItem(image));
+    this.image = cover;
+  }
+
   private getStoredUrlsWithExternalSource(): Array<string> {
     return this.imageComponents
       .map(component => component.image.src)
