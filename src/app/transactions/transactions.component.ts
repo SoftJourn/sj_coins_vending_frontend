@@ -15,7 +15,6 @@ import {Condition} from "./condition";
 import {Pageable} from "./pageable";
 import {TransactionPageRequest} from "./transaction-page-request";
 import {Sort} from "./sort";
-import {Transaction} from "../shared/entity/transaction";
 import {Router} from "@angular/router";
 import {NotificationsService} from "angular2-notifications";
 import {ErrorDetail} from "../shared/entity/error-detail";
@@ -26,6 +25,8 @@ import {ErrorDetail} from "../shared/entity/error-detail";
   styleUrls: ['./transactions.component.scss']
 })
 export class TransactionsComponent implements OnInit {
+
+  data: Object;
 
   page: TransactionPage;
   pageForm: FormGroup;
@@ -49,14 +50,40 @@ export class TransactionsComponent implements OnInit {
     this.buildPageSizeForm();
     this.fetch(1, this.pageSize);
     this.buildFilterForm();
-    this.fields = new Array<string>();
-    // just for getting field names
-    let transaction = new Transaction(1, '', '', 1, '', '', '', '');
-    this.fields = Object.keys(transaction).filter(key => {
-      if (key != "id" && key != "remain") {
-        return key;
+
+    let distinctFields = new Set();
+    this.data = {
+      account: {
+        ldapId: "text",
+        amount: "number",
+        erisAccount: {
+          address: "text",
+          pubKey: "text",
+          type: "text"
+        }
+      },
+      destination: {
+        ldapId: "text",
+        amount: "number",
+        erisAccount: {
+          address: "text",
+          pubKey: "text",
+          type: "text"
+        }
+      },
+      erisTransactionId: "text",
+      amount: "number",
+      comment: "text",
+      status: "text",
+      error: "text",
+      created: "date",
+    };
+    Object.keys(this.data).forEach(key => {
+      if (key != "id" && key != "remain" && key != "erisTransactionId") {
+        distinctFields.add(key);
       }
     });
+    this.fields = Array.from(distinctFields);
     this.addFilter();
   }
 
@@ -85,7 +112,7 @@ export class TransactionsComponent implements OnInit {
       value: new FormControl('', [Validators.required, Validators.nullValidator]),
       comparison: new FormControl('', Validators.required)
     }));
-    this.filterForm.controls[this.filterForm.controls.length - 1].get('field').patchValue(this.fields[0]);
+    this.filterForm.controls[this.filterForm.controls.length - 1].get('field').patchValue(this.fields[this.fields.length - 1]);
     this.filterForm.controls[this.filterForm.controls.length - 1].get('comparison').patchValue("eq");
   }
 

@@ -5,6 +5,7 @@ import {
 } from "@angular/core";
 import {FormGroup} from "@angular/forms";
 import {TransactionService} from "../../shared/services/transaction.service";
+import {filter} from "rxjs/operator/filter";
 
 @Component({
   selector: 'app-transaction-filter-item',
@@ -13,8 +14,8 @@ import {TransactionService} from "../../shared/services/transaction.service";
 })
 export class TransactionFilterItemComponent implements OnInit {
 
-  @Input('fields')
-  fields: string;
+  @Input('data')
+  data: Object;
 
   @Input('formGroup')
   filter: FormGroup;
@@ -26,6 +27,12 @@ export class TransactionFilterItemComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.filter.get('field')
+      .valueChanges
+      .distinctUntilChanged()
+      .subscribe(change => {
+        this.transactionService.getType2(this.data, change);
+      });
   }
 
   changeField(): void {

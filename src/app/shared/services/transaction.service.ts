@@ -45,4 +45,12 @@ export class TransactionService {
     return type;
   }
 
+  getType2(object: any, field: string): string {
+    let fields = field.split('.');
+    for (let i = 0; i < fields.length; i++) {
+      object = object[fields[i]];
+    }
+    return object;
+  }
+
 }

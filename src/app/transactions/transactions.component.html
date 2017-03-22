@@ -19,7 +19,7 @@
         <form class="form" [formGroup]="filterForm" (ngSubmit)="onSubmit()">
           <div *ngFor="let filter of filterForm.controls; let i = index">
             <div [formGroupName]="i">
-              <app-transaction-filter-item [fields]="fields" [formGroup]="filter"></app-transaction-filter-item>
+              <app-transaction-filter-item [data]="data" [formGroup]="filter"></app-transaction-filter-item>
             </div>
           </div>
           <div class="row">

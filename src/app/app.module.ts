@@ -56,6 +56,9 @@ import {TransactionFilterItemComponent} from "./transactions/transaction-filter-
 import {RlTagInputModule} from "angular2-tag-input";
 import {TransactionComponent} from "./transactions/transaction/transaction.component";
 import {Md2Module} from "md2";
+import { DropdownCascadeComponent } from './transactions/dropdown-cascade/dropdown-cascade.component';
+import { CascadeItemsComponent } from './transactions/dropdown-cascade/cascade-items/cascade-items.component';
+import { PointSeparatorPipe } from './shared/pipes/point-separator.pipe';
 
 @NgModule({
   declarations: [
@@ -91,6 +94,9 @@ import {Md2Module} from "md2";
     UpperFirstSymbolPipe,
     TransactionFilterItemComponent,
     TransactionComponent,
+    DropdownCascadeComponent,
+    CascadeItemsComponent,
+    PointSeparatorPipe,
   ],
   entryComponents: [UploadItemComponent],
   imports: [
