@@ -38,6 +38,7 @@ export class ImageLoaderComponent implements OnInit {
     this.cropper.onCrop.subscribe((image) => this.addImageItem(image))
   }
 
+  // TODO divide into addImageItem and setCoverImage
   addImageItem(image: HTMLImageElement) {
     this.image = image;
     const factory = this.componentFactoryResolver.resolveComponentFactory(UploadItemComponent);

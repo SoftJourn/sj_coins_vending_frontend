@@ -54,13 +54,16 @@ export class EditProductComponent implements OnInit {
     );
   }
 
+  reset(): void {
+    this.router.navigate([this._productUrl]);
+  }
+
   submit() {
     if (!this.imageLoaderComponent.isEmpty()) {
       let productEntity = this.formComponent.form.value;
       this.productService.update(this.productIndex, productEntity).subscribe(
         product => {
-          this.coverImageProvider(product.id)
-            .merge(this.descriptionImagesProvider(product.id))
+          this.submitImages(product)
             .subscribe(undefined, error => this.errorHandle(error), () => this.reset());
         },
         error => this.errorHandle(error)
@@ -71,15 +74,23 @@ export class EditProductComponent implements OnInit {
     }
   }
 
-  coverImageProvider(productId: number): Observable<any> {
+  private submitImages(product) {
+    let coverImageOutcome = this.updateCoverImage(product.id);
+    let loadImagesOutcome = this.loadImages(product.id);
+    let deleteImagesOutcome = this.deleteImages();
+    return coverImageOutcome
+      .merge(loadImagesOutcome)
+      .concat(deleteImagesOutcome);
+  }
+
+  updateCoverImage(productId: number): Observable<any> {
     let formData = this.imageLoaderComponent.getImageFormData('file');
     if (formData) {
       return this.productService.updateImage(productId, formData);
     } else {
       //TODO Update cover image by image id. Involved back-end changes. This is temporary solution
       return this.productService.getImageBlob(this.imageLoaderComponent.image.src)
-        .flatMap(
-        blob => {
+        .flatMap(blob => {
           let form = new FormData();
           form.append('file', blob);
           return this.productService.updateImage(productId, form);
@@ -88,20 +99,20 @@ export class EditProductComponent implements OnInit {
     }
   }
 
-  descriptionImagesProvider(productId: number): Observable<any> {
+  loadImages(productId: number): Observable<any> {
     let formData = this.imageLoaderComponent.getDescriptionImagesFormData("files");
-    this.deleteImages();
     if (formData)
       return this.productService.updateImages(productId, formData);
     else
       return Observable.empty();
   }
 
-  private deleteImages(): void {
+  deleteImages(): Observable<any> {
     let deletedUrls = this.imageLoaderComponent.getDeletedUrls(this._originImages);
+    let deleteOutcome: Observable<any> = Observable.empty();
     deletedUrls
-      .forEach(url => this.productService.deleteImage(url).subscribe());
-    return;
+      .forEach(url => deleteOutcome = deleteOutcome.merge(this.productService.deleteImage(url)));
+    return deleteOutcome;
   }
 
   //TODO is valid not working
@@ -111,9 +122,6 @@ export class EditProductComponent implements OnInit {
       && this.formComponent.isValid() && !this.imageLoaderComponent.isEmpty();
   }
 
-  reset(): void {
-    this.router.navigate([this._productUrl]);
-  }
 
   private formFinalSource(productId: number) {
     let productSource = this.productService.findOne(productId).map(product => {
