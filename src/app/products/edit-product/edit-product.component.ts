@@ -119,7 +119,7 @@ export class EditProductComponent implements OnInit {
   //Error: Expression has changed after it was checked. Previous value: 'true'. Current value: 'false'
   isValid(): boolean{
     return this.formComponent && this.imageLoaderComponent
-      && this.formComponent.isValid() && !this.imageLoaderComponent.isEmpty();
+      && this.formComponent.isValid && !this.imageLoaderComponent.isEmpty();
   }
 
 

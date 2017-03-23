@@ -81,7 +81,7 @@ export class AddProductComponent implements OnInit {
 
   isValid(): boolean{
     return this.formComponent && this.imageLoaderComponent
-      && this.formComponent.isValid() && !this.imageLoaderComponent.isEmpty();
+      && this.formComponent.isValid && !this.imageLoaderComponent.isEmpty();
   }
 
   private errorHandle(error) {

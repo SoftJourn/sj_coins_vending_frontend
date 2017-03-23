@@ -29,4 +29,11 @@ export class DynamicFormComponent implements OnInit {
     this.qcs.addQuestion(this.form, question);
     this.questions.push(question);
   }
+
+  removeFromList(question){
+    this.questions = this.questions
+      .filter(quest => quest !== question);
+    if(question)
+      this.form.removeControl(question.key)
+  }
 }

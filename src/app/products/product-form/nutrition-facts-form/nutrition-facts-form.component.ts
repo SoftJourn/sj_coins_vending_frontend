@@ -13,10 +13,9 @@ export class NutritionFactsFormComponent implements OnInit {
 
   @Input() nutritionFacts;
   @ViewChild("dynamicForm") dynamicForm: DynamicFormComponent;
-
-  form: FormGroup;
-
+  // @ViewChild("new-fact") newNutritionFactInput: HTMLInputElement;
   questions: any[];
+  newFactName: string = "";
 
   constructor() {
   }
@@ -25,20 +24,15 @@ export class NutritionFactsFormComponent implements OnInit {
     this.buildDefaultForm();
   }
 
-  showFormJson() {
-    console.log("hello");
+  addNutritionFact() {
     let question = new TextboxQuestion({
-      key: 'emailAddress12',
-      label: 'Email',
-      type: 'email',
-      order: 8
+      key: this.newFactName,
+      label: this.newFactName,
+      type: 'text',
+      removable: true
     });
     this.dynamicForm.addQuestion(question);
-  }
-
-  breakPoint(){
-    console.log("break");
-    console.log("break12");
+    this.newFactName = "";
   }
 
   private buildDefaultForm() {
@@ -93,6 +87,20 @@ export class NutritionFactsFormComponent implements OnInit {
         order: 8
       })
     ];
+  }
+
+  get form(): FormGroup {
+    let resultFormGroup = new FormGroup({});
+    if (this.dynamicForm && this.dynamicForm.form) {
+      let formGroup = this.dynamicForm.form;
+      let data = formGroup.getRawValue();
+      for(let property in data ){
+        if(data[property].localeCompare("") !=0 ){
+          resultFormGroup.addControl(property,formGroup.get(property))
+        }
+      }
+    }
+    return resultFormGroup;
   }
 }
 

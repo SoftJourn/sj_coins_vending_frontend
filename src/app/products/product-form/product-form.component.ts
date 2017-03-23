@@ -16,15 +16,10 @@ export class ProductFormComponent implements OnInit {
   @Input() categories: Category[];
   @Input() product: Product;
 
-  nutritionFactsObj = {
-    fat:"10"
-  };
-
   @ViewChild("nutritionFacts") nutritionFacts: NutritionFactsFormComponent;
 
-  form: FormGroup;
   formStyles: FormValidationStyles;
-
+  private _form: FormGroup;
 
   //Validators parameters
   private _digitsPattern = '\\d+';
@@ -35,12 +30,14 @@ export class ProductFormComponent implements OnInit {
   constructor(private notify: NotificationsManager,
               private fb: FormBuilder) {
   }
-
-
+  breakPoint(){
+    console.log("break");
+    console.log("break12");
+  }
 
   ngOnInit() {
     this.product = new Product();
-    this.form = this.buildForm();
+    this._form = this.buildForm();
     this.formStyles = new FormValidationStyles(this.form);
   }
 
@@ -56,14 +53,11 @@ export class ProductFormComponent implements OnInit {
       ]],
       description: '',
       category: ['', Validators.required]
-      // nutritionFacts:this.nutritionFacts.form
-      //   // factOne:'1',
-      //   // factTwo:'2'
-      // })
+      , nutritionFacts:this.nutritionFacts.form
     });
   }
 
-  isValid(): boolean {
+  get isValid(): boolean {
     return this.form.valid;
   }
 
@@ -83,6 +77,12 @@ export class ProductFormComponent implements OnInit {
     let selected = this.categories.filter(category => ProductFormComponent.isEquals(category, product.category));
     if (selected)
       this.product.category = selected[0];
+  }
+
+  get form(){
+    if(this.nutritionFacts.form)
+      this._form.setControl('nutritionFacts',this.nutritionFacts.form);
+    return this._form;
   }
 
   private static isEquals(category1: Category, category2: Category): boolean {

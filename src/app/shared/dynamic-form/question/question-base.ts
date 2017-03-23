@@ -3,6 +3,7 @@ export class QuestionBase<T>{
   key: string;
   label: string;
   required: boolean;
+  removable: boolean;
   order: number;
   controlType: string;
 
@@ -12,12 +13,14 @@ export class QuestionBase<T>{
       label?: string,
       required?: boolean,
       order?: number,
-      controlType?: string
+      controlType?: string,
+      removable?: boolean
     } = {}) {
     this.value = options.value;
     this.key = options.key || '';
     this.label = options.label || '';
     this.required = !!options.required;
+    this.removable = !!options.removable;
     this.order = options.order === undefined ? 1 : options.order;
     this.controlType = options.controlType || '';
   }

@@ -1,4 +1,14 @@
+<!--<h3 class="text-center">Nutrition Facts</h3>-->
 <dynamic-form #dynamicForm [questions]="questions"></dynamic-form>
-<!--<button type="button" (click)="showFormJson()">BUTTON</button>-->
-<!--<button type="button" (click)="breakPoint()">breakPoint</button>-->
+<div>
+  <label class="col-xl-2" for="new-fact">Fact name</label>
+  <div class="col-xl-8">
+    <input type="text" class="form-control" id="new-fact" [(ngModel)]="newFactName">
+  </div>
+  <div class="col-xl-2">
+    <button type="button" class="btn btn-secondary" (click)="addNutritionFact()">
+      ADD
+    </button>
+  </div>
+</div>
 
