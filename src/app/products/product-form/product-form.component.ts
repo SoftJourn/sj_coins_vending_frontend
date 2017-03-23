@@ -1,10 +1,10 @@
-import {Component, OnInit, Input} from "@angular/core";
+import {Component, OnInit, Input, ViewChild} from "@angular/core";
 import {Category} from "../../shared/entity/category";
 import {FormGroup, Validators, FormBuilder} from "@angular/forms";
 import {FormValidationStyles} from "../../shared/form-validation-styles";
-import {CategoryService} from "../../shared/services/category.service";
 import {NotificationsManager} from "../../shared/notifications.manager";
 import {Product} from "../../shared/entity/product";
+import {NutritionFactsFormComponent} from "./nutrition-facts-form/nutrition-facts-form.component";
 
 @Component({
   selector: 'app-product-form',
@@ -16,6 +16,12 @@ export class ProductFormComponent implements OnInit {
   @Input() categories: Category[];
   @Input() product: Product;
 
+  nutritionFactsObj = {
+    fat:"10"
+  };
+
+  @ViewChild("nutritionFacts") nutritionFacts: NutritionFactsFormComponent;
+
   form: FormGroup;
   formStyles: FormValidationStyles;
 
@@ -26,10 +32,11 @@ export class ProductFormComponent implements OnInit {
   private _maxPriceInputLength = 5;
   private _maxNameInputLength = 50;
 
-  constructor(private categoryService: CategoryService,
-              private notify: NotificationsManager,
+  constructor(private notify: NotificationsManager,
               private fb: FormBuilder) {
   }
+
+
 
   ngOnInit() {
     this.product = new Product();
@@ -49,6 +56,10 @@ export class ProductFormComponent implements OnInit {
       ]],
       description: '',
       category: ['', Validators.required]
+      // nutritionFacts:this.nutritionFacts.form
+      //   // factOne:'1',
+      //   // factTwo:'2'
+      // })
     });
   }
 

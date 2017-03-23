@@ -36,7 +36,7 @@ import {ImageUploadService} from "./shared/services/image-upload.service";
 import {PurchasesComponent} from "./purchases/purchases.component";
 import {PurchaseService} from "./shared/services/purchase.service";
 import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
-import {ModalImgCropperComponent} from "./shared/modal-img-cropper/modal-img-cropper.component";
+import {ModalImgCropperComponent} from "./shared/image-loader/modal-img-cropper/modal-img-cropper.component";
 import {ImageCropperComponent} from "ng2-img-cropper";
 import {CoinManagementComponent} from "./coin-management/coin-management.component";
 import {ModalModule} from "angular2-modal";
@@ -56,6 +56,9 @@ import {TransactionFilterItemComponent} from "./transactions/transaction-filter-
 import {RlTagInputModule} from "angular2-tag-input";
 import {TransactionComponent} from "./transactions/transaction/transaction.component";
 import {Md2Module} from "md2";
+import {NutritionFactsFormComponent} from "./products/product-form/nutrition-facts-form/nutrition-facts-form.component";
+import { DynamicFormComponent } from './shared/dynamic-form/dynamic-form.component';
+import { DynamicFormQuestionComponent } from './shared/dynamic-form/dynamic-form-question/dynamic-form-question.component';
 
 @NgModule({
   declarations: [
@@ -91,6 +94,9 @@ import {Md2Module} from "md2";
     UpperFirstSymbolPipe,
     TransactionFilterItemComponent,
     TransactionComponent,
+    NutritionFactsFormComponent,
+    DynamicFormComponent,
+    DynamicFormQuestionComponent
   ],
   entryComponents: [UploadItemComponent],
   imports: [

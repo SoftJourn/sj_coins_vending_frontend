@@ -1,6 +1,6 @@
 import {Component, OnInit, ViewContainerRef, ComponentFactoryResolver, ViewChild, ComponentRef} from "@angular/core";
 import {UploadItemComponent} from "./upload-item/upload-item.component";
-import {ModalImgCropperComponent} from "../modal-img-cropper/modal-img-cropper.component";
+import {ModalImgCropperComponent} from "./modal-img-cropper/modal-img-cropper.component";
 import {NotificationsManager} from "../notifications.manager";
 
 @Component({

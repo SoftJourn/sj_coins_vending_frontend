@@ -12,14 +12,12 @@ import {
   AnimationTransitionEvent
 } from "@angular/core";
 import {ImageCropperComponent, CropperSettings} from "ng2-img-cropper";
-import {NotificationsService} from "angular2-notifications/components";
-import {NotificationsManager} from "../notifications.manager";
-import {ImageLoaderComponent} from "../image-loader/image-loader.component";
+import {NotificationsManager} from "../../notifications.manager";
 
 @Component({
     selector: 'app-modal-img-cropper',
-    templateUrl: './modal-img-cropper.component.html',
-    styleUrls: ['./modal-img-cropper.component.scss'],
+    templateUrl: 'modal-img-cropper.component.html',
+    styleUrls: ['modal-img-cropper.component.scss'],
     animations: [
         trigger('dialog', [
             transition('void => *', [
