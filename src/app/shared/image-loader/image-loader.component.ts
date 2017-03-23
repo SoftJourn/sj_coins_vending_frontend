@@ -38,6 +38,7 @@ export class ImageLoaderComponent implements OnInit {
     this.cropper.onCrop.subscribe((image) => this.addImageItem(image))
   }
 
+  // TODO divide into addImageItem and setCoverImage
   addImageItem(image: HTMLImageElement) {
     this.image = image;
     const factory = this.componentFactoryResolver.resolveComponentFactory(UploadItemComponent);
@@ -119,6 +120,11 @@ export class ImageLoaderComponent implements OnInit {
           .every(stored => stored.localeCompare(url) != 0 || this.image.src.localeCompare(url) == 0));
     else
       return [];
+  }
+
+  setImages(cover: HTMLImageElement, all: Array<HTMLImageElement>){
+    all.forEach(image => this.addImageItem(image));
+    this.image = cover;
   }
 
   private getStoredUrlsWithExternalSource(): Array<string> {
