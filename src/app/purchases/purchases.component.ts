@@ -1,14 +1,24 @@
-import { Component, OnInit, HostListener } from "@angular/core";
-import { Purchase } from "../shared/entity/purchase";
-import { PurchaseService } from "../shared/services/purchase.service";
-import { Machine } from "../machines/shared/machine";
-import { MachineService } from "../shared/services/machine.service";
-import { NgbDateParserFormatter, NgbDateStruct } from "@ng-bootstrap/ng-bootstrap";
-import { FormControl, FormGroup } from "@angular/forms";
-import { PurchaseFilter } from "../purchases/shared/purchase-filter";
-import { PurchasePage } from "./shared/purchase-page";
-import { ErrorDetail } from "../shared/entity/error-detail";
-import { NotificationsService } from "angular2-notifications/lib/notifications.service";
+import {
+  Component,
+  OnInit,
+  HostListener
+} from "@angular/core";
+import {Purchase} from "../shared/entity/purchase";
+import {PurchaseService} from "../shared/services/purchase.service";
+import {Machine} from "../machines/shared/machine";
+import {MachineService} from "../shared/services/machine.service";
+import {
+  NgbDateParserFormatter,
+  NgbDateStruct
+} from "@ng-bootstrap/ng-bootstrap";
+import {
+  FormControl,
+  FormGroup
+} from "@angular/forms";
+import {PurchaseFilter} from "./shared/purchase-filter";
+import {ErrorDetail} from "../shared/entity/error-detail";
+import {NotificationsService} from "angular2-notifications/lib/notifications.service";
+import {Page} from "../shared/entity/page";
 
 @Component({
   selector: 'app-purchases',
@@ -18,7 +28,7 @@ import { NotificationsService } from "angular2-notifications/lib/notifications.s
 export class PurchasesComponent implements OnInit {
 
   // -------------------------------- functional variables --------------------------------
-  public page: PurchasePage = new PurchasePage();
+  public page: Page<Purchase> = new Page<Purchase>();
   public purchases: Purchase[];
   public machines: Machine[];
 

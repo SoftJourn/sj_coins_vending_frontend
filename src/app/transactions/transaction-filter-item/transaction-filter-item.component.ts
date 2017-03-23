@@ -23,6 +23,8 @@ export class TransactionFilterItemComponent implements OnInit {
   isOpen: boolean;
   datetimeValue: string;
 
+  autocomplete: string[];
+
   constructor(protected transactionService: TransactionService) {
   }
 
@@ -31,13 +33,14 @@ export class TransactionFilterItemComponent implements OnInit {
       .valueChanges
       .distinctUntilChanged()
       .subscribe(change => {
-        this.transactionService.getType2(this.data, change);
+        this.filter.get("value").patchValue("");
+        this.filter.get('comparison').patchValue("eq");
+        if (this.transactionService.getType2(this.data, change) == "text") {
+          this.transactionService.filterAutocompleteData(change).subscribe(response => {
+            this.autocomplete = response;
+          });
+        }
       });
-  }
-
-  changeField(): void {
-    this.filter.get("value").patchValue("");
-    this.filter.get('comparison').patchValue("eq");
   }
 
   addWhileInclude(e): void {

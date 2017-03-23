@@ -20,6 +20,12 @@ export var TransactionService = (function () {
     TransactionService.prototype.get = function (transactionPageRequest) {
         return this.httpService.post(this.getUrl(), transactionPageRequest).map(function (response) { return response.json(); });
     };
+    TransactionService.prototype.getFilterData = function () {
+        return this.httpService.get(this.getUrl() + "/filter").map(function (response) { return response.json(); });
+    };
+    TransactionService.prototype.filterAutocompleteData = function (fieldToAutocomplete) {
+        return this.httpService.get(this.getUrl() + "/filter/autocomplete?field=" + fieldToAutocomplete).map(function (response) { return response.json(); });
+    };
     TransactionService.prototype.getById = function (id) {
         return this.httpService.get(this.getUrl() + "/" + id).map(function (response) { return response.json(); });
     };
@@ -42,6 +48,13 @@ export var TransactionService = (function () {
                 break;
         }
         return type;
+    };
+    TransactionService.prototype.getType2 = function (object, field) {
+        var fields = field.split('.');
+        for (var i = 0; i < fields.length; i++) {
+            object = object[fields[i]];
+        }
+        return object;
     };
     TransactionService = __decorate([
         Injectable(), 

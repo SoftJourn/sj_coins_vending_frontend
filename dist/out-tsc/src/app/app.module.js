@@ -52,15 +52,22 @@ import { ModalModule } from "angular2-modal";
 import { BootstrapModalModule } from "angular2-modal/plugins/bootstrap";
 import { CoinService } from "./shared/services/coin.service";
 import { EditMachineComponent } from "./machines/edit-machine/edit-machine.component";
-import { DatePipe } from "./shared/pipes/date.pipe";
 import { GlobalErrorHandler } from "./shared/global-error-handler";
+import { NotificationsManager } from "./shared/notifications.manager";
+import { UploadItemComponent } from "./shared/image-loader/upload-item/upload-item.component";
+import { ImageLoaderComponent } from "./shared/image-loader/image-loader.component";
+import { ProductFormComponent } from "./products/product-form/product-form.component";
+import { DatePipe } from "./shared/pipes/date.pipe";
 import { TransactionsComponent } from "./transactions/transactions.component";
 import { TransactionService } from "./shared/services/transaction.service";
 import { UpperFirstSymbolPipe } from "./shared/pipes/upper-first-symbol.pipe";
 import { TransactionFilterItemComponent } from "./transactions/transaction-filter-item/transaction-filter-item.component";
 import { RlTagInputModule } from "angular2-tag-input";
-import { TransactionComponent } from './transactions/transaction/transaction.component';
+import { TransactionComponent } from "./transactions/transaction/transaction.component";
 import { Md2Module } from "md2";
+import { DropdownCascadeComponent } from './transactions/dropdown-cascade/dropdown-cascade.component';
+import { CascadeItemsComponent } from './transactions/dropdown-cascade/cascade-items/cascade-items.component';
+import { PointSeparatorPipe } from './shared/pipes/point-separator.pipe';
 export var AppModule = (function () {
     function AppModule() {
     }
@@ -91,12 +98,19 @@ export var AppModule = (function () {
                 ImageCropperComponent,
                 CoinManagementComponent,
                 EditMachineComponent,
+                UploadItemComponent,
+                ImageLoaderComponent,
+                ProductFormComponent,
                 DatePipe,
                 TransactionsComponent,
                 UpperFirstSymbolPipe,
                 TransactionFilterItemComponent,
                 TransactionComponent,
+                DropdownCascadeComponent,
+                CascadeItemsComponent,
+                PointSeparatorPipe,
             ],
+            entryComponents: [UploadItemComponent],
             imports: [
                 BrowserModule,
                 CommonModule,
@@ -132,6 +146,7 @@ export var AppModule = (function () {
                 ImageUploadService,
                 PurchaseService,
                 CoinService,
+                NotificationsManager,
                 TransactionService,
                 { provide: ErrorHandler, useClass: GlobalErrorHandler },
                 { provide: LocationStrategy, useClass: HashLocationStrategy }

@@ -20,12 +20,14 @@ export var TransactionFilterItemComponent = (function () {
             .valueChanges
             .distinctUntilChanged()
             .subscribe(function (change) {
-            _this.transactionService.getType2(_this.data, change);
+            _this.filter.get("value").patchValue("");
+            _this.filter.get('comparison').patchValue("eq");
+            if (_this.transactionService.getType2(_this.data, change) == "text") {
+                _this.transactionService.filterAutocompleteData(change).subscribe(function (response) {
+                    _this.autocomplete = response;
+                });
+            }
         });
-    };
-    TransactionFilterItemComponent.prototype.changeField = function () {
-        this.filter.get("value").patchValue("");
-        this.filter.get('comparison').patchValue("eq");
     };
     TransactionFilterItemComponent.prototype.addWhileInclude = function (e) {
         var inputs;

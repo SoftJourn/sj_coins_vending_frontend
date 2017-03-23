@@ -7,146 +7,118 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Component } from "@angular/core";
-import { FormGroup, Validators, FormControl } from "@angular/forms";
+import { Component, ViewChild } from "@angular/core";
 import { CategoryService } from "../../shared/services/category.service";
+import { Product } from "../../shared/entity/product";
 import { ProductService } from "../../shared/services/product.service";
-import { NotificationsService } from "angular2-notifications/components";
-import { FormValidationStyles } from "../../shared/form-validation-styles";
 import { Router } from "@angular/router";
-import { ImageUploadService } from "../../shared/services/image-upload.service";
+import { UNSUPPORTED_MEDIA_TYPE } from "http-status-codes";
+import { NotificationsManager } from "../../shared/notifications.manager";
+import { ImageLoaderComponent } from "../../shared/image-loader/image-loader.component";
+import { ProductFormComponent } from "../product-form/product-form.component";
+import { Observable } from "rxjs";
 export var AddProductComponent = (function () {
-    function AddProductComponent(categoryService, productService, notificationService, router, imageUpload) {
+    function AddProductComponent(categoryService, productService, notify, router) {
         this.categoryService = categoryService;
         this.productService = productService;
-        this.notificationService = notificationService;
+        this.notify = notify;
         this.router = router;
-        this.imageUpload = imageUpload;
-        this.imagForCropper = null;
-        this.imgName = null;
-        this.showDialog = false;
-        this.imageUpload.imageName = null;
+        this.categories = [];
+        this._mainProductURI = '/main/products';
     }
     AddProductComponent.prototype.ngOnInit = function () {
-        var _this = this;
-        this.imageUpload.imageSrc = this.imageUpload.defaultImageSrc;
-        this.buildForm();
-        this.categoryService.findAll().subscribe(function (categories) {
-            _this.categories = categories;
-            _this.form.get('category').patchValue(categories[0]);
-        }, function (error) {
-            try {
-                var errorDetail = error.json();
-                if (!errorDetail.detail)
-                    //noinspection ExceptionCaughtLocallyJS
-                    throw errorDetail;
-                _this.notificationService.error('Error', errorDetail.detail);
-            }
-            catch (err) {
-                console.log(err);
-                _this.notificationService.error('Error', 'Error appeared, watch logs!');
-            }
-        });
+        this.initFromComponent();
     };
-    AddProductComponent.prototype.buildForm = function () {
-        this.form = new FormGroup({
-            name: new FormControl('', [Validators.required,
-                Validators.maxLength(50),
-                Validators.pattern('^[a-zA-Z0-9\u0400-\u04FF]+[ a-zA-Z0-9\u0400-\u04FF,-]*[a-zA-Z0-9\u0400-\u04FF,-]+')
-            ]),
-            price: new FormControl('', [Validators.required,
-                Validators.maxLength(5),
-                Validators.pattern('\\d+')]),
-            description: new FormControl(''),
-            category: new FormControl('', Validators.required)
-        });
-        this.formStyles = new FormValidationStyles(this.form);
+    AddProductComponent.prototype.submitCoverImage = function (productId) {
+        var formData = this.imageLoaderComponent.getImageFormData('file');
+        if (formData)
+            return this.productService.updateImage(productId, formData);
+        else
+            return Observable.empty();
+    };
+    AddProductComponent.prototype.submitDescriptionImages = function (productId) {
+        var formData = this.imageLoaderComponent.getDescriptionImagesFormData("files");
+        if (formData)
+            return this.productService.updateImages(productId, formData);
+        else
+            return Observable.empty();
     };
     AddProductComponent.prototype.submit = function () {
         var _this = this;
-        if (this.imageUpload.imageName != null && this.imageUpload.imageName != '') {
-            this.productService.save(this.form.value)
-                .flatMap(function (product) {
-                _this.notificationService.success('Create', 'Product has been created successfully');
-                var blob = _this.imageUpload.dataURItoBlob(_this.imageUpload.imageSrc);
-                _this.imageUpload.formData = new FormData();
-                _this.imageUpload.formData.append('file', blob, _this.imageUpload.imageFile.name);
-                return _this.productService.updateImage(product.id, _this.imageUpload.formData);
-            })
-                .subscribe(function () {
-            }, function (error) {
-                try {
-                    var errorDetail = error.json();
-                    if (error.status == 415) {
-                        _this.notificationService.error('Error', 'This file format not supported!');
-                    }
-                    else {
-                        if (errorDetail.code == 1062) {
-                            _this.notificationService.error('Error', 'Such product name exists!');
-                        }
-                        else {
-                            if (!errorDetail.detail)
-                                //noinspection ExceptionCaughtLocallyJS
-                                throw errorDetail;
-                            _this.notificationService.error('Error', errorDetail.detail);
-                        }
-                    }
-                }
-                catch (err) {
-                    console.log(err);
-                    _this.notificationService.error('Error', 'Error appeared, watch logs!');
-                }
-            }, function () {
-                _this.imageUpload.cleanImageData();
-                _this.imageUpload.imageSrc = _this.imageUpload.defaultImageSrc;
-                _this.form.reset({
-                    name: '',
-                    price: '',
-                    description: '',
-                    category: _this.categories[0]
-                });
-            });
+        if (!this.imageLoaderComponent.isEmpty()) {
+            var formData = this.formComponent.form.value;
+            this.productService.save(formData).subscribe(function (product) {
+                _this.submitCoverImage(product.id)
+                    .merge(_this.submitDescriptionImages(product.id))
+                    .subscribe(undefined, function (error) { return _this.errorHandle(error); }, function () { return _this.reset(); });
+            }, function (error) { return _this.errorHandle(error); });
         }
         else {
-            this.notificationService.error('Error', 'Please put product image!');
+            this.notify.errorNoImageMsg();
         }
     };
-    AddProductComponent.prototype.reset = function () {
-        this.router.navigate(['/main/products']);
+    AddProductComponent.prototype.cancel = function () {
+        this.router.navigate([this._mainProductURI]);
     };
-    AddProductComponent.prototype.setDataForImage = function (value) {
-        this.imageUpload.handleImageLoad();
-        this.imageUpload.imageSrc = value;
-        this.imageUpload.imageName = this.imgName;
+    AddProductComponent.prototype.getCardOutlineClass = function () {
+        if (this.formComponent && this.formComponent.formStyles)
+            return this.formComponent.formStyles.getCardOutlineClass();
     };
-    AddProductComponent.prototype.handleInputChange = function ($event) {
+    AddProductComponent.prototype.isValid = function () {
+        return this.formComponent && this.imageLoaderComponent
+            && this.formComponent.isValid() && !this.imageLoaderComponent.isEmpty();
+    };
+    AddProductComponent.prototype.errorHandle = function (error) {
+        var _productDuplicateCode = 1052;
+        try {
+            var errorDetail = error.json();
+            if (error.status == UNSUPPORTED_MEDIA_TYPE) {
+                this.notify.errorWrongFormatMsg();
+            }
+            else {
+                if (errorDetail.code == _productDuplicateCode) {
+                    this.notify.errorProductDuplicateMsg();
+                }
+                else {
+                    this.notify.errorDetailedMsg(error.json());
+                }
+            }
+        }
+        catch (err) {
+            this.notify.logError(err);
+        }
+    };
+    AddProductComponent.prototype.initFromComponent = function () {
         var _this = this;
-        this.imageUpload.fileChangeListener($event).subscribe(function (img) {
-            _this.imagForCropper = img.src;
-            _this.imgName = img.name;
-            _this.showDialog = !_this.showDialog;
-        }, function (error) {
-            try {
-                var errorDetail = error.json();
-                if (!errorDetail.detail)
-                    //noinspection ExceptionCaughtLocallyJS
-                    throw errorDetail;
-                _this.notificationService.error('Error', errorDetail.detail);
-            }
-            catch (err) {
-                console.log(err);
-                _this.notificationService.error('Error', 'Error appeared, watch logs!');
-            }
-        });
+        this.categoryService.findAll().subscribe(function (categories) { return _this.setCategoriesAndEmptyProduct(categories); }, function (error) { return _this.notify.errorDetailedMsgOrConsoleLog(error); });
     };
-    ;
+    AddProductComponent.prototype.setCategoriesAndEmptyProduct = function (categories) {
+        this.categories = categories;
+        this.product = new Product();
+        if (this.categories.length > 0)
+            this.product.category = this.categories[0];
+    };
+    AddProductComponent.prototype.reset = function () {
+        if (this.formComponent)
+            this.formComponent.reset();
+        if (this.imageLoaderComponent)
+            this.imageLoaderComponent.reset();
+    };
+    __decorate([
+        ViewChild("imageLoader"), 
+        __metadata('design:type', ImageLoaderComponent)
+    ], AddProductComponent.prototype, "imageLoaderComponent", void 0);
+    __decorate([
+        ViewChild("productForm"), 
+        __metadata('design:type', ProductFormComponent)
+    ], AddProductComponent.prototype, "formComponent", void 0);
     AddProductComponent = __decorate([
         Component({
             selector: 'add-product',
             templateUrl: './add-product.component.html',
             styleUrls: ['./add-product.component.scss']
         }), 
-        __metadata('design:paramtypes', [CategoryService, ProductService, NotificationsService, Router, ImageUploadService])
+        __metadata('design:paramtypes', [CategoryService, ProductService, NotificationsManager, Router])
     ], AddProductComponent);
     return AddProductComponent;
 }());

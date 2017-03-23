@@ -3,13 +3,6 @@
   cursor: pointer;
 }
 
-.text-overflow {
-  max-width: 100px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 div.horizontal-alignment {
   select.form-control {
     width: auto;
@@ -29,7 +22,20 @@ div.horizontal-alignment {
   justify-content: center;
 }
 
-@media (max-width: 1281px) {
+.text-overflow {
+}
+
+@media (min-width: 1500px) and (max-width: 1700px) {
+  .text-overflow {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+}
+
+@media (max-width: 1500px) {
   div.x-scroll {
     overflow-x: scroll;
     -webkit-overflow-scrolling: touch;

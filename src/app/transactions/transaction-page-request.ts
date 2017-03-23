@@ -1,5 +1,5 @@
 import {Condition} from "./condition";
-import {Pageable} from "./pageable";
+import {Pageable} from "../shared/entity/pageable";
 export class TransactionPageRequest {
 
   conditions: Condition[];

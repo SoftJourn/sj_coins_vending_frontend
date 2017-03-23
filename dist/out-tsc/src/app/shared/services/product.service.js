@@ -17,10 +17,12 @@ import { HttpService } from "./http.service";
 import { Observable } from "rxjs";
 import { AppProperties } from "../app.properties";
 import { CrudService } from "./crud.service";
+import { Http, ResponseContentType, Headers } from "@angular/http";
 export var ProductService = (function (_super) {
     __extends(ProductService, _super);
-    function ProductService(httpService) {
+    function ProductService(http, httpService) {
         _super.call(this, httpService);
+        this.http = http;
         this.httpService = httpService;
     }
     ProductService.prototype.getUrl = function () {
@@ -36,9 +38,26 @@ export var ProductService = (function (_super) {
         return this.httpService.post(url, file)
             .flatMap(function (response) { return Observable.empty(); });
     };
+    ProductService.prototype.updateImages = function (id, file) {
+        var url = this.getUrl() + "/" + id + "/images";
+        return this.httpService.post(url, file)
+            .flatMap(function (response) { return Observable.empty(); });
+    };
+    ProductService.prototype.deleteImage = function (url) {
+        return this.httpService.delete(url)
+            .flatMap(function (response) { return Observable.empty(); });
+    };
+    //TODO Remove this method and related. This is temporary solution
+    ProductService.prototype.getImageBlob = function (url) {
+        var header = new Headers();
+        header.append('Content-Type', 'image/jpg');
+        return this.http.get(url, {
+            headers: header, responseType: ResponseContentType.Blob
+        }).map(function (response) { return response.blob(); });
+    };
     ProductService = __decorate([
         Injectable(), 
-        __metadata('design:paramtypes', [HttpService])
+        __metadata('design:paramtypes', [Http, HttpService])
     ], ProductService);
     return ProductService;
 }(CrudService));

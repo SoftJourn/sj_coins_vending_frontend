@@ -10,7 +10,11 @@
   <div class="form-group col-sm-4 col-md-4 col-lg-4 col-xl-4">
     <input class="form-control" *ngIf="transactionService.getType2(data,filter.controls['field'].value) == 'text' &&
      filter.controls['comparison'].value != 'in'" type="text"
-           placeholder="Enter {{filter.controls['field'].value | pointSeparator}}" formControlName="value">
+           placeholder="Enter {{filter.controls['field'].value | pointSeparator}}" formControlName="value"
+           list="autocomplete">
+    <datalist id="autocomplete">
+      <option *ngFor="let value of autocomplete">{{value}}</option>
+    </datalist>
     <input class="form-control" *ngIf="transactionService.getType2(data,filter.controls['field'].value) == 'number' &&
      filter.controls['comparison'].value != 'in'"
            type="number"
@@ -24,6 +28,11 @@
       <div class="input-group-addon" (click)="openDatepicker()">
         <i class="fa fa-calendar fa-lg"></i>
       </div>
+    </div>
+    <div class="switch array-padding"
+         *ngIf="transactionService.getType2(data,filter.controls['field'].value) == 'bool'">
+      <input id="value" class="cmn-toggle cmn-toggle-round-flat" formControlName="value" type="checkbox">
+      <label for="value"></label>
     </div>
     <rl-tag-input *ngIf="filter.controls['comparison'].value == 'in'"
                   placeholder="Enter {{filter.controls['field'].value | pointSeparator}}"
