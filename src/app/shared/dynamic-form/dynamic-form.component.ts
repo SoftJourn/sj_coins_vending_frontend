@@ -1,5 +1,5 @@
 import {Component, Input, OnInit, OnChanges, SimpleChanges}  from '@angular/core';
-import { FormGroup }                 from '@angular/forms';
+import {FormGroup}                 from '@angular/forms';
 import {QuestionBase} from "./question/question-base";
 import {QuestionControlService} from "./service/question-control.service";
 
@@ -7,7 +7,7 @@ import {QuestionControlService} from "./service/question-control.service";
 @Component({
   selector: 'dynamic-form',
   templateUrl: './dynamic-form.component.html',
-  providers: [ QuestionControlService ]
+  providers: [QuestionControlService]
 })
 export class DynamicFormComponent implements OnInit {
 
@@ -17,7 +17,8 @@ export class DynamicFormComponent implements OnInit {
   form: FormGroup;
   payLoad = '';
 
-  constructor(private qcs: QuestionControlService) {  }
+  constructor(private qcs: QuestionControlService) {
+  }
 
   ngOnInit() {
     this.form = this.qcs.toFormGroup(this.questions);
@@ -32,10 +33,16 @@ export class DynamicFormComponent implements OnInit {
     this.questions.push(question);
   }
 
-  removeFromList(question){
+  removeAllRemovable(): void {
+    this.questions
+      .filter(question => question.removable)
+      .forEach(question => this.removeFromList(question));
+  }
+
+  removeFromList(question) {
     this.questions = this.questions
       .filter(quest => quest !== question);
-    if(question)
+    if (question)
       this.form.removeControl(question.key)
   }
 }

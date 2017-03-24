@@ -8,12 +8,12 @@
 <hr>
 <div class="container-fluid" >
   <div class="card card-block" >
-    <!--<form (ngSubmit)="submit()" [formGroup]="form" enctype="multipart/form-data">-->
       <div class="row">
         <!--left column-->
         <app-product-form #productForm class="col-xl-6"></app-product-form>
         <!--right column-->
         <app-image-loader #imageLoader class="col-xl-6"></app-image-loader>
+        <!--submit buttons-->
         <div class="form-group row">
           <div class="col-sm-12 form-buttons-container">
             <button class="btn btn-success" [disabled]="" type="submit" (click)="submit()">
@@ -25,7 +25,5 @@
           </div>
         </div>
       </div>
-    <!--</form>-->
-
   </div>
 </div>

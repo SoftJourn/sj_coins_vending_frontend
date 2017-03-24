@@ -66,6 +66,7 @@ export class ProductFormComponent implements OnInit {
     if (this.categories.length > 0)
       emptyProduct.category = this.categories[0];
     this.form.reset(emptyProduct);
+    this.nutritionFacts.removeCustomAddFacts();
     //TODO check if need this message
     this.notify.createSuccessfulMsg();
   }
