@@ -17,7 +17,7 @@ export class ImageLoaderComponent implements OnInit {
   width: number;
 
   private _defaultSource = "/assets/images/default-product-350x350.jpg";
-  //TODO use @ViewChildren. Make research
+  //TODO use @ViewChildren. Make research. Make the same as in dynamic form
   private _imageComponents: UploadItemComponent[];
   private _coverImage: HTMLImageElement;
 
@@ -103,6 +103,11 @@ export class ImageLoaderComponent implements OnInit {
     return formData;
   }
 
+  //TODO delete image item components
+  reset() {
+    this._imageComponents.forEach(component => component.destroy());
+  }
+
   /**
    * Find matches between stored urls in component and original
    * Stored urls is array that contains images with URL address SRC (component can have blob images they are not mentioned)
@@ -131,11 +136,6 @@ export class ImageLoaderComponent implements OnInit {
   private static isUrl(text: string): boolean {
     let externalUrlRegex = /https*:/i;
     return !!text.match(externalUrlRegex);
-  }
-
-  //TODO delete image item components
-  reset() {
-
   }
 
   //TODO analyze if need to move this logic to parent component

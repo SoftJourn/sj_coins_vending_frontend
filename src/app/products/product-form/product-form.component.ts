@@ -30,10 +30,6 @@ export class ProductFormComponent implements OnInit {
   constructor(private notify: NotificationsManager,
               private fb: FormBuilder) {
   }
-  breakPoint(){
-    console.log("break");
-    console.log("break12");
-  }
 
   ngOnInit() {
     this.product = new Product();
