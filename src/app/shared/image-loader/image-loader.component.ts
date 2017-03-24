@@ -1,7 +1,6 @@
 import {Component, OnInit, ViewContainerRef, ComponentFactoryResolver, ViewChild, ComponentRef} from "@angular/core";
 import {UploadItemComponent} from "./upload-item/upload-item.component";
 import {ModalImgCropperComponent} from "./modal-img-cropper/modal-img-cropper.component";
-import {NotificationsManager} from "../notifications.manager";
 
 @Component({
   selector: 'app-image-loader',
@@ -11,11 +10,6 @@ import {NotificationsManager} from "../notifications.manager";
 export class ImageLoaderComponent implements OnInit {
 
 
-  //TODO use @ViewChildren. Make research
-  imageComponents: UploadItemComponent[];
-  //TODO rename image to cover
-  image: HTMLImageElement;
-
   @ViewChild('imgList', {read: ViewContainerRef}) imgList;
   @ViewChild('modalImageCropper') cropper: ModalImgCropperComponent;
 
@@ -23,36 +17,43 @@ export class ImageLoaderComponent implements OnInit {
   width: number;
 
   private _defaultSource = "/assets/images/default-product-350x350.jpg";
+  //TODO use @ViewChildren. Make research
+  private _imageComponents: UploadItemComponent[];
+  private _coverImage: HTMLImageElement;
 
-
-  constructor(private componentFactoryResolver: ComponentFactoryResolver,
-              private notify: NotificationsManager) {
+  constructor(private componentFactoryResolver: ComponentFactoryResolver) {
     this.height = 205;
     this.width = 205;
   }
 
-  ngOnInit() {
-    this.imageComponents = [];
-    this.setDefaultImage();
-    this.cropper.visible = false;
-    this.cropper.onCrop.subscribe((image) => this.addImageItem(image))
+  get coverImage(): HTMLImageElement {
+    return this._coverImage;
   }
 
-  // TODO divide into addImageItem and setCoverImage
-  addImageItem(image: HTMLImageElement) {
-    this.image = image;
+  set coverImage(value: HTMLImageElement) {
+    this._coverImage = value;
+  }
+
+  ngOnInit() {
+    this._imageComponents = [];
+    this.setDefaultImage();
+    this.cropper.visible = false;
+    this.cropper.onCrop.subscribe((image) => this.addImage(image))
+  }
+
+  addImage(image: HTMLImageElement) {
+    this._coverImage = image;
     const factory = this.componentFactoryResolver.resolveComponentFactory(UploadItemComponent);
     const ref = this.imgList.createComponent(factory);
-    this.imageComponents.push(ref.instance);
+    this._imageComponents.push(ref.instance);
     ref.instance.image = image;
     ref.instance.onDelete.subscribe((next) => this.findAndDestroy(ref));
-    ref.instance.onClick.subscribe((next) => this.image = ref.instance.image);
+    ref.instance.onClick.subscribe((next) => this._coverImage = ref.instance.image);
     ref.changeDetectorRef.detectChanges();
   }
 
-  //TODO rename on file load
-  acceptFile($event) {
-    let imageFile = $event.dataTransfer ? $event.dataTransfer.files[0] : $event.target.files[0];
+  onFileLoad(event) {
+    let imageFile = event.dataTransfer ? event.dataTransfer.files[0] : event.target.files[0];
     let reader: FileReader = new FileReader();
     let image = new Image();
     let self = this;
@@ -63,11 +64,11 @@ export class ImageLoaderComponent implements OnInit {
       self.setUpCropper(image);
     };
     // Without this line event would not fire for the same file
-    $event.target.value = null;
+    event.target.value = null;
   }
 
   isEmpty(): boolean {
-    return this.imageComponents.length <= 0;
+    return this._imageComponents.length <= 0;
   }
 
   /**
@@ -77,12 +78,11 @@ export class ImageLoaderComponent implements OnInit {
    */
   getImageFormData(propertyName: string): FormData {
     let formData = new FormData();
-    let appended = ImageLoaderComponent.appendImageToFormData(formData, propertyName, this.image);
+    let appended = ImageLoaderComponent.appendImageToFormData(formData, propertyName, this._coverImage);
     if (!appended)
       return null;
     return formData;
   }
-
 
   /**
    * Create array of files that will be send to the server
@@ -92,8 +92,8 @@ export class ImageLoaderComponent implements OnInit {
   getDescriptionImagesFormData(propName: string): FormData {
     let formData = new FormData();
     let isEmpty = true;
-    for (let component of this.imageComponents) {
-      if(component.image == this.image)
+    for (let component of this._imageComponents) {
+      if (component.image == this._coverImage)
         continue;
       let appended = ImageLoaderComponent.appendImageToFormData(formData, propName, component.image);
       isEmpty = isEmpty && !appended;
@@ -112,28 +112,23 @@ export class ImageLoaderComponent implements OnInit {
    * ALSO !!!
    * Return COVER image url due to it is another call TEMPORARY SOLUTION
    */
-  getDeletedUrls(originUrls: Array<string>): Array<string>{
+  getDeletedUrls(originUrls: Array<string>): Array<string> {
     let storedArray = this.getStoredUrlsWithExternalSource();
-    if(storedArray && originUrls)
+    if (storedArray && originUrls)
       return originUrls
-        .filter( url => storedArray
-          .every(stored => stored.localeCompare(url) != 0 || this.image.src.localeCompare(url) == 0));
+        .filter(url => storedArray
+          .every(stored => stored.localeCompare(url) != 0 || this._coverImage.src.localeCompare(url) == 0));
     else
       return [];
   }
 
-  setImages(cover: HTMLImageElement, all: Array<HTMLImageElement>){
-    all.forEach(image => this.addImageItem(image));
-    this.image = cover;
-  }
-
   private getStoredUrlsWithExternalSource(): Array<string> {
-    return this.imageComponents
+    return this._imageComponents
       .map(component => component.image.src)
       .filter(src => ImageLoaderComponent.isUrl(src))
   }
 
-  private static isUrl(text : string): boolean{
+  private static isUrl(text: string): boolean {
     let externalUrlRegex = /https*:/i;
     return !!text.match(externalUrlRegex);
   }
@@ -168,18 +163,18 @@ export class ImageLoaderComponent implements OnInit {
   }
 
   private setDefaultImage(): HTMLImageElement {
-    this.image = new Image(this.width, this.height);
-    this.image.src = this._defaultSource;
-    return this.image;
+    this._coverImage = new Image(this.width, this.height);
+    this._coverImage.src = this._defaultSource;
+    return this._coverImage;
   }
 
   private findAndDestroy(ref: ComponentRef<UploadItemComponent>) {
-    this.imageComponents = this.imageComponents.filter((component) => component !== ref.instance);
-    if (this.image == ref.instance.image) {
-      if (this.imageComponents.length == 0)
+    this._imageComponents = this._imageComponents.filter((component) => component !== ref.instance);
+    if (this._coverImage == ref.instance.image) {
+      if (this._imageComponents.length == 0)
         this.setDefaultImage();
       else
-        this.image = this.imageComponents[0].image;
+        this._coverImage = this._imageComponents[0].image;
     }
     ref.destroy();
   }
