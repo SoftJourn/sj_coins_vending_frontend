@@ -12,6 +12,8 @@ import {QuestionControlService} from "./service/question-control.service";
 export class DynamicFormComponent implements OnInit {
 
   @Input() questions: QuestionBase<any>[] = [];
+  @Input() allowDuplicates: boolean = false;
+
   form: FormGroup;
   payLoad = '';
 
@@ -26,7 +28,7 @@ export class DynamicFormComponent implements OnInit {
   }
 
   addQuestion(question: QuestionBase<any>) {
-    this.qcs.addQuestion(this.form, question);
+    this.qcs.addQuestion(this.form, question, this.allowDuplicates);
     this.questions.push(question);
   }
 

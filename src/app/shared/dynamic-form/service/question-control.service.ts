@@ -19,9 +19,9 @@ export class QuestionControlService {
     return new FormGroup(group);
   }
 
-  addQuestion(formGroup: FormGroup, question: QuestionBase<any>) {
-    // if (formGroup.contains(question.key))
-    //   throw Error("form control already exists: " + question.key);
+  addQuestion(formGroup: FormGroup, question: QuestionBase<any>, allowDuplicates ?: boolean) {
+    if (allowDuplicates || formGroup.contains(question.key))
+      throw Error("form control already exists: " + question.key);
     formGroup.addControl(question.key, question.required ? new FormControl(question.value || '', Validators.required)
       : new FormControl(question.value || ''));
   }

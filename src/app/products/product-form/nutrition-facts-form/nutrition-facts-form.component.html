@@ -3,10 +3,10 @@
 <div>
   <label class="col-xl-2" for="new-fact">Fact name</label>
   <div class="col-xl-8">
-    <input type="text" class="form-control" id="new-fact" [(ngModel)]="newFactName">
+    <input type="text" class="form-control" id="new-fact" [(ngModel)]="newFactName" [formControl]="newFactNameControl">
   </div>
   <div class="col-xl-2">
-    <button type="button" class="btn btn-secondary" (click)="addNutritionFact()">
+    <button type="button" class="btn btn-secondary" (click)="addNutritionFact()" [disabled]="!newFactNameControl.valid">
       ADD
     </button>
   </div>

@@ -1,8 +1,9 @@
 import {Component, OnInit, Input, ViewChild} from "@angular/core";
-import {FormGroup} from "@angular/forms";
+import {FormGroup, FormControl, Validators} from "@angular/forms";
 import {DropdownQuestion} from "../../../shared/dynamic-form/question/question-dropdown";
 import {TextboxQuestion} from "../../../shared/dynamic-form/question/question-textbox";
 import {DynamicFormComponent} from "../../../shared/dynamic-form/dynamic-form.component";
+import {NotificationsManager} from "../../../shared/notifications.manager";
 
 @Component({
   selector: 'app-nutrition-facts-form',
@@ -13,11 +14,12 @@ export class NutritionFactsFormComponent implements OnInit {
 
   @Input() nutritionFacts;
   @ViewChild("dynamicForm") dynamicForm: DynamicFormComponent;
-  // @ViewChild("new-fact") newNutritionFactInput: HTMLInputElement;
+
   questions: any[];
   newFactName: string = "";
+  newFactNameControl: FormControl = new FormControl("",[Validators.required,Validators.maxLength(20)]);
 
-  constructor() {
+  constructor(public notify: NotificationsManager) {
   }
 
   ngOnInit() {
@@ -31,7 +33,11 @@ export class NutritionFactsFormComponent implements OnInit {
       type: 'text',
       removable: true
     });
-    this.dynamicForm.addQuestion(question);
+    try {
+      this.dynamicForm.addQuestion(question);
+    } catch (error){
+      this.notify.errorFactNameDuplicate()
+    }
     this.newFactName = "";
   }
 
@@ -95,7 +101,7 @@ export class NutritionFactsFormComponent implements OnInit {
       let formGroup = this.dynamicForm.form;
       let data = formGroup.getRawValue();
       for(let property in data ){
-        if(data[property].localeCompare("") !=0 ){
+        if(data[property] && data[property].localeCompare("") !=0 ){
           resultFormGroup.addControl(property,formGroup.get(property))
         }
       }
