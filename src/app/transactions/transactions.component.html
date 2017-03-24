@@ -54,8 +54,8 @@
         <tr *ngFor="let content of page?.content; let i = index" (click)="openTransaction(content?.id)">
           <th scope="row">{{i + 1}}</th>
           <td *ngFor="let field of fields">
-            <div *ngIf="transactionService.getType2(data,field) == 'date'">{{content[field] | DatePipe}}</div>
-            <div *ngIf="transactionService.getType2(data,field) != 'date'" class="text-overflow">{{content[field]}}
+            <div *ngIf="transactionService.getType(data,field) == 'date'">{{content[field] | DatePipe}}</div>
+            <div *ngIf="transactionService.getType(data,field) != 'date'" class="text-overflow">{{content[field]}}
             </div>
           </td>
         </tr>

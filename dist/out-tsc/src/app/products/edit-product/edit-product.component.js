@@ -32,7 +32,7 @@ export var EditProductComponent = (function () {
     }
     EditProductComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.subscription = this.route.params.subscribe(function (params) {
+        this.route.params.subscribe(function (params) {
             _this.productIndex = +params['id'];
             var finaleSource = _this.formFinalSource(_this.productIndex);
             finaleSource.subscribe(function (obj) { return _this.setData(obj); });
@@ -54,6 +54,12 @@ export var EditProductComponent = (function () {
             this.notify.errorNoImageMsg();
         }
     };
+    //TODO is valid not working
+    //Error: Expression has changed after it was checked. Previous value: 'true'. Current value: 'false'
+    EditProductComponent.prototype.isValid = function () {
+        return this.formComponent && this.imageLoaderComponent
+            && this.formComponent.isValid && !this.imageLoaderComponent.isEmpty();
+    };
     EditProductComponent.prototype.submitImages = function (product) {
         var coverImageOutcome = this.updateCoverImage(product.id);
         var loadImagesOutcome = this.loadImages(product.id);
@@ -70,7 +76,7 @@ export var EditProductComponent = (function () {
         }
         else {
             //TODO Update cover image by image id. Involved back-end changes. This is temporary solution
-            return this.productService.getImageBlob(this.imageLoaderComponent.image.src)
+            return this.productService.getImageBlob(this.imageLoaderComponent.coverImage.src)
                 .flatMap(function (blob) {
                 var form = new FormData();
                 form.append('file', blob);
@@ -93,12 +99,6 @@ export var EditProductComponent = (function () {
             .forEach(function (url) { return deleteOutcome = deleteOutcome.merge(_this.productService.deleteImage(url)); });
         return deleteOutcome;
     };
-    //TODO is valid not working
-    //Error: Expression has changed after it was checked. Previous value: 'true'. Current value: 'false'
-    EditProductComponent.prototype.isValid = function () {
-        return this.formComponent && this.imageLoaderComponent
-            && this.formComponent.isValid() && !this.imageLoaderComponent.isEmpty();
-    };
     EditProductComponent.prototype.formFinalSource = function (productId) {
         var _this = this;
         var productSource = this.productService.findOne(productId).map(function (product) {
@@ -116,17 +116,19 @@ export var EditProductComponent = (function () {
         var urls = product.imageUrls;
         var i = 0;
         this._originCover = EditProductComponent.getAbsolutePath(product.imageUrl);
+        var coverImage;
         if (urls && urls.length) {
             this._originImages = urls.map(function (url) { return EditProductComponent.getAbsolutePath(url); });
             for (i; i < urls.length; i++) {
-                var image = this.formatImage(urls[i], i);
-                if (image.src.localeCompare(this._originCover) != 0)
-                    this.imageLoaderComponent.addImageItem(image);
+                var image = EditProductComponent.formatImage(urls[i], i);
+                if (image.src.localeCompare(this._originCover) == 0)
+                    coverImage = image;
+                this.imageLoaderComponent.addImage(image);
             }
         }
-        this.imageLoaderComponent.addImageItem(this.formatImage(product.imageUrl, i));
+        this.imageLoaderComponent.coverImage = coverImage;
     };
-    EditProductComponent.prototype.formatImage = function (url, i) {
+    EditProductComponent.formatImage = function (url, i) {
         var image = new Image();
         image.src = EditProductComponent.getAbsolutePath(url);
         image.name = "image" + i;
