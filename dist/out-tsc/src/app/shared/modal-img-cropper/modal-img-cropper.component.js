@@ -12,19 +12,19 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Component, Input, Output, EventEmitter, trigger, style, animate, transition, ViewChild, Type } from '@angular/core';
-import { ImageCropperComponent, CropperSettings } from 'ng2-img-cropper';
-import { ImageUploadService } from "../../shared/services/image-upload.service";
-import { NotificationsService } from "angular2-notifications/components";
+import { Component, Input, Output, EventEmitter, trigger, style, animate, transition, ViewChild, Type } from "@angular/core";
+import { ImageCropperComponent, CropperSettings } from "ng2-img-cropper";
+import { NotificationsManager } from "../notifications.manager";
 export var ModalImgCropperComponent = (function (_super) {
     __extends(ModalImgCropperComponent, _super);
-    function ModalImgCropperComponent(imageUpload, notificationService) {
+    function ModalImgCropperComponent(notify) {
         _super.call(this);
-        this.imageUpload = imageUpload;
-        this.notificationService = notificationService;
+        this.notify = notify;
+        this.maxImageSize = 1024 * 256;
+        //TODO reorganize position
         this.closable = true;
         this.visibleChange = new EventEmitter();
-        this.setImageForSave = new EventEmitter;
+        this.onCrop = new EventEmitter();
         var screenWidth = window.screen.availWidth;
         this.cropperSettings = new CropperSettings();
         if (screenWidth < 768) {
@@ -48,34 +48,62 @@ export var ModalImgCropperComponent = (function (_super) {
         this.data = {};
     }
     ModalImgCropperComponent.prototype.animationDone = function (event) {
-        var image = new Image();
-        image.src = this.cropper_img;
-        if (this.cropper_img && this.cropper) {
-            this.cropper.setImage(image);
+        if (this.cropImage && this.cropper) {
+            this.cropper.setImage(this.cropImage);
         }
     };
     ModalImgCropperComponent.prototype.setImageData = function () {
-        // check image size
-        var blob = this.imageUpload.dataURItoBlob(this.data.image);
-        if (blob.size > 1024 * 256) {
-            this.notificationService.error('Error', 'This image size is too big!');
-            this.close();
-        }
-        else {
-            this.setImageForSave.emit(this.data.image);
-            var image = new Image();
-            image.src = this.data.image;
-            this.close();
-        }
+        var resultImg = new Image();
+        resultImg.src = this.data.image;
+        resultImg.name = this.cropImage.name;
+        if (this.hasValidSize(resultImg))
+            this.onCrop.emit(resultImg);
+        else
+            this.notify.errorLargeImgSizeMsg();
+        this.close();
     };
     ModalImgCropperComponent.prototype.close = function () {
         this.visible = false;
         this.visibleChange.emit(this.visible);
     };
+    /**
+     * This method return blob image in case of valid data:URL param
+     * data:[<data type>][;base64],<data>
+     * @throws Error in case not valid data:URL
+     * @param dataURI
+     * @returns {Blob}k
+     */
+    // TODO Set type depends on dataURI
+    ModalImgCropperComponent.dataURItoBlob = function (dataURI) {
+        var splitter = ',';
+        if (this.notValidDataURI(dataURI)) {
+            var message = "Data URI is not valid. Required format is data:[<data type>][;base64],<data>";
+            throw Error(message);
+        }
+        var binary = atob(dataURI.split(splitter)[1]);
+        var array = [];
+        for (var i = 0; i < binary.length; i++) {
+            array.push(binary.charCodeAt(i));
+        }
+        return new Blob([new Uint8Array(array)], { type: 'image/jpeg' });
+    };
+    ModalImgCropperComponent.notValidDataURI = function (dataURI) {
+        var regex = /^data:(.*);base64,/i;
+        var match = dataURI.match(regex);
+        return !match;
+    };
+    ModalImgCropperComponent.prototype.hasValidSize = function (image) {
+        var blob = ModalImgCropperComponent.dataURItoBlob(image.src);
+        return blob.size <= this.maxImageSize;
+    };
     __decorate([
         ViewChild('cropper'), 
         __metadata('design:type', ImageCropperComponent)
     ], ModalImgCropperComponent.prototype, "cropper", void 0);
+    __decorate([
+        Input(), 
+        __metadata('design:type', Object)
+    ], ModalImgCropperComponent.prototype, "maxImageSize", void 0);
     __decorate([
         Input(), 
         __metadata('design:type', Object)
@@ -91,11 +119,11 @@ export var ModalImgCropperComponent = (function (_super) {
     __decorate([
         Output(), 
         __metadata('design:type', EventEmitter)
-    ], ModalImgCropperComponent.prototype, "setImageForSave", void 0);
+    ], ModalImgCropperComponent.prototype, "onCrop", void 0);
     __decorate([
         Input(), 
-        __metadata('design:type', Object)
-    ], ModalImgCropperComponent.prototype, "cropper_img", void 0);
+        __metadata('design:type', HTMLImageElement)
+    ], ModalImgCropperComponent.prototype, "cropImage", void 0);
     ModalImgCropperComponent = __decorate([
         Component({
             selector: 'app-modal-img-cropper',
@@ -113,7 +141,7 @@ export var ModalImgCropperComponent = (function (_super) {
                 ])
             ]
         }), 
-        __metadata('design:paramtypes', [ImageUploadService, NotificationsService])
+        __metadata('design:paramtypes', [NotificationsManager])
     ], ModalImgCropperComponent);
     return ModalImgCropperComponent;
 }(Type));

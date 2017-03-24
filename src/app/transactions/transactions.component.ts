@@ -4,7 +4,7 @@ import {
   HostListener
 } from "@angular/core";
 import {TransactionService} from "../shared/services/transaction.service";
-import {TransactionPage} from "./transaction-page";
+import {Page} from "../shared/entity/page";
 import {
   FormGroup,
   FormControl,
@@ -12,13 +12,13 @@ import {
   FormArray
 } from "@angular/forms";
 import {Condition} from "./condition";
-import {Pageable} from "./pageable";
+import {Pageable} from "../shared/entity/pageable";
 import {TransactionPageRequest} from "./transaction-page-request";
-import {Sort} from "./sort";
-import {Transaction} from "../shared/entity/transaction";
+import {Sort} from "../shared/entity/sort";
 import {Router} from "@angular/router";
 import {NotificationsService} from "angular2-notifications";
 import {ErrorDetail} from "../shared/entity/error-detail";
+import {Transaction} from "../shared/entity/transaction";
 
 @Component({
   selector: 'app-transactions',
@@ -27,7 +27,9 @@ import {ErrorDetail} from "../shared/entity/error-detail";
 })
 export class TransactionsComponent implements OnInit {
 
-  page: TransactionPage;
+  data: Object;
+
+  page: Page<Transaction>;
   pageForm: FormGroup;
   filterForm: FormArray;
   fields: string[];
@@ -47,17 +49,22 @@ export class TransactionsComponent implements OnInit {
 
   ngOnInit() {
     this.buildPageSizeForm();
-    this.fetch(1, this.pageSize);
     this.buildFilterForm();
-    this.fields = new Array<string>();
-    // just for getting field names
-    let transaction = new Transaction(1, '', '', 1, '', '', '', '');
-    this.fields = Object.keys(transaction).filter(key => {
-      if (key != "id" && key != "remain") {
-        return key;
-      }
+    this.transactionService.getFilterData().subscribe(response => {
+      this.data = response;
+      let distinctFields = new Set();
+      Object.keys(this.data).forEach(key => {
+        if (key != "id" && key != "remain" && key != "erisTransactionId") {
+          distinctFields.add(key);
+        }
+      });
+      this.fields = Array.from(distinctFields);
+      this.defaultSorting();
+
+      this.fetch(1, this.pageSize);
+
+      this.addFilter();
     });
-    this.addFilter();
   }
 
   private buildPageSizeForm(): void {
@@ -85,7 +92,7 @@ export class TransactionsComponent implements OnInit {
       value: new FormControl('', [Validators.required, Validators.nullValidator]),
       comparison: new FormControl('', Validators.required)
     }));
-    this.filterForm.controls[this.filterForm.controls.length - 1].get('field').patchValue(this.fields[0]);
+    this.filterForm.controls[this.filterForm.controls.length - 1].get('field').patchValue(this.fields[this.getIndexOfFirstSingle()]);
     this.filterForm.controls[this.filterForm.controls.length - 1].get('comparison').patchValue("eq");
   }
 
@@ -192,13 +199,30 @@ export class TransactionsComponent implements OnInit {
       filter = this.toTransactionFilter(this.filterForm);
       filter.pageable.page = page - 1;
       filter.pageable.size = size;
-      this.transactionService.get(filter).subscribe((response: TransactionPage) => {
+      this.transactionService.get(filter).subscribe((response: Page<Transaction>) => {
         this.page = response;
       }, (error: ErrorDetail) => {
         this.notificationService.error("Error", error.detail);
       });
     } catch (error) {
       this.notificationService.error("Error", error.message);
+    }
+  }
+
+  private getIndexOfFirstSingle(): number {
+    for (let i = 0; i < this.fields.length; i++) {
+      if (!(this.data[this.fields[i]] instanceof Object)) {
+        return i;
+      }
+    }
+  }
+
+  private defaultSorting(): void {
+    for (let field of this.fields) {
+      if (this.data[field] == "date") {
+        this.sorts = new Array<Sort>();
+        this.sorts.push(new Sort("DESC", field));
+      }
     }
   }
 

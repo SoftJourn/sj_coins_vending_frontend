@@ -11,10 +11,9 @@ import { Component, HostListener } from "@angular/core";
 import { TransactionService } from "../shared/services/transaction.service";
 import { FormGroup, FormControl, Validators, FormArray } from "@angular/forms";
 import { Condition } from "./condition";
-import { Pageable } from "./pageable";
+import { Pageable } from "../shared/entity/pageable";
 import { TransactionPageRequest } from "./transaction-page-request";
-import { Sort } from "./sort";
-import { Transaction } from "../shared/entity/transaction";
+import { Sort } from "../shared/entity/sort";
 import { Router } from "@angular/router";
 import { NotificationsService } from "angular2-notifications";
 export var TransactionsComponent = (function () {
@@ -29,18 +28,22 @@ export var TransactionsComponent = (function () {
         this.pageItemsSize = '';
     }
     TransactionsComponent.prototype.ngOnInit = function () {
+        var _this = this;
         this.buildPageSizeForm();
-        this.fetch(1, this.pageSize);
         this.buildFilterForm();
-        this.fields = new Array();
-        // just for getting field names
-        var transaction = new Transaction(1, '', '', 1, '', '', '', '');
-        this.fields = Object.keys(transaction).filter(function (key) {
-            if (key != "id" && key != "remain") {
-                return key;
-            }
+        this.transactionService.getFilterData().subscribe(function (response) {
+            _this.data = response;
+            var distinctFields = new Set();
+            Object.keys(_this.data).forEach(function (key) {
+                if (key != "id" && key != "remain" && key != "erisTransactionId") {
+                    distinctFields.add(key);
+                }
+            });
+            _this.fields = Array.from(distinctFields);
+            _this.defaultSorting();
+            _this.fetch(1, _this.pageSize);
+            _this.addFilter();
         });
-        this.addFilter();
     };
     TransactionsComponent.prototype.buildPageSizeForm = function () {
         var _this = this;
@@ -66,7 +69,7 @@ export var TransactionsComponent = (function () {
             value: new FormControl('', [Validators.required, Validators.nullValidator]),
             comparison: new FormControl('', Validators.required)
         }));
-        this.filterForm.controls[this.filterForm.controls.length - 1].get('field').patchValue(this.fields[0]);
+        this.filterForm.controls[this.filterForm.controls.length - 1].get('field').patchValue(this.fields[this.getIndexOfFirstSingle()]);
         this.filterForm.controls[this.filterForm.controls.length - 1].get('comparison').patchValue("eq");
     };
     TransactionsComponent.prototype.onSubmit = function () {
@@ -178,6 +181,22 @@ export var TransactionsComponent = (function () {
         }
         catch (error) {
             this.notificationService.error("Error", error.message);
+        }
+    };
+    TransactionsComponent.prototype.getIndexOfFirstSingle = function () {
+        for (var i = 0; i < this.fields.length; i++) {
+            if (!(this.data[this.fields[i]] instanceof Object)) {
+                return i;
+            }
+        }
+    };
+    TransactionsComponent.prototype.defaultSorting = function () {
+        for (var _i = 0, _a = this.fields; _i < _a.length; _i++) {
+            var field = _a[_i];
+            if (this.data[field] == "date") {
+                this.sorts = new Array();
+                this.sorts.push(new Sort("DESC", field));
+            }
         }
     };
     __decorate([

@@ -12,9 +12,9 @@ import { PurchaseService } from "../shared/services/purchase.service";
 import { MachineService } from "../shared/services/machine.service";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 import { FormControl, FormGroup } from "@angular/forms";
-import { PurchaseFilter } from "../purchases/shared/purchase-filter";
-import { PurchasePage } from "./shared/purchase-page";
+import { PurchaseFilter } from "./shared/purchase-filter";
 import { NotificationsService } from "angular2-notifications/lib/notifications.service";
+import { Page } from "../shared/entity/page";
 export var PurchasesComponent = (function () {
     // -------------------------------- init methods --------------------------------
     function PurchasesComponent(purchaseService, machineService, parser, notificationService) {
@@ -23,7 +23,7 @@ export var PurchasesComponent = (function () {
         this.parser = parser;
         this.notificationService = notificationService;
         // -------------------------------- functional variables --------------------------------
-        this.page = new PurchasePage();
+        this.page = new Page();
         // -------------------------------- functional variables --------------------------------
         this.hideFilter = true;
         this.hideStartDue = true;

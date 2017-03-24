@@ -59,6 +59,9 @@ import {Md2Module} from "md2";
 import {NutritionFactsFormComponent} from "./products/product-form/nutrition-facts-form/nutrition-facts-form.component";
 import { DynamicFormComponent } from './shared/dynamic-form/dynamic-form.component';
 import { DynamicFormQuestionComponent } from './shared/dynamic-form/dynamic-form-question/dynamic-form-question.component';
+import { DropdownCascadeComponent } from './transactions/dropdown-cascade/dropdown-cascade.component';
+import { CascadeItemsComponent } from './transactions/dropdown-cascade/cascade-items/cascade-items.component';
+import { PointSeparatorPipe } from './shared/pipes/point-separator.pipe';
 
 @NgModule({
   declarations: [
@@ -94,6 +97,9 @@ import { DynamicFormQuestionComponent } from './shared/dynamic-form/dynamic-form
     UpperFirstSymbolPipe,
     TransactionFilterItemComponent,
     TransactionComponent,
+    DropdownCascadeComponent,
+    CascadeItemsComponent,
+    PointSeparatorPipe,
     NutritionFactsFormComponent,
     DynamicFormComponent,
     DynamicFormQuestionComponent

@@ -1,0 +1,6 @@
+<li class="dropdown-item" (click)="click($event,key)" *ngFor="let key of getKeys()" [ngClass]="hasSubsClass(data[key])">
+  <a>{{key | upperFirstSymbol}}</a>
+  <ul class="dropdown-menu" *ngIf="hasSubs(data[key])">
+    <li app-cascade-items [data]="data[key]" [field]="field+key+'.'" [control]="control"></li>
+  </ul>
+</li>

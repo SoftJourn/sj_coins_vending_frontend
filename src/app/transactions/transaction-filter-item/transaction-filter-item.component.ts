@@ -5,6 +5,7 @@ import {
 } from "@angular/core";
 import {FormGroup} from "@angular/forms";
 import {TransactionService} from "../../shared/services/transaction.service";
+import {filter} from "rxjs/operator/filter";
 
 @Component({
   selector: 'app-transaction-filter-item',
@@ -13,8 +14,8 @@ import {TransactionService} from "../../shared/services/transaction.service";
 })
 export class TransactionFilterItemComponent implements OnInit {
 
-  @Input('fields')
-  fields: string;
+  @Input('data')
+  data: Object;
 
   @Input('formGroup')
   filter: FormGroup;
@@ -22,15 +23,24 @@ export class TransactionFilterItemComponent implements OnInit {
   isOpen: boolean;
   datetimeValue: string;
 
+  autocomplete: string[];
+
   constructor(protected transactionService: TransactionService) {
   }
 
   ngOnInit() {
-  }
-
-  changeField(): void {
-    this.filter.get("value").patchValue("");
-    this.filter.get('comparison').patchValue("eq");
+    this.filter.get('field')
+      .valueChanges
+      .distinctUntilChanged()
+      .subscribe(change => {
+        this.filter.get("value").patchValue("");
+        this.filter.get('comparison').patchValue("eq");
+        if (this.transactionService.getType2(this.data, change) == "text") {
+          this.transactionService.filterAutocompleteData(change).subscribe(response => {
+            this.autocomplete = response;
+          });
+        }
+      });
   }
 
   addWhileInclude(e): void {

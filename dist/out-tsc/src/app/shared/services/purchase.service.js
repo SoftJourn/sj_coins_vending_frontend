@@ -7,7 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 import { HttpService } from "./http.service";
 import { AppProperties } from "../app.properties";
 export var PurchaseService = (function () {

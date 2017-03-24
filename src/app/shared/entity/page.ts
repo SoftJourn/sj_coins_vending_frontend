@@ -1,7 +1,6 @@
-import {Purchase} from "../../shared/entity/purchase";
-export class PurchasePage {
+export class Page<T> {
 
-  constructor(public content?: Purchase[],
+  constructor(public content?: T[],
               public last?: boolean,
               public totalPages?: number,
               public totalElements?: number,
@@ -11,4 +10,5 @@ export class PurchasePage {
               public size?: number,
               public number?: number) {
   }
+
 }

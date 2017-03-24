@@ -15,10 +15,19 @@ export var TransactionFilterItemComponent = (function () {
         this.transactionService = transactionService;
     }
     TransactionFilterItemComponent.prototype.ngOnInit = function () {
-    };
-    TransactionFilterItemComponent.prototype.changeField = function () {
-        this.filter.get("value").patchValue("");
-        this.filter.get('comparison').patchValue("eq");
+        var _this = this;
+        this.filter.get('field')
+            .valueChanges
+            .distinctUntilChanged()
+            .subscribe(function (change) {
+            _this.filter.get("value").patchValue("");
+            _this.filter.get('comparison').patchValue("eq");
+            if (_this.transactionService.getType2(_this.data, change) == "text") {
+                _this.transactionService.filterAutocompleteData(change).subscribe(function (response) {
+                    _this.autocomplete = response;
+                });
+            }
+        });
     };
     TransactionFilterItemComponent.prototype.addWhileInclude = function (e) {
         var inputs;
@@ -53,9 +62,9 @@ export var TransactionFilterItemComponent = (function () {
         this.filter.get("value").patchValue(result["value"]);
     };
     __decorate([
-        Input('fields'), 
-        __metadata('design:type', String)
-    ], TransactionFilterItemComponent.prototype, "fields", void 0);
+        Input('data'), 
+        __metadata('design:type', Object)
+    ], TransactionFilterItemComponent.prototype, "data", void 0);
     __decorate([
         Input('formGroup'), 
         __metadata('design:type', FormGroup)
