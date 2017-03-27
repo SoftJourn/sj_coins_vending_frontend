@@ -104,11 +104,12 @@ export class EditProductComponent implements OnInit {
   }
 
   private loadImages(productId: number): Observable<any> {
-    let formData = this.imageLoaderComponent.getDescriptionImagesFormData("files");
-    if (formData)
-      return this.productService.updateImages(productId, formData);
-    else
-      return Observable.empty();
+    let blobs = this.imageLoaderComponent.loadedBlobs;
+    let imagesOutcome: Observable<any> = Observable.empty();
+    blobs.forEach(blob => {
+      imagesOutcome = imagesOutcome.merge(this.productService.loadImage(productId, blob));
+    });
+    return imagesOutcome;
   }
 
   private deleteImages(): Observable<any> {
