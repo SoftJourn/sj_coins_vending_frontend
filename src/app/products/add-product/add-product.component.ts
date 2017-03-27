@@ -37,6 +37,23 @@ export class AddProductComponent implements OnInit {
     this.initFromComponent();
   }
 
+  submit() {
+    if (!this.imageLoaderComponent.isEmpty()) {
+      let productFormData = this.formComponent.form.value;
+      this.submitOutput(productFormData)
+        .subscribe(null, error => this.errorHandle(error), () => this.reset())
+    }
+    else {
+      this.notify.errorNoImageMsg();
+    }
+  }
+
+  submitOutput(productFormData: any) {
+    return this.productService.save(productFormData).flatMap(product =>
+      this.submitCoverImage(product.id)
+        .merge(this.submitAdditionalImages(product.id)));
+  }
+
   submitCoverImage(productId: number): Observable<any> {
     let formData = this.imageLoaderComponent.getImageFormData('file');
     if(formData)
@@ -45,29 +62,13 @@ export class AddProductComponent implements OnInit {
       return Observable.empty();
   }
 
-  submitDescriptionImages(productId: number): Observable<any> {
-    let formData = this.imageLoaderComponent.getDescriptionImagesFormData("files");
-    if(formData)
-      return this.productService.updateImages(productId, formData);
-    else
-      return Observable.empty();
-  }
-
-  submit() {
-    if (!this.imageLoaderComponent.isEmpty()) {
-      let formData = this.formComponent.form.value;
-      this.productService.save(formData).subscribe(
-        product => {
-          this.submitCoverImage(product.id)
-            .merge(this.submitDescriptionImages(product.id))
-            .subscribe(undefined, error => this.errorHandle(error), () => this.reset());
-        },
-        error => this.errorHandle(error)
-      )
-    }
-    else {
-      this.notify.errorNoImageMsg();
-    }
+  submitAdditionalImages(productId: number): Observable<any> {
+    let blobs = this.imageLoaderComponent.loadedBlobs;
+    let imagesOutcome: Observable<any> = Observable.empty();
+    blobs.forEach(blob => {
+      imagesOutcome = imagesOutcome.merge(this.productService.loadImage(productId, blob));
+    });
+    return imagesOutcome;
   }
 
   cancel(): void {

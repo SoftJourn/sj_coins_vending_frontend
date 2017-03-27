@@ -9,7 +9,7 @@ import {
   transition,
   ViewChild,
   Type,
-  AnimationTransitionEvent, OnChanges, SimpleChanges
+  AnimationTransitionEvent, OnChanges, SimpleChanges, OnInit
 } from "@angular/core";
 import {ImageCropperComponent, CropperSettings} from "ng2-img-cropper";
 import {NotificationsManager} from "../../notifications.manager";
@@ -73,7 +73,9 @@ export class ModalImgCropperComponent extends Type implements OnChanges {
   }
 
   animationDone(event: AnimationTransitionEvent) {
-    //Do nothing
+    if (this.cropImage && this.cropper) {
+      this.cropper.setImage(this.cropImage);
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {

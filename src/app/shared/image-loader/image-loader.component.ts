@@ -172,8 +172,10 @@ export class ImageLoaderComponent implements OnInit {
    */
   private static appendImageToFormData(formData: FormData, propName: string, image: HTMLImageElement): boolean {
     let blob = this.covertToBlob(image.src);
-    if(blob)
+    if(blob) {
       formData.append(propName, blob, image.name);
+      return true;
+    }
     else
       return false;
   }
