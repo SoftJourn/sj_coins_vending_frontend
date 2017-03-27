@@ -23,21 +23,21 @@ export class ProductService extends CrudService<Product> {
     });
   }
 
-  public updateImage(id: number, file: any): Observable<void> {
+  public updateImage(id: number, file: any): Observable<{}> {
     let url = `${this.getUrl()}/${id}/image`;
 
     return this.httpService.post(url, file)
       .flatMap(response => Observable.empty())
   }
 
-  public updateImages(id: number, file: any): Observable<void> {
+  public updateImages(id: number, file: any): Observable<{}> {
     let url = `${this.getUrl()}/${id}/images`;
 
     return this.httpService.post(url, file)
       .flatMap(response => Observable.empty())
   }
 
-  public deleteImage(url: string): Observable<void>{
+  public deleteImage(url: string): Observable<{}> {
     return this.httpService.delete(url)
       .flatMap(response => Observable.empty());
   }

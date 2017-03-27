@@ -47,7 +47,7 @@ export abstract class CrudService<T> {
       .map(response => response.json());
   }
 
-  public delete(id: number | string): Observable<void> {
+  public delete(id: number | string): Observable<{}> {
     let url = `${this.getUrl()}/${id}`;
 
     return this.httpService.delete(url)

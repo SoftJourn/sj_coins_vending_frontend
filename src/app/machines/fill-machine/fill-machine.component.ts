@@ -1,15 +1,12 @@
 import {
   Component,
   OnInit,
-  style,
-  state,
-  animate,
-  transition,
-  trigger,
-  Renderer,
   AfterContentInit,
   ViewChild,
-  ElementRef
+  ElementRef,
+  Renderer2,
+  Inject,
+  ViewChildren, QueryList
 } from "@angular/core";
 import { MachineService } from "../../shared/services/machine.service";
 import { Machine, Field } from "../shared/machine";
@@ -20,8 +17,11 @@ import { Product } from "../../shared/entity/product";
 import { NotificationsService } from "angular2-notifications";
 import { AppProperties } from "../../shared/app.properties";
 import { FormValidationStyles } from "../../shared/form-validation-styles";
-import { BrowserDomAdapter } from "@angular/platform-browser/src/browser/browser_adapter";
 import { ErrorDetail } from "../../shared/entity/error-detail";
+import { trigger, state, transition, style, animate } from "@angular/animations";
+import { DOCUMENT } from "@angular/platform-browser";
+import { MachineRowDirective } from "../../shared/directives/machine-row.directive";
+import { MachineCellDirective } from "../../shared/directives/machine-cell.directive";
 
 @Component({
   selector: 'fill-machine',
@@ -60,14 +60,15 @@ export class FillMachineComponent implements OnInit, AfterContentInit {
   formStyles: FormValidationStyles;
   changedFields: Field[] = [];
   @ViewChild('cellForm') cellFormElement: ElementRef;
-  domAdapter = new BrowserDomAdapter();
+  @ViewChildren(MachineRowDirective) machineRows: QueryList<MachineRowDirective>;
+  @ViewChildren(MachineCellDirective) machineCells: QueryList<MachineCellDirective>;
 
   constructor(private machineService: MachineService,
               private productService: ProductService,
               private route: ActivatedRoute,
               private notificationService: NotificationsService,
-              private renderer: Renderer,
-              private hostElement: ElementRef) {
+              private renderer: Renderer2,
+              @Inject(DOCUMENT) private document) {
   }
 
   ngOnInit() {
@@ -144,14 +145,14 @@ export class FillMachineComponent implements OnInit, AfterContentInit {
     this.form.markAsUntouched();
     this.form.updateValueAndValidity();
 
-    let rowElem: Element = this.renderer.selectRootElement('#row' + rowId);
+    let rowElem: Element = this.machineRows.find(mr => mr.rowId == rowId).getElement();
 
     if (rowElem.ownerDocument.body.clientWidth < 768) {
-      let cellElement = this.domAdapter.querySelector(this.hostElement.nativeElement, '#cell' + field.internalId);
+      let cellElement: Element = this.machineCells.find(cell => cell.cellId == field.internalId).getElement();
 
-      this.renderer.attachViewAfter(cellElement, [this.cellFormElement.nativeElement])
+      this.renderer.insertBefore(cellElement.parentNode, this.cellFormElement.nativeElement, cellElement.nextSibling);
     } else {
-      this.renderer.attachViewAfter(rowElem, [this.cellFormElement.nativeElement]);
+      this.renderer.appendChild(rowElem, this.cellFormElement.nativeElement);
     }
   }
 

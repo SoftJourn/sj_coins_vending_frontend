@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, trigger, state, style, transition, animate } from "@angular/core";
+import { Component, OnInit, EventEmitter, Input, Output } from "@angular/core";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { Category } from "../../shared/entity/category";
 import { CategoryService } from "../../shared/services/category.service";
@@ -6,7 +6,7 @@ import { NotificationsService } from "angular2-notifications/components";
 import { ErrorDetail } from "../../shared/entity/error-detail";
 import { FormValidationStyles } from "../../shared/form-validation-styles";
 import { Router } from "@angular/router";
-import { Output, Input } from "@angular/core/src/metadata/directives";
+import { animate, state, style, transition, trigger } from "@angular/animations";
 
 @Component({
   selector: 'add-category',

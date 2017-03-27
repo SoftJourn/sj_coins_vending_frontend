@@ -1,7 +1,7 @@
 import { Component, OnInit, trigger, state, style, transition, animate, ViewContainerRef } from "@angular/core";
 import { Account } from "../shared/entity/account";
 import { AdminUsersService } from "../shared/services/admin.users.service";
-import { NotificationsService } from "angular2-notifications/lib/notifications.service";
+import { NotificationsService } from "angular2-notifications";
 import { AddMenu } from "../shared/entity/add-menu";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { FormControl, FormGroup } from "@angular/forms";

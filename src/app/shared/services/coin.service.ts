@@ -43,7 +43,7 @@ export class CoinService {
     return this.httpService.get(url).map(response => response.json());
   }
 
-  public replenishAccounts(amount: number): Observable<void> {
+  public replenishAccounts(amount: number): Observable<{}> {
     let url = `${AppProperties.API_COINS_ENDPOINT}/distribute`;
     let amountDto = new AmountDto(amount, 'Replenish accounts');
 

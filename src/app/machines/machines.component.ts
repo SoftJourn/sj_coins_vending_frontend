@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { Machine } from "./shared/machine";
 import { MachineService } from "../shared/services/machine.service";
 import { ErrorDetail } from "../shared/entity/error-detail";
-import { NotificationsService } from "angular2-notifications/lib/notifications.service";
+import { NotificationsService } from "angular2-notifications";
 
 @Component({
   selector: 'machines-list',

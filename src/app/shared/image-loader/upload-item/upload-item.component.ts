@@ -1,5 +1,4 @@
-import {Component, OnInit, Output, Input} from "@angular/core";
-import {EventEmitter} from "@angular/forms/src/facade/async";
+import { Component, OnInit, Output, Input, EventEmitter } from "@angular/core";
 
 @Component({
   selector: 'app-upload-item',

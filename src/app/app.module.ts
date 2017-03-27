@@ -13,7 +13,7 @@ import {MainInfoComponent} from "./main-info/main-info.component";
 import {LoginComponent} from "./login/login.component";
 import {TopNavComponent} from "./shared/top-nav/top-nav.component";
 import {SideBarComponent} from "./shared/side-bar/side-bar.component";
-import {Ng2BootstrapModule, ButtonsModule} from "ng2-bootstrap/ng2-bootstrap";
+import {Ng2BootstrapModule} from "ng2-bootstrap";
 import {ProductsComponent, ProductItemComponent, AddProductComponent} from "./products/";
 import {DashboardComponent} from "./dashboard/dashboard.component";
 import {MachinesComponent, MachineItemComponent, AddMachineComponent, FillMachineComponent} from "./machines/";
@@ -28,7 +28,7 @@ import {UsersComponent} from "./users/users.component";
 import {MdCardModule} from "@angular/material/card";
 import {MachineSizePipe} from "./machines/machine-item/machine-size.pipe";
 import {ProductService} from "./shared/services/product.service";
-import {SimpleNotificationsModule} from "angular2-notifications";
+import { SimpleNotificationsModule } from "angular2-notifications";
 import {LdapUsersService} from "./shared/services/ldap.users.service";
 import {AdminUsersService} from "./shared/services/admin.users.service";
 import {EditProductComponent} from "./products/edit-product/edit-product.component";
@@ -37,7 +37,7 @@ import {PurchasesComponent} from "./purchases/purchases.component";
 import {PurchaseService} from "./shared/services/purchase.service";
 import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
 import {ModalImgCropperComponent} from "./shared/modal-img-cropper/modal-img-cropper.component";
-import {ImageCropperComponent} from "ng2-img-cropper";
+import {ImageCropperModule} from "ng2-img-cropper";
 import {CoinManagementComponent} from "./coin-management/coin-management.component";
 import {ModalModule} from "angular2-modal";
 import {BootstrapModalModule} from "angular2-modal/plugins/bootstrap";
@@ -59,6 +59,9 @@ import {Md2Module} from "md2";
 import { DropdownCascadeComponent } from './transactions/dropdown-cascade/dropdown-cascade.component';
 import { CascadeItemsComponent } from './transactions/dropdown-cascade/cascade-items/cascade-items.component';
 import { PointSeparatorPipe } from './shared/pipes/point-separator.pipe';
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { MachineRowDirective } from './shared/directives/machine-row.directive';
+import { MachineCellDirective } from './shared/directives/machine-cell.directive';
 
 @NgModule({
   declarations: [
@@ -83,7 +86,7 @@ import { PointSeparatorPipe } from './shared/pipes/point-separator.pipe';
     EditProductComponent,
     PurchasesComponent,
     ModalImgCropperComponent,
-    ImageCropperComponent,
+    ImageCropperModule,
     CoinManagementComponent,
     EditMachineComponent,
     UploadItemComponent,
@@ -97,10 +100,13 @@ import { PointSeparatorPipe } from './shared/pipes/point-separator.pipe';
     DropdownCascadeComponent,
     CascadeItemsComponent,
     PointSeparatorPipe,
+    MachineRowDirective,
+    MachineCellDirective,
   ],
   entryComponents: [UploadItemComponent],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     CommonModule,
     ReactiveFormsModule,
     routing,
@@ -110,9 +116,8 @@ import { PointSeparatorPipe } from './shared/pipes/point-separator.pipe';
     MdCardModule,
     OverlayModule,
     HttpModule,
-    Ng2BootstrapModule,
-    ButtonsModule,
-    SimpleNotificationsModule,
+    Ng2BootstrapModule.forRoot(),
+    SimpleNotificationsModule.forRoot(),
     FormsModule,
     NgbModule.forRoot(),
     ModalModule.forRoot(),

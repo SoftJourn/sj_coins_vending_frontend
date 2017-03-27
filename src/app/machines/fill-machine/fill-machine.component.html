@@ -24,9 +24,9 @@
   <div class="offset-sm-1 offset-lg-1 col-sm-10 col-lg-10">
     <div class="machine-bg">
       <div class="card-deck-wrapper">
-        <div *ngFor="let row of machine?.rows">
+        <div *ngFor="let row of machine?.rows" machineRow rowId="{{row.id}}">
           <div class="card-deck cell-card-row">
-            <div id="cell{{field.internalId}}" class="card product-card" [ngClass]="setClassIfProductAbsent(field)"
+            <div machineCell cellId="{{field.internalId}}" class="card product-card" [ngClass]="setClassIfProductAbsent(field)"
                  *ngFor="let field of row.fields"
                  (click)="toggleState(field, row.id)"
                  [@selectDeselectCard]="applyCardState(field.internalId)">
@@ -43,7 +43,7 @@
             </div>
           </div>
 
-          <div id="row{{row.id}}"></div>
+          <!--<div id="row{{row.id}}"></div>-->
         </div>
       </div>
 

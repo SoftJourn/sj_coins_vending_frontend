@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { Dashboard } from "../shared/entity/dashboard";
 import { DashboardService } from "../shared/services/dashboard.service";
 import { ErrorDetail } from "../shared/entity/error-detail";
-import { NotificationsService } from "angular2-notifications/lib/notifications.service";
+import { NotificationsService } from "angular2-notifications";
 
 @Component({
   selector: 'app-dashboard',

@@ -9,28 +9,31 @@
     <form (ngSubmit)="onSubmit()" [formGroup]="form">
       <div class="row">
         <div class="col-xs-12 col-lg-12">
-          <md-input placeholder="LDAP login"
-                    type="text"
-                    formControlName="username"
-                    [dividerColor]="inputDividerColor('username')">
-            <span md-suffix [hidden]="isValidOrPristine('username')">
-              <i class="material-icons red400 md-18">error</i>
-            </span>
-            <md-hint [hidden]="isValidOrPristine('username')" align="end">{{errorMessage('username')}}</md-hint>
-          </md-input>
+          <input placeholder="LDAP login"
+                 type="text" formControlName="username">
+          <!--<md-input-container [dividerColor]="inputDividerColor('username')" formControlName="username">-->
+            <!--<input placeholder="LDAP login"-->
+                      <!--type="text"/>-->
+            <!--<span mdSuffix [hidden]="isValidOrPristine('username')">-->
+              <!--<i class="material-icons red400 md-18">error</i>-->
+            <!--</span>-->
+            <!--<md-hint [hidden]="isValidOrPristine('username')" align="end">{{errorMessage('username')}}</md-hint>-->
+          <!--</md-input-container>-->
         </div>
       </div>
       <div class="row">
         <div class="col-xs-12 col-lg-12">
-          <md-input placeholder="Password"
-                    type="password"
-                    formControlName="password"
-                    [dividerColor]="inputDividerColor('password')">
+          <input mdInput placeholder="Password"
+                 type="password"
+                 formControlName="password">
+          <!--<md-input-container [dividerColor]="inputDividerColor('password')" formControlName="password">
+            <input mdInput placeholder="Password"
+                   type="password">
             <span md-suffix [hidden]="isValidOrPristine('password')">
               <i class="material-icons red400 md-18">error</i>
             </span>
             <md-hint [hidden]="isValidOrPristine('password')" align="end">{{errorMessage('password')}}</md-hint>
-          </md-input>
+          </md-input-container>-->
         </div>
       </div>
       <div class="row">

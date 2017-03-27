@@ -16,7 +16,7 @@
 <hr>
 
 <!--Add user modal-->
-<template #content let-c="close" let-d="dismiss">
+<ng-template #content let-c="close" let-d="dismiss">
   <div class="modal-header">
     <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
       <span aria-hidden="true">&times;</span>
@@ -63,7 +63,7 @@
     <button *ngIf="edit" class="btn btn-success" type="submit" (click)="editAdminUserSubmit() ">Submit</button>
     <button type="button" class="btn btn-secondary" (click)="c('Close click')">Close</button>
   </div>
-</template>
+</ng-template>
 
 <div class="container-fluid">
 
