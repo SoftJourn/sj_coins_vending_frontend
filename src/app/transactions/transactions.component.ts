@@ -27,6 +27,8 @@ import {Transaction} from "../shared/entity/transaction";
 })
 export class TransactionsComponent implements OnInit {
 
+  private STORAGE_KEY: string = "transactions-state";
+
   data: Object;
 
   page: Page<Transaction>;
@@ -59,11 +61,16 @@ export class TransactionsComponent implements OnInit {
         }
       });
       this.fields = Array.from(distinctFields);
-      this.defaultSorting();
-
-      this.fetch(1, this.pageSize);
-
       this.addFilter();
+
+      let state: TransactionPageRequest = JSON.parse(localStorage.getItem(this.STORAGE_KEY));
+      if (state) {
+        this.sorts = state.pageable.sort;
+        this.fetchByState(state);
+      } else {
+        this.defaultSorting();
+        this.fetch(1, this.pageSize);
+      }
     });
   }
 
@@ -201,7 +208,20 @@ export class TransactionsComponent implements OnInit {
       filter = this.toTransactionFilter(this.filterForm);
       filter.pageable.page = page - 1;
       filter.pageable.size = size;
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(filter));
       this.transactionService.get(filter).subscribe((response: Page<Transaction>) => {
+        this.page = response;
+      }, (error: ErrorDetail) => {
+        this.notificationService.error("Error", error.detail);
+      });
+    } catch (error) {
+      this.notificationService.error("Error", "Something went wrong, watch logs!");
+    }
+  }
+
+  fetchByState(state: TransactionPageRequest): void {
+    try {
+      this.transactionService.get(state).subscribe((response: Page<Transaction>) => {
         this.page = response;
       }, (error: ErrorDetail) => {
         this.notificationService.error("Error", error.detail);

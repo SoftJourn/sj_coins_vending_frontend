@@ -21,6 +21,7 @@ export var TransactionsComponent = (function () {
         this.transactionService = transactionService;
         this.router = router;
         this.notificationService = notificationService;
+        this.STORAGE_KEY = "transactions-state";
         this.hideFilter = true;
         this.pageSize = 10;
         this.pageItems = 5;
@@ -40,9 +41,16 @@ export var TransactionsComponent = (function () {
                 }
             });
             _this.fields = Array.from(distinctFields);
-            _this.defaultSorting();
-            _this.fetch(1, _this.pageSize);
             _this.addFilter();
+            var state = JSON.parse(localStorage.getItem(_this.STORAGE_KEY));
+            if (state) {
+                _this.sorts = state.pageable.sort;
+                _this.fetchByState(state);
+            }
+            else {
+                _this.defaultSorting();
+                _this.fetch(1, _this.pageSize);
+            }
         });
     };
     TransactionsComponent.prototype.buildPageSizeForm = function () {
@@ -176,7 +184,21 @@ export var TransactionsComponent = (function () {
             filter = this.toTransactionFilter(this.filterForm);
             filter.pageable.page = page - 1;
             filter.pageable.size = size;
+            localStorage.setItem(this.STORAGE_KEY, JSON.stringify(filter));
             this.transactionService.get(filter).subscribe(function (response) {
+                _this.page = response;
+            }, function (error) {
+                _this.notificationService.error("Error", error.detail);
+            });
+        }
+        catch (error) {
+            this.notificationService.error("Error", "Something went wrong, watch logs!");
+        }
+    };
+    TransactionsComponent.prototype.fetchByState = function (state) {
+        var _this = this;
+        try {
+            this.transactionService.get(state).subscribe(function (response) {
                 _this.page = response;
             }, function (error) {
                 _this.notificationService.error("Error", error.detail);
