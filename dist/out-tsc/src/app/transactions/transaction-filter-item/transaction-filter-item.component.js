@@ -22,10 +22,13 @@ export var TransactionFilterItemComponent = (function () {
             .subscribe(function (change) {
             _this.filter.get("value").patchValue("");
             _this.filter.get('comparison').patchValue("eq");
-            if (_this.transactionService.getType2(_this.data, change) == "text") {
+            if (_this.transactionService.getType(_this.data, change) == "text") {
                 _this.transactionService.filterAutocompleteData(change).subscribe(function (response) {
                     _this.autocomplete = response;
                 });
+            }
+            if (_this.transactionService.getType(_this.data, change) == "bool") {
+                _this.filter.get("value").patchValue(true);
             }
         });
     };

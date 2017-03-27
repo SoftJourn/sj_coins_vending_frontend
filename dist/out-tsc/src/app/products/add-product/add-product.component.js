@@ -66,7 +66,7 @@ export var AddProductComponent = (function () {
     };
     AddProductComponent.prototype.isValid = function () {
         return this.formComponent && this.imageLoaderComponent
-            && this.formComponent.isValid() && !this.imageLoaderComponent.isEmpty();
+            && this.formComponent.isValid && !this.imageLoaderComponent.isEmpty();
     };
     AddProductComponent.prototype.errorHandle = function (error) {
         var _productDuplicateCode = 1052;

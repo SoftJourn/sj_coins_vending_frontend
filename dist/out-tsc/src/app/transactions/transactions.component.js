@@ -21,6 +21,7 @@ export var TransactionsComponent = (function () {
         this.transactionService = transactionService;
         this.router = router;
         this.notificationService = notificationService;
+        this.STORAGE_KEY = "transactions-state";
         this.hideFilter = true;
         this.pageSize = 10;
         this.pageItems = 5;
@@ -40,9 +41,16 @@ export var TransactionsComponent = (function () {
                 }
             });
             _this.fields = Array.from(distinctFields);
-            _this.defaultSorting();
-            _this.fetch(1, _this.pageSize);
             _this.addFilter();
+            var state = JSON.parse(localStorage.getItem(_this.STORAGE_KEY));
+            if (state) {
+                _this.sorts = state.pageable.sort;
+                _this.fetchByState(state);
+            }
+            else {
+                _this.defaultSorting();
+                _this.fetch(1, _this.pageSize);
+            }
         });
     };
     TransactionsComponent.prototype.buildPageSizeForm = function () {
@@ -117,7 +125,7 @@ export var TransactionsComponent = (function () {
         }
         var sort = this.sorts.filter(function (sort) { return sort.property == column; });
         if (sort.length < 1) {
-            this.sorts.push(new Sort("ASC", column));
+            this.sorts.unshift(new Sort("ASC", column));
         }
         else if (sort[0].direction == "ASC") {
             sort[0].direction = "DESC";
@@ -133,13 +141,16 @@ export var TransactionsComponent = (function () {
             for (var _i = 0, _a = formArray.value; _i < _a.length; _i++) {
                 var value = _a[_i];
                 if (value["value"] != "") {
-                    if (this.transactionService.getType(value["field"]) == "date") {
+                    if (this.transactionService.getType(this.data, value["field"]) == "date") {
                         conditions.push(new Condition(value["field"], new Date(value["value"]).toISOString(), value["comparison"]));
                     }
-                    else if (this.transactionService.getType(value["field"]) == "number" && Array.isArray(value["field"])) {
+                    else if (this.transactionService.getType(this.data, value["field"]) == "number" && Array.isArray(value["field"])) {
                         conditions.push(new Condition(value["field"], value["value"].map(function (item) {
                             return parseInt(item);
                         }), value["comparison"]));
+                    }
+                    else if (this.transactionService.getType(this.data, value["field"]) == "bool") {
+                        conditions.push(new Condition(value["field"], value["value"] == "true", value["comparison"]));
                     }
                     else {
                         conditions.push(new Condition(value["field"], value["value"], value["comparison"]));
@@ -154,7 +165,7 @@ export var TransactionsComponent = (function () {
         if (formArray) {
             for (var _i = 0, _a = formArray.value; _i < _a.length; _i++) {
                 var value = _a[_i];
-                if (this.transactionService.getType(value["field"]) == "number" && value["comparison"] == "in") {
+                if (this.transactionService.getType(this.data, value["field"]) == "number" && value["comparison"] == "in") {
                     for (var _b = 0, _c = value["value"]; _b < _c.length; _b++) {
                         var number = _c[_b];
                         if (isNaN(number)) {
@@ -173,6 +184,7 @@ export var TransactionsComponent = (function () {
             filter = this.toTransactionFilter(this.filterForm);
             filter.pageable.page = page - 1;
             filter.pageable.size = size;
+            localStorage.setItem(this.STORAGE_KEY, JSON.stringify(filter));
             this.transactionService.get(filter).subscribe(function (response) {
                 _this.page = response;
             }, function (error) {
@@ -180,7 +192,20 @@ export var TransactionsComponent = (function () {
             });
         }
         catch (error) {
-            this.notificationService.error("Error", error.message);
+            this.notificationService.error("Error", "Something went wrong, watch logs!");
+        }
+    };
+    TransactionsComponent.prototype.fetchByState = function (state) {
+        var _this = this;
+        try {
+            this.transactionService.get(state).subscribe(function (response) {
+                _this.page = response;
+            }, function (error) {
+                _this.notificationService.error("Error", error.detail);
+            });
+        }
+        catch (error) {
+            this.notificationService.error("Error", "Something went wrong, watch logs!");
         }
     };
     TransactionsComponent.prototype.getIndexOfFirstSingle = function () {

@@ -27,6 +27,8 @@ import {Transaction} from "../shared/entity/transaction";
 })
 export class TransactionsComponent implements OnInit {
 
+  private STORAGE_KEY: string = "transactions-state";
+
   data: Object;
 
   page: Page<Transaction>;
@@ -59,11 +61,16 @@ export class TransactionsComponent implements OnInit {
         }
       });
       this.fields = Array.from(distinctFields);
-      this.defaultSorting();
-
-      this.fetch(1, this.pageSize);
-
       this.addFilter();
+
+      let state: TransactionPageRequest = JSON.parse(localStorage.getItem(this.STORAGE_KEY));
+      if (state) {
+        this.sorts = state.pageable.sort;
+        this.fetchByState(state);
+      } else {
+        this.defaultSorting();
+        this.fetch(1, this.pageSize);
+      }
     });
   }
 
@@ -148,7 +155,7 @@ export class TransactionsComponent implements OnInit {
     }
     let sort = this.sorts.filter(sort => sort.property == column);
     if (sort.length < 1) {
-      this.sorts.push(new Sort("ASC", column));
+      this.sorts.unshift(new Sort("ASC", column));
     } else if (sort[0].direction == "ASC") {
       sort[0].direction = "DESC";
     } else {
@@ -162,12 +169,14 @@ export class TransactionsComponent implements OnInit {
     if (formArray) {
       for (let value of formArray.value) {
         if (value["value"] != "") {
-          if (this.transactionService.getType(value["field"]) == "date") {
+          if (this.transactionService.getType(this.data, value["field"]) == "date") {
             conditions.push(new Condition(value["field"], new Date(value["value"]).toISOString(), value["comparison"]));
-          } else if (this.transactionService.getType(value["field"]) == "number" && Array.isArray(value["field"])) {
+          } else if (this.transactionService.getType(this.data, value["field"]) == "number" && Array.isArray(value["field"])) {
             conditions.push(new Condition(value["field"], value["value"].map(item => {
               return parseInt(item)
             }), value["comparison"]));
+          } else if (this.transactionService.getType(this.data, value["field"]) == "bool") {
+            conditions.push(new Condition(value["field"], value["value"] == "true", value["comparison"]));
           } else {
             conditions.push(new Condition(value["field"], value["value"], value["comparison"]));
           }
@@ -181,7 +190,7 @@ export class TransactionsComponent implements OnInit {
   validateInclude(formArray: FormArray): void {
     if (formArray) {
       for (let value of formArray.value) {
-        if (this.transactionService.getType(value["field"]) == "number" && value["comparison"] == "in") {
+        if (this.transactionService.getType(this.data, value["field"]) == "number" && value["comparison"] == "in") {
           for (let number of value["value"]) {
             if (isNaN(number)) {
               throw new Error("Field " + value["field"] + "does not belong to type number");
@@ -199,13 +208,26 @@ export class TransactionsComponent implements OnInit {
       filter = this.toTransactionFilter(this.filterForm);
       filter.pageable.page = page - 1;
       filter.pageable.size = size;
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(filter));
       this.transactionService.get(filter).subscribe((response: Page<Transaction>) => {
         this.page = response;
       }, (error: ErrorDetail) => {
         this.notificationService.error("Error", error.detail);
       });
     } catch (error) {
-      this.notificationService.error("Error", error.message);
+      this.notificationService.error("Error", "Something went wrong, watch logs!");
+    }
+  }
+
+  fetchByState(state: TransactionPageRequest): void {
+    try {
+      this.transactionService.get(state).subscribe((response: Page<Transaction>) => {
+        this.page = response;
+      }, (error: ErrorDetail) => {
+        this.notificationService.error("Error", error.detail);
+      });
+    } catch (error) {
+      this.notificationService.error("Error", "Something went wrong, watch logs!");
     }
   }
 

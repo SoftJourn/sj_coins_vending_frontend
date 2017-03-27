@@ -35,10 +35,13 @@ export class TransactionFilterItemComponent implements OnInit {
       .subscribe(change => {
         this.filter.get("value").patchValue("");
         this.filter.get('comparison').patchValue("eq");
-        if (this.transactionService.getType2(this.data, change) == "text") {
+        if (this.transactionService.getType(this.data, change) == "text") {
           this.transactionService.filterAutocompleteData(change).subscribe(response => {
             this.autocomplete = response;
           });
+        }
+        if (this.transactionService.getType(this.data, change) == "bool") {
+          this.filter.get("value").patchValue(true);
         }
       });
   }

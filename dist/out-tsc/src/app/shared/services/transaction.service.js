@@ -29,32 +29,19 @@ export var TransactionService = (function () {
     TransactionService.prototype.getById = function (id) {
         return this.httpService.get(this.getUrl() + "/" + id).map(function (response) { return response.json(); });
     };
-    TransactionService.prototype.getType = function (field) {
-        var type;
-        switch (field) {
-            case 'account':
-            case 'destination':
-            case 'comment':
-            case 'status':
-            case 'error':
-                type = "text";
-                break;
-            case 'amount':
-                type = "number";
-                break;
-            case 'created':
-            case 'time':
-                type = "date";
-                break;
-        }
-        return type;
-    };
-    TransactionService.prototype.getType2 = function (object, field) {
+    TransactionService.prototype.getType = function (object, field) {
         var fields = field.split('.');
         for (var i = 0; i < fields.length; i++) {
             object = object[fields[i]];
         }
         return object;
+    };
+    TransactionService.prototype.isDateType = function (datetime) {
+        if (typeof datetime == "number") {
+            return false;
+        }
+        else
+            return !isNaN(Date.parse(datetime));
     };
     TransactionService = __decorate([
         Injectable(), 
