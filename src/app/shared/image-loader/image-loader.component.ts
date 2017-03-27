@@ -114,7 +114,19 @@ export class ImageLoaderComponent implements OnInit {
     return formData;
   }
 
-  //TODO delete image item components
+  //TODO somehow pass filename with blob
+  get loadedBlobs(): Blob[] {
+    let result = [];
+    for (let component of this._imageComponents) {
+      if (component.image == this._coverImage)
+        continue;
+      let blob = ImageLoaderComponent.covertToBlob(component.image.src);
+      if(blob)
+        result.push(blob);
+    }
+    return result;
+  }
+
   reset() {
     this._imageComponents.forEach(component => component.destroy());
   }
@@ -159,12 +171,18 @@ export class ImageLoaderComponent implements OnInit {
    * @returns {boolean} Returns true if successfully created blob and append it to formData
    */
   private static appendImageToFormData(formData: FormData, propName: string, image: HTMLImageElement): boolean {
-    try {
-      let blob = ModalImgCropperComponent.dataURItoBlob(image.src);
+    let blob = this.covertToBlob(image.src);
+    if(blob)
       formData.append(propName, blob, image.name);
-      return true;
-    } catch (error) {
+    else
       return false;
+  }
+
+  private static covertToBlob(src: string) {
+    try {
+      return ModalImgCropperComponent.dataURItoBlob(src);
+    } catch (error) {
+      return null;
     }
   }
 
@@ -189,5 +207,4 @@ export class ImageLoaderComponent implements OnInit {
     }
     ref.destroy();
   }
-
 }
