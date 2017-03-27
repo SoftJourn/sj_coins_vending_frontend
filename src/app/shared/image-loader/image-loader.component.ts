@@ -20,6 +20,8 @@ export class ImageLoaderComponent implements OnInit {
   //TODO use @ViewChildren. Make research. Make the same as in dynamic form
   private _imageComponents: UploadItemComponent[];
   private _coverImage: HTMLImageElement;
+  private _loadedImages = [];
+  private _cropperImage: HTMLImageElement;
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver) {
     this.height = 205;
@@ -50,19 +52,28 @@ export class ImageLoaderComponent implements OnInit {
     ref.instance.onDelete.subscribe((next) => this.findAndDestroy(ref));
     ref.instance.onClick.subscribe((next) => this._coverImage = ref.instance.image);
     ref.changeDetectorRef.detectChanges();
+    let loadedImage = this._loadedImages.shift();
+    if(loadedImage)
+      this.setUpCropper(loadedImage);
   }
 
-  onFileLoad(event) {
-    let imageFile = event.dataTransfer ? event.dataTransfer.files[0] : event.target.files[0];
-    let reader: FileReader = new FileReader();
-    let image = new Image();
+  onFilesLoad(event) {
+    let imageFiles = event.dataTransfer ? event.dataTransfer.files : event.target.files;
     let self = this;
-    image.name = imageFile.name;
-    reader.readAsDataURL(imageFile);
-    reader.onloadend = function (e) {
-      image.src = reader.result;
-      self.setUpCropper(image);
-    };
+    for (let i = 0; i < imageFiles.length; i++) {
+      let reader: FileReader = new FileReader();
+      let file = imageFiles[i];
+      let image = new Image();
+      image.name = file.name;
+      reader.readAsDataURL(file);
+      let last = i == imageFiles.length -1;
+      reader.onloadend = (e) => {
+        image.src = reader.result;
+        self._loadedImages.push(image);
+        if(last)
+          self.setUpCropper(self._loadedImages.shift());
+      };
+    }
     // Without this line event would not fire for the same file
     event.target.value = null;
   }
@@ -158,7 +169,7 @@ export class ImageLoaderComponent implements OnInit {
   }
 
   private setUpCropper(image: HTMLImageElement) {
-    this.cropper.cropImage = image;
+    this._cropperImage = image;
     this.cropper.visible = true;
   }
 
