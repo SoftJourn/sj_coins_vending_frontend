@@ -18,8 +18,8 @@
         <tbody>
         <tr *ngFor="let general of generalFields">
           <th>{{general}}</th>
-          <td *ngIf="transactionService.getType(general) != 'date'">{{transaction[general]}}</td>
-          <td *ngIf="transactionService.getType(general) == 'date'">{{transaction[general] | DatePipe}}</td>
+          <td *ngIf="!transactionService.isDateType(transaction[general])">{{transaction[general]}}</td>
+          <td *ngIf="transactionService.isDateType(transaction[general])">{{transaction[general] | DatePipe}}</td>
         </tr>
         </tbody>
       </table>
@@ -34,9 +34,8 @@
         <tbody>
         <tr *ngFor="let detail of blockFields">
           <th>{{detail}}</th>
-          <td *ngIf="transactionService.getType(detail) != 'date'">{{transaction.transactionStoring[detail]}}</td>
-          <td *ngIf="transactionService.getType(detail) == 'date'">{{transaction.transactionStoring[detail] |
-            DatePipe}}
+          <td *ngIf="!transactionService.isDateType(transaction.transactionStoring[detail])">{{transaction.transactionStoring[detail]}}</td>
+          <td *ngIf="transactionService.isDateType(transaction.transactionStoring[detail])">{{transaction.transactionStoring[detail] | DatePipe}}
           </td>
         </tr>
         </tbody>

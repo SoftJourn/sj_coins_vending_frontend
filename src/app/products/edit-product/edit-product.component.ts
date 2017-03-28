@@ -25,7 +25,6 @@ export class EditProductComponent implements OnInit {
 
   product: Product;
 
-  private subscription: Subscription;
   private productIndex: number;
 
   private _categories: Category[] = [];
@@ -45,13 +44,11 @@ export class EditProductComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.subscription = this.route.params.subscribe(
-      (params: any) => {
-        this.productIndex = +params['id'];
-        let finaleSource = this.formFinalSource(this.productIndex);
-        finaleSource.subscribe((obj) => this.setData(obj));
-      }
-    );
+    this.route.params.subscribe((params: any) => {
+      this.productIndex = +params['id'];
+      let finaleSource = this.formFinalSource(this.productIndex);
+      finaleSource.subscribe((obj) => this.setData(obj));
+    });
   }
 
   reset(): void {
@@ -74,7 +71,14 @@ export class EditProductComponent implements OnInit {
     }
   }
 
-  private submitImages(product) {
+  //TODO is valid not working
+  //Error: Expression has changed after it was checked. Previous value: 'true'. Current value: 'false'
+  isValid(): boolean {
+    return this.formComponent && this.imageLoaderComponent
+      && this.formComponent.isValid && !this.imageLoaderComponent.isEmpty();
+  }
+
+  submitImages(product) {
     let coverImageOutcome = this.updateCoverImage(product.id);
     let loadImagesOutcome = this.loadImages(product.id);
     let deleteImagesOutcome = this.deleteImages();
@@ -83,45 +87,38 @@ export class EditProductComponent implements OnInit {
       .concat(deleteImagesOutcome);
   }
 
-  updateCoverImage(productId: number): Observable<any> {
+  private updateCoverImage(productId: number): Observable<any> {
     let formData = this.imageLoaderComponent.getImageFormData('file');
     if (formData) {
       return this.productService.updateImage(productId, formData);
     } else {
       //TODO Update cover image by image id. Involved back-end changes. This is temporary solution
-      return this.productService.getImageBlob(this.imageLoaderComponent.image.src)
+      return this.productService.getImageBlob(this.imageLoaderComponent.coverImage.src)
         .flatMap(blob => {
-          let form = new FormData();
-          form.append('file', blob);
-          return this.productService.updateImage(productId, form);
-        }
-      );
+            let form = new FormData();
+            form.append('file', blob);
+            return this.productService.updateImage(productId, form);
+          }
+        );
     }
   }
 
-  loadImages(productId: number): Observable<any> {
-    let formData = this.imageLoaderComponent.getDescriptionImagesFormData("files");
-    if (formData)
-      return this.productService.updateImages(productId, formData);
-    else
-      return Observable.empty();
+  private loadImages(productId: number): Observable<any> {
+    let blobs = this.imageLoaderComponent.loadedBlobs;
+    let imagesOutcome: Observable<any> = Observable.empty();
+    blobs.forEach(blob => {
+      imagesOutcome = imagesOutcome.merge(this.productService.loadImage(productId, blob));
+    });
+    return imagesOutcome;
   }
 
-  deleteImages(): Observable<any> {
+  private deleteImages(): Observable<any> {
     let deletedUrls = this.imageLoaderComponent.getDeletedUrls(this._originImages);
     let deleteOutcome: Observable<any> = Observable.empty();
     deletedUrls
       .forEach(url => deleteOutcome = deleteOutcome.merge(this.productService.deleteImage(url)));
     return deleteOutcome;
   }
-
-  //TODO is valid not working
-  //Error: Expression has changed after it was checked. Previous value: 'true'. Current value: 'false'
-  isValid(): boolean{
-    return this.formComponent && this.imageLoaderComponent
-      && this.formComponent.isValid() && !this.imageLoaderComponent.isEmpty();
-  }
-
 
   private formFinalSource(productId: number) {
     let productSource = this.productService.findOne(productId).map(product => {
@@ -140,18 +137,20 @@ export class EditProductComponent implements OnInit {
     let urls = product.imageUrls;
     let i = 0;
     this._originCover = EditProductComponent.getAbsolutePath(product.imageUrl);
+    let coverImage;
     if (urls && urls.length) {
       this._originImages = urls.map(url => EditProductComponent.getAbsolutePath(url));
       for (i; i < urls.length; i++) {
-        let image = this.formatImage(urls[i], i);
-        if(image.src.localeCompare(this._originCover) != 0)
-        this.imageLoaderComponent.addImageItem(image);
+        let image = EditProductComponent.formatImage(urls[i], i);
+        if (image.src.localeCompare(this._originCover) == 0)
+          coverImage = image;
+        this.imageLoaderComponent.addImage(image);
       }
     }
-    this.imageLoaderComponent.addImageItem(this.formatImage(product.imageUrl,i));
+    this.imageLoaderComponent.coverImage = coverImage;
   }
 
-  private formatImage(url: string, i: number): HTMLImageElement {
+  private static formatImage(url: string, i: number): HTMLImageElement {
     let image = new Image();
     image.src = EditProductComponent.getAbsolutePath(url);
     image.name = "image" + i;

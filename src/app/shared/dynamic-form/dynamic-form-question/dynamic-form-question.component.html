@@ -1,0 +1,21 @@
+<div [formGroup]="form">
+  <!--TODO make classes dynamic-->
+  <label [attr.for]="question.key" class="col-sm-2">{{question.label}}</label>
+
+  <div [ngSwitch]="question.controlType" [ngClass]="css">
+
+    <input *ngSwitchCase="'textbox'" [formControlName]="question.key" class="form-control"
+           [id]="question.key" [type]="question.type">
+
+    <select [id]="question.key" *ngSwitchCase="'dropdown'" [formControlName]="question.key">
+      <option *ngFor="let opt of question.options" [value]="opt.key">{{opt.value}}</option>
+    </select>
+
+  </div>
+
+  <div class="col-sm-2" *ngIf="question.removable" (click)="remove($event)">
+    <button type="button" class="btn btn-danger">REMOVE</button>
+  </div>
+
+  <div class="errorMessage" *ngIf="!isValid">{{question.label}} is required</div>
+</div>

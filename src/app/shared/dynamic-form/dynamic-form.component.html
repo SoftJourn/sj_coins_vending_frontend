@@ -1,0 +1,13 @@
+<div>
+  <form (ngSubmit)="onSubmit()" [formGroup]="form">
+
+    <div *ngFor="let question of questions" class="form-row form-group row">
+      <df-question [question]="question" [form]="form" (onRemove)="removeFromList($event)"></df-question>
+    </div>
+
+  </form>
+
+  <div *ngIf="payLoad" class="form-row">
+    <strong>Saved the following values</strong><br>{{payLoad}}
+  </div>
+</div>

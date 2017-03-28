@@ -1,10 +1,10 @@
-import {Component, OnInit, Input} from "@angular/core";
+import {Component, OnInit, Input, ViewChild} from "@angular/core";
 import {Category} from "../../shared/entity/category";
 import {FormGroup, Validators, FormBuilder} from "@angular/forms";
 import {FormValidationStyles} from "../../shared/form-validation-styles";
-import {CategoryService} from "../../shared/services/category.service";
 import {NotificationsManager} from "../../shared/notifications.manager";
 import {Product} from "../../shared/entity/product";
+import {NutritionFactsFormComponent} from "./nutrition-facts-form/nutrition-facts-form.component";
 
 @Component({
   selector: 'app-product-form',
@@ -16,9 +16,10 @@ export class ProductFormComponent implements OnInit {
   @Input() categories: Category[];
   @Input() product: Product;
 
-  form: FormGroup;
-  formStyles: FormValidationStyles;
+  @ViewChild("nutritionFacts") nutritionFacts: NutritionFactsFormComponent;
 
+  formStyles: FormValidationStyles;
+  private _form: FormGroup;
 
   //Validators parameters
   private _digitsPattern = '\\d+';
@@ -26,14 +27,13 @@ export class ProductFormComponent implements OnInit {
   private _maxPriceInputLength = 5;
   private _maxNameInputLength = 50;
 
-  constructor(private categoryService: CategoryService,
-              private notify: NotificationsManager,
+  constructor(private notify: NotificationsManager,
               private fb: FormBuilder) {
   }
 
   ngOnInit() {
     this.product = new Product();
-    this.form = this.buildForm();
+    this._form = this.buildForm();
     this.formStyles = new FormValidationStyles(this.form);
   }
 
@@ -49,10 +49,11 @@ export class ProductFormComponent implements OnInit {
       ]],
       description: '',
       category: ['', Validators.required]
+      , nutritionFacts:this.nutritionFacts.form
     });
   }
 
-  isValid(): boolean {
+  get isValid(): boolean {
     return this.form.valid;
   }
 
@@ -61,6 +62,7 @@ export class ProductFormComponent implements OnInit {
     if (this.categories.length > 0)
       emptyProduct.category = this.categories[0];
     this.form.reset(emptyProduct);
+    this.nutritionFacts.removeCustomAddFacts();
     //TODO check if need this message
     this.notify.createSuccessfulMsg();
   }
@@ -72,6 +74,12 @@ export class ProductFormComponent implements OnInit {
     let selected = this.categories.filter(category => ProductFormComponent.isEquals(category, product.category));
     if (selected)
       this.product.category = selected[0];
+  }
+
+  get form(){
+    if(this.nutritionFacts.form)
+      this._form.setControl('nutritionFacts',this.nutritionFacts.form);
+    return this._form;
   }
 
   private static isEquals(category1: Category, category2: Category): boolean {

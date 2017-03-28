@@ -24,6 +24,12 @@ export class DropdownCascadeComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.control
+      .valueChanges
+      .distinctUntilChanged()
+      .subscribe(change => {
+        this.expand = this.expand == "expand" ? "" : "expand";
+      });
   }
 
   dropDownExpand(): void {

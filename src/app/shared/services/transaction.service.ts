@@ -33,33 +33,19 @@ export class TransactionService {
     return this.httpService.get(this.getUrl() + "/" + id).map(response => response.json());
   }
 
-  getType(field: string): string {
-    let type;
-    switch (field) {
-      case 'account':
-      case 'destination':
-      case 'comment':
-      case 'status':
-      case 'error':
-        type = "text";
-        break;
-      case 'amount':
-        type = "number";
-        break;
-      case 'created':
-      case 'time':
-        type = "date";
-        break;
-    }
-    return type;
-  }
-
-  getType2(object: any, field: string): string {
+  public getType(object: any, field: string): string {
     let fields = field.split('.');
     for (let i = 0; i < fields.length; i++) {
       object = object[fields[i]];
     }
     return object;
   }
+
+  public isDateType(datetime: any): boolean {
+    if (typeof datetime == "number") {
+      return false;
+    } else return !isNaN(Date.parse(datetime));
+  }
+
 
 }

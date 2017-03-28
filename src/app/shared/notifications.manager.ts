@@ -18,6 +18,7 @@ export class NotificationsManager {
   static errorNoImage = 'Please put product image!';
   static errorLargeImgSizeMsg = 'This image size is too big!';
   static updateSuccessful = 'Product has been updated successfully';
+  private static errorFactNameDuplicate = 'Fact name already exists';
 
   constructor(private notificationsService: NotificationsService) {
   }
@@ -78,5 +79,9 @@ export class NotificationsManager {
   errorLargeImgSizeMsg() {
     this.notificationsService.error(NotificationsManager.errorTitle, NotificationsManager.errorLargeImgSizeMsg);
 
+  }
+
+  errorFactNameDuplicate() {
+    this.notificationsService.error(NotificationsManager.errorTitle, NotificationsManager.errorFactNameDuplicate)
   }
 }
