@@ -11,7 +11,7 @@ export class ImageLoaderComponent implements OnInit {
 
 
   @ViewChild('imgList', {read: ViewContainerRef}) imgList;
-  @ViewChild('modalImageCropper') cropper: ModalImgCropperComponent;
+  @ViewChild(ModalImgCropperComponent) cropper: ModalImgCropperComponent;
 
   height: number;
   width: number;

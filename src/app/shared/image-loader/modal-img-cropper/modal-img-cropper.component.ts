@@ -1,18 +1,15 @@
 import {
   Component,
-  Input,
-  Output,
   EventEmitter,
-  trigger,
-  style,
-  animate,
-  transition,
-  ViewChild,
-  Type,
-  AnimationTransitionEvent, OnChanges, SimpleChanges, OnInit
-} from "@angular/core";
-import {ImageCropperComponent, CropperSettings} from "ng2-img-cropper";
-import {NotificationsManager} from "../../notifications.manager";
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+  ViewChild } from "@angular/core";
+import { CropperSettings, ImageCropperComponent } from "ng2-img-cropper";
+import { NotificationsManager } from "../../notifications.manager";
+import { animate, AnimationEvent, style, transition, trigger } from "@angular/animations";
 
 @Component({
   selector: 'app-modal-img-cropper',
@@ -30,7 +27,7 @@ import {NotificationsManager} from "../../notifications.manager";
     ])
   ]
 })
-export class ModalImgCropperComponent extends Type implements OnChanges {
+export class ModalImgCropperComponent implements OnChanges, OnInit {
 
   data: any;
   cropperSettings: CropperSettings;
@@ -44,9 +41,9 @@ export class ModalImgCropperComponent extends Type implements OnChanges {
   @Output() onCrop: EventEmitter<HTMLImageElement> = new EventEmitter<HTMLImageElement>();
   @Input() cropImage: HTMLImageElement;
 
-  constructor(private notify: NotificationsManager) {
+  constructor(private notify: NotificationsManager) {}
 
-    super();
+  ngOnInit(): void {
     let screenWidth = window.screen.availWidth;
 
     this.cropperSettings = new CropperSettings();
@@ -72,7 +69,7 @@ export class ModalImgCropperComponent extends Type implements OnChanges {
     this.data = {};
   }
 
-  animationDone(event: AnimationTransitionEvent) {
+  animationDone(event: AnimationEvent) {
     if (this.cropImage && this.cropper) {
       this.cropper.setImage(this.cropImage);
     }

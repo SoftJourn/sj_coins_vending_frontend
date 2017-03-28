@@ -36,7 +36,7 @@ import { ImageUploadService } from "./shared/services/image-upload.service";
 import { PurchasesComponent } from "./purchases/purchases.component";
 import { PurchaseService } from "./shared/services/purchase.service";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { ModalImgCropperComponent } from "./shared/modal-img-cropper/modal-img-cropper.component";
+import { ModalImgCropperComponent } from "./shared/image-loader/modal-img-cropper/modal-img-cropper.component";
 import { ImageCropperComponent } from "ng2-img-cropper";
 import { CoinManagementComponent } from "./coin-management/coin-management.component";
 import { ModalModule } from "angular2-modal";
@@ -62,6 +62,9 @@ import { PointSeparatorPipe } from "./shared/pipes/point-separator.pipe";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MachineRowDirective } from "./shared/directives/machine-row.directive";
 import { MachineCellDirective } from "./shared/directives/machine-cell.directive";
+import { NutritionFactsFormComponent } from "./products/product-form/nutrition-facts-form/nutrition-facts-form.component";
+import { DynamicFormComponent } from "./shared/dynamic-form/dynamic-form.component";
+import { DynamicFormQuestionComponent } from "./shared/dynamic-form/dynamic-form-question/dynamic-form-question.component";
 
 @NgModule({
   declarations: [
@@ -100,6 +103,9 @@ import { MachineCellDirective } from "./shared/directives/machine-cell.directive
     DropdownCascadeComponent,
     CascadeItemsComponent,
     PointSeparatorPipe,
+    NutritionFactsFormComponent,
+    DynamicFormComponent,
+    DynamicFormQuestionComponent,
     MachineRowDirective,
     MachineCellDirective,
   ],
