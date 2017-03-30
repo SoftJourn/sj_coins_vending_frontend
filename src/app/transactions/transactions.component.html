@@ -52,7 +52,7 @@
           <th colspan=8>No data to display!</th>
         </tr>
         <tr *ngFor="let content of page?.content; let i = index" (click)="openTransaction(content?.id)">
-          <th scope="row" class="number-column">{{i + 1}}</th>
+          <th scope="row" class="number-column">{{pageSize * page.number + i + 1}}</th>
           <td *ngFor="let field of fields">
             <div *ngIf="transactionService.getType(data,field) == 'date'" class="text-nowrap">{{content[field] |
               DatePipe}}
