@@ -42,7 +42,7 @@
       <table class="table table-hover">
         <thead class="thead-inverse">
         <tr>
-          <th>#</th>
+          <th class="number-column">#</th>
           <th *ngFor="let field of fields; let i = index" (click)="setSorting(field)">
             {{field | upperFirstSymbol}} <i [class]="setSortClass(field)"></i></th>
         </tr>
@@ -52,9 +52,11 @@
           <th colspan=8>No data to display!</th>
         </tr>
         <tr *ngFor="let content of page?.content; let i = index" (click)="openTransaction(content?.id)">
-          <th scope="row">{{i + 1}}</th>
+          <th scope="row" class="number-column">{{pageSize * page.number + i + 1}}</th>
           <td *ngFor="let field of fields">
-            <div *ngIf="transactionService.getType(data,field) == 'date'">{{content[field] | DatePipe}}</div>
+            <div *ngIf="transactionService.getType(data,field) == 'date'" class="text-nowrap">{{content[field] |
+              DatePipe}}
+            </div>
             <div *ngIf="transactionService.getType(data,field) != 'date'" class="text-overflow">{{content[field]}}
             </div>
           </td>

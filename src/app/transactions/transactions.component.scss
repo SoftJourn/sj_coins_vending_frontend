@@ -3,6 +3,10 @@
   cursor: pointer;
 }
 
+table {
+  table-layout: fixed;
+}
+
 div.horizontal-alignment {
   select.form-control {
     width: auto;
@@ -22,17 +26,19 @@ div.horizontal-alignment {
   justify-content: center;
 }
 
-.text-overflow {
+.number-column {
+  width: 50px;
 }
 
-@media (min-width: 1500px) and (max-width: 1700px) {
-  .text-overflow {
-    max-width: 200px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+.text-nowrap {
+  white-space: nowrap;
+}
 
+.text-overflow {
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 @media (max-width: 1500px) {

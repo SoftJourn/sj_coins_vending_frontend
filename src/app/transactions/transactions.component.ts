@@ -56,7 +56,7 @@ export class TransactionsComponent implements OnInit {
       this.data = response;
       let distinctFields = new Set();
       Object.keys(this.data).forEach(key => {
-        if (key != "id" && key != "remain" && key != "erisTransactionId") {
+        if (key != "id" && key != "remain" && key != "erisTransactionId" && key != "transactionStoring") {
           distinctFields.add(key);
         }
       });
@@ -178,7 +178,11 @@ export class TransactionsComponent implements OnInit {
           } else if (this.transactionService.getType(this.data, value["field"]) == "bool") {
             conditions.push(new Condition(value["field"], value["value"] == "true", value["comparison"]));
           } else {
-            conditions.push(new Condition(value["field"], value["value"], value["comparison"]));
+            if (value["value"] == "EMPTY") {
+              conditions.push(new Condition(value["field"], null, value["comparison"]));
+            } else {
+              conditions.push(new Condition(value["field"], value["value"], value["comparison"]));
+            }
           }
         }
       }

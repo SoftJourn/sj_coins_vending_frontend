@@ -36,12 +36,32 @@ export class TransactionFilterItemComponent implements OnInit {
         this.filter.get("value").patchValue("");
         this.filter.get('comparison').patchValue("eq");
         if (this.transactionService.getType(this.data, change) == "text") {
-          this.transactionService.filterAutocompleteData(change).subscribe(response => {
+          this.transactionService.filterAutocompleteData(change).subscribe((response: string[]) => {
+            for (let i = 0; i < response.length; i++) {
+              if (response[i] == null) {
+                response[i] = "EMPTY";
+              }
+            }
             this.autocomplete = response;
           });
         }
         if (this.transactionService.getType(this.data, change) == "bool") {
           this.filter.get("value").patchValue(true);
+        }
+      });
+    this.filter.get('value').valueChanges
+      .distinctUntilChanged()
+      .subscribe(change => {
+        if (change != "" && this.transactionService.getType(this.data, this.filter.get('field').value) == "text") {
+          let result = this.autocomplete.filter(value => {
+            if (value.includes("\n")) {
+              let replace = value.replace(/(?:\n)/g, "");
+              return replace.includes(change);
+            }
+          });
+          if (result.length == 1) {
+            this.filter.get('value').patchValue(result[0]);
+          }
         }
       });
   }

@@ -26,7 +26,10 @@ export class TransactionService {
   }
 
   public filterAutocompleteData(fieldToAutocomplete: string): Observable<string[]> {
-    return this.httpService.get(this.getUrl() + "/filter/autocomplete?field=" + fieldToAutocomplete).map(response => response.json());
+    return this.httpService.get(this.getUrl() + "/filter/autocomplete?field=" + fieldToAutocomplete)
+      .map(response => {
+        return response.json()
+      });
   }
 
   public getById(id: number): Observable<FullTransaction> {
