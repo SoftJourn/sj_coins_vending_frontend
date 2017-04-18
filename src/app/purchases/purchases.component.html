@@ -95,7 +95,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngIf="purchases == ''">
+        <tr *ngIf="!purchases">
           <th colspan=5>No data to display!</th>
         </tr>
         <tr *ngFor="let purchase of purchases; let i = index">
@@ -109,7 +109,7 @@
       </table>
     </div>
   </div>
-  <div class="row" *ngIf="purchases != ''">
+  <div class="row" *ngIf="purchases">
     <form [formGroup]="pageForm">
       <div class="form-group row horizontal-alignment">
         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-10 col-xl-8 vertical-align">

@@ -25,7 +25,7 @@ export class TransactionFilterItemComponent implements OnInit {
 
   autocomplete: string[];
 
-  constructor(protected transactionService: TransactionService) {
+  constructor(public transactionService: TransactionService) {
   }
 
   ngOnInit() {

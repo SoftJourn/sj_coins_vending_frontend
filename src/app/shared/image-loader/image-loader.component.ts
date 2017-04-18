@@ -36,6 +36,14 @@ export class ImageLoaderComponent implements OnInit {
     this._coverImage = value;
   }
 
+  get cropperImage(): HTMLImageElement {
+    return this._cropperImage;
+  }
+
+  set cropperImage(value: HTMLImageElement) {
+    this._cropperImage = value;
+  }
+
   ngOnInit() {
     this._imageComponents = [];
     this.setDefaultImage();

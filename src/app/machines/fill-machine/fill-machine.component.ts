@@ -52,8 +52,9 @@ import { MachineCellDirective } from "../../shared/directives/machine-cell.direc
 })
 export class FillMachineComponent implements OnInit, AfterContentInit {
   private cellFormState = 'inactive';
-  private selectedField: Field = null;
   private selectedRowId = -1;
+
+  selectedField: Field = null;
   machine: Machine;
   products: Product[];
   form: FormGroup;
@@ -67,8 +68,7 @@ export class FillMachineComponent implements OnInit, AfterContentInit {
               private productService: ProductService,
               private route: ActivatedRoute,
               private notificationService: NotificationsService,
-              private renderer: Renderer2,
-              @Inject(DOCUMENT) private document) {
+              private renderer: Renderer2) {
   }
 
   ngOnInit() {
@@ -156,7 +156,7 @@ export class FillMachineComponent implements OnInit, AfterContentInit {
     }
   }
 
-  applyCellFormState(rowId: number): string {
+  applyCellFormState(): string {
     if (this.selectedField != null) {
       return 'active';
     } else {

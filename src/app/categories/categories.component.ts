@@ -26,7 +26,7 @@ export class CategoriesComponent implements OnInit {
     this.updateCategories();
   }
 
-  private updateCategories() {
+  public updateCategories() {
     this.categoryService.findAll().subscribe(
       categories => this.categories = categories,
       error => {

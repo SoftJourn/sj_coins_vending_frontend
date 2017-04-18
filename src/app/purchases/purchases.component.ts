@@ -17,7 +17,7 @@ import {
 } from "@angular/forms";
 import {PurchaseFilter} from "./shared/purchase-filter";
 import {ErrorDetail} from "../shared/entity/error-detail";
-import {NotificationsService} from "angular2-notifications/lib/notifications.service";
+import {NotificationsService} from "angular2-notifications";
 import {Page} from "../shared/entity/page";
 
 @Component({
