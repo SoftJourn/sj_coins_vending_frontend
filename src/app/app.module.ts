@@ -4,7 +4,6 @@ import { CommonModule, HashLocationStrategy, LocationStrategy } from "@angular/c
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { HttpModule } from "@angular/http";
 import { AppComponent } from "./app.component";
-import { appRoutingProviders, routing } from "./app.routing";
 import { MdInputModule } from "@angular/material";
 import { MdButtonModule } from "@angular/material";
 import { MdIconModule } from "@angular/material";
@@ -65,6 +64,7 @@ import { MachineCellDirective } from "./shared/directives/machine-cell.directive
 import { NutritionFactsFormComponent } from "./products/product-form/nutrition-facts-form/nutrition-facts-form.component";
 import { DynamicFormComponent } from "./shared/dynamic-form/dynamic-form.component";
 import { DynamicFormQuestionComponent } from "./shared/dynamic-form/dynamic-form-question/dynamic-form-question.component";
+import { AppRoutingModule } from "./app-routing.module";
 
 @NgModule({
   declarations: [
@@ -114,7 +114,7 @@ import { DynamicFormQuestionComponent } from "./shared/dynamic-form/dynamic-form
     BrowserAnimationsModule,
     CommonModule,
     ReactiveFormsModule,
-    routing,
+    AppRoutingModule,
     MdInputModule,
     MdButtonModule,
     MdIconModule,
@@ -135,7 +135,6 @@ import { DynamicFormQuestionComponent } from "./shared/dynamic-form/dynamic-form
     TokenService,
     HttpService,
     AccountService,
-    appRoutingProviders,
     MachineService,
     DashboardService,
     CategoryService,

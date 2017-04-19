@@ -1,10 +1,12 @@
 import { Injectable } from "@angular/core";
 import { Http, Headers } from "@angular/http";
 import { Observable } from "rxjs/Rx";
-import { MediaType, HttpHeaders, UsernamePasswordCredentials } from "../";
 import { AppError } from "../app-error";
 import { AppProperties } from "../app.properties";
 import { Role } from "../entity/role";
+import { UsernamePasswordCredentials } from "../username-password-credentials";
+import { MediaType } from "../media-type";
+import { HttpHeaders } from "../http-headers";
 
 @Injectable()
 export class TokenService {
@@ -42,7 +44,7 @@ export class TokenService {
   }
 
   private static getExpirationTimeFromPayload(accessToken: string): Date {
-    var payload = JSON.parse(atob(accessToken.split('.')[1]));
+    let payload = JSON.parse(atob(accessToken.split('.')[1]));
 
     return new Date((payload['exp'] - 30) * 1000);
   }
