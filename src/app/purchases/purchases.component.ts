@@ -15,7 +15,7 @@ import {
   FormControl,
   FormGroup
 } from "@angular/forms";
-import {PurchaseFilter} from "./shared/purchase-filter";
+import {PurchaseFilter} from "../shared/dto/purchase-filter";
 import {ErrorDetail} from "../shared/entity/error-detail";
 import {NotificationsService} from "angular2-notifications";
 import {Page} from "../shared/entity/page";

@@ -96,3 +96,8 @@
     </div>
   </div>
 </div>
+<div class="row">
+  <div class="col-xl-12 col-lg-12">
+    <chart [options]="options" (load)="saveInstance($event.context)"></chart>
+  </div>
+</div>
