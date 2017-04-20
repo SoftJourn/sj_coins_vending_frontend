@@ -4,12 +4,8 @@ import { CommonModule, HashLocationStrategy, LocationStrategy } from "@angular/c
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { HttpModule } from "@angular/http";
 import { AppComponent } from "./app.component";
-import { MdInputModule } from "@angular/material";
-import { MdButtonModule } from "@angular/material";
-import { MdIconModule } from "@angular/material";
-import { OverlayModule } from "@angular/material";
+import { MdCardModule } from "@angular/material";
 import { MainInfoComponent } from "./main-info/main-info.component";
-import { LoginComponent } from "./login/login.component";
 import { TopNavComponent } from "./shared/top-nav/top-nav.component";
 import { SideBarComponent } from "./shared/side-bar/side-bar.component";
 import { Ng2BootstrapModule } from "ngx-bootstrap";
@@ -24,7 +20,6 @@ import { TokenService } from "./shared/services/token.service";
 import { AccountService } from "./shared/services/account.service";
 import { HttpService } from "./shared/services/http.service";
 import { UsersComponent } from "./users/users.component";
-import { MdCardModule } from "@angular/material";
 import { MachineSizePipe } from "./machines/machine-item/machine-size.pipe";
 import { ProductService } from "./shared/services/product.service";
 import { SimpleNotificationsModule } from "angular2-notifications";
@@ -65,12 +60,12 @@ import { NutritionFactsFormComponent } from "./products/product-form/nutrition-f
 import { DynamicFormComponent } from "./shared/dynamic-form/dynamic-form.component";
 import { DynamicFormQuestionComponent } from "./shared/dynamic-form/dynamic-form-question/dynamic-form-question.component";
 import { AppRoutingModule } from "./app-routing.module";
+import { LoginModule } from "./login/login.module";
 
 @NgModule({
   declarations: [
     AppComponent,
     MainInfoComponent,
-    LoginComponent,
     TopNavComponent,
     SideBarComponent,
     ProductsComponent,
@@ -115,11 +110,7 @@ import { AppRoutingModule } from "./app-routing.module";
     CommonModule,
     ReactiveFormsModule,
     AppRoutingModule,
-    MdInputModule,
-    MdButtonModule,
-    MdIconModule,
     MdCardModule,
-    OverlayModule,
     HttpModule,
     Ng2BootstrapModule.forRoot(),
     SimpleNotificationsModule.forRoot(),
@@ -129,7 +120,8 @@ import { AppRoutingModule } from "./app-routing.module";
     BootstrapModalModule,
     RlTagInputModule,
     Md2Module.forRoot(),
-    ImageCropperModule
+    ImageCropperModule,
+    LoginModule
   ],
   providers: [
     TokenService,

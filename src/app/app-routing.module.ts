@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
 import { AuthGuard } from "./auth.guard";
 import { MainInfoComponent } from "./main-info/main-info.component";
 import { DashboardComponent } from "./dashboard/dashboard.component";
@@ -17,7 +17,6 @@ import { UsersComponent } from "./users/users.component";
 import { EditProductComponent } from "./products/edit-product/edit-product.component";
 import { PurchasesComponent } from "./purchases/purchases.component";
 import { EditMachineComponent } from "./machines/edit-machine/edit-machine.component";
-import { LoginComponent } from "./login/login.component";
 
 const routes: Routes = [
   {path: '', pathMatch: 'full', redirectTo: 'main'},
@@ -39,8 +38,7 @@ const routes: Routes = [
     {path: 'purchases', component: PurchasesComponent, canActivate: [AuthGuard]},
     {path: 'machines/:id/edit', component: EditMachineComponent, canActivate: [AuthGuard]}
   ]
-  },
-  {path: 'login', component: LoginComponent}
+  }
 ];
 
 @NgModule({
