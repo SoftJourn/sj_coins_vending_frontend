@@ -65,6 +65,8 @@ import { MachineCellDirective } from "./shared/directives/machine-cell.directive
 import { NutritionFactsFormComponent } from "./products/product-form/nutrition-facts-form/nutrition-facts-form.component";
 import { DynamicFormComponent } from "./shared/dynamic-form/dynamic-form.component";
 import { DynamicFormQuestionComponent } from "./shared/dynamic-form/dynamic-form-question/dynamic-form-question.component";
+import { ChartModule } from "angular2-highcharts";
+import * as highcharts from "highcharts";
 
 @NgModule({
   declarations: [
@@ -129,7 +131,8 @@ import { DynamicFormQuestionComponent } from "./shared/dynamic-form/dynamic-form
     BootstrapModalModule,
     RlTagInputModule,
     Md2Module.forRoot(),
-    ImageCropperModule
+    ImageCropperModule,
+    ChartModule.forRoot(highcharts)
   ],
   providers: [
     TokenService,
