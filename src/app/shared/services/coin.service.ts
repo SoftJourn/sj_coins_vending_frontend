@@ -11,7 +11,10 @@ import {Transaction} from "../../coin-management/transaction";
 import {MediaType} from "../media-type";
 import {ResultDTO} from "../../coin-management/result-dto";
 import {CheckDTO} from "../../coin-management/check-dto";
-import {Response} from "@angular/http";
+import {
+  Response,
+  ResponseContentType
+} from "@angular/http";
 
 @Injectable()
 export class CoinService {

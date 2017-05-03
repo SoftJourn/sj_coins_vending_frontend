@@ -20,6 +20,11 @@ export class TransactionFilterItemComponent implements OnInit {
   @Input('formGroup')
   filter: FormGroup;
 
+  @Input('index')
+  index: number;
+
+  datalist: string;
+
   isOpen: boolean;
   datetimeValue: string;
 
@@ -29,6 +34,7 @@ export class TransactionFilterItemComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.datalist = "autocomplete" + this.index;
     this.filter.get('field')
       .valueChanges
       .distinctUntilChanged()
@@ -66,6 +72,10 @@ export class TransactionFilterItemComponent implements OnInit {
       });
   }
 
+  /**
+   * Method adds value into multi value field
+   * @param e
+   */
   addWhileInclude(e): void {
     let inputs;
     if (this.filter.get("value").value == "") {
@@ -77,6 +87,10 @@ export class TransactionFilterItemComponent implements OnInit {
     this.filter.get("value").patchValue(Array.from(inputs));
   }
 
+  /**
+   * Method removes value from multi value field
+   * @param e
+   */
   removeWhileInclude(e): void {
     let inputs = new Set(this.filter.get("value").value);
     inputs.delete(e);

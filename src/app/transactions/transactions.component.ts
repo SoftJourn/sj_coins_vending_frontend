@@ -19,6 +19,7 @@ import {Router} from "@angular/router";
 import {NotificationsService} from "angular2-notifications";
 import {ErrorDetail} from "../shared/entity/error-detail";
 import {Transaction} from "../shared/entity/transaction";
+import * as fileSaver from 'file-saver';
 
 @Component({
   selector: 'app-transactions',
@@ -44,6 +45,8 @@ export class TransactionsComponent implements OnInit {
   pageDirectionLinks: boolean = true;
   pageItemsSize: string = '';
 
+  state: TransactionPageRequest;
+
   constructor(private transactionService: TransactionService,
               private router: Router,
               private notificationService: NotificationsService) {
@@ -51,7 +54,7 @@ export class TransactionsComponent implements OnInit {
 
   ngOnInit() {
     this.buildPageSizeForm();
-    this.buildFilterForm();
+    this.filterForm = new FormArray([]);
     this.transactionService.getFilterData().subscribe(response => {
       this.data = response;
       let distinctFields = new Set();
@@ -63,10 +66,10 @@ export class TransactionsComponent implements OnInit {
       this.fields = Array.from(distinctFields);
       this.addFilter();
 
-      let state: TransactionPageRequest = JSON.parse(localStorage.getItem(this.STORAGE_KEY));
-      if (state) {
-        this.sorts = state.pageable.sort;
-        this.fetchByState(state);
+      this.state = JSON.parse(localStorage.getItem(this.STORAGE_KEY));
+      if (this.state) {
+        this.sorts = this.state.pageable.sort;
+        this.fetchByState(this.state);
       } else {
         this.defaultSorting();
         this.fetch(1, this.pageSize);
@@ -74,6 +77,9 @@ export class TransactionsComponent implements OnInit {
     });
   }
 
+  /**
+   * Method prepares and create paging form
+   */
   private buildPageSizeForm(): void {
     this.pageForm = new FormGroup({
       pageSize: new FormControl('10')
@@ -89,10 +95,9 @@ export class TransactionsComponent implements OnInit {
     });
   }
 
-  private buildFilterForm(): void {
-    this.filterForm = new FormArray([]);
-  }
-
+  /**
+   * Method adds new item to filter
+   */
   addFilter(): void {
     this.filterForm.push(new FormGroup({
       field: new FormControl('', Validators.required),
@@ -103,17 +108,26 @@ export class TransactionsComponent implements OnInit {
     this.filterForm.controls[this.filterForm.controls.length - 1].get('comparison').patchValue("eq");
   }
 
-
+  /**
+   * Method submits current filter
+   */
   onSubmit(): void {
     this.fetch(1, this.pageSize);
   }
 
+  /**
+   * Method cancels current filter and make request using default filter's data
+   */
   onCancel(): void {
     this.filterForm.controls = [];
     this.addFilter();
     this.fetch(1, this.pageSize);
   }
 
+  /**
+   * Method changes page form depends on window size
+   * @param event
+   */
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     if (event.target.innerWidth > 800) {
@@ -123,18 +137,34 @@ export class TransactionsComponent implements OnInit {
     }
   }
 
+  /**
+   * Method show and hides transaction filter
+   */
   showFilter(): void {
     this.hideFilter = !this.hideFilter;
   }
 
+  /**
+   * Method opens specific transaction page
+   * @param id
+   */
   openTransaction(id: number): void {
     this.router.navigate(['/main/transactions/' + id]);
   }
 
+  /**
+   * Method changes page number and makes request to get new transaction
+   * @param number
+   */
   changePage(number: number): void {
     this.fetch(number, this.pageSize);
   }
 
+  /**
+   * Method changes table's sort condition
+   * @param column
+   * @returns {any}
+   */
   setSortClass(column: string): string {
     if (!this.sorts) {
       this.sorts = new Array<Sort>();
@@ -149,6 +179,10 @@ export class TransactionsComponent implements OnInit {
     }
   }
 
+  /**
+   * Method sets sorting and makes request to get transactions with new sort data
+   * @param column
+   */
   setSorting(column: string): void {
     if (!this.sorts) {
       this.sorts = new Array<Sort>();
@@ -164,6 +198,11 @@ export class TransactionsComponent implements OnInit {
     this.fetch(1, this.pageSize);
   }
 
+  /**
+   * Method converts filter's items data into Conditions array
+   * @param formArray
+   * @returns {TransactionPageRequest}
+   */
   toTransactionFilter(formArray: FormArray): TransactionPageRequest {
     let conditions = new Array<Condition>();
     if (formArray) {
@@ -191,6 +230,10 @@ export class TransactionsComponent implements OnInit {
     return new TransactionPageRequest(conditions, pageable);
   }
 
+  /**
+   * Method validates filter if that contains numbers and if it is a number field
+   * @param formArray
+   */
   validateInclude(formArray: FormArray): void {
     if (formArray) {
       for (let value of formArray.value) {
@@ -205,6 +248,12 @@ export class TransactionsComponent implements OnInit {
     }
   }
 
+  /**
+   * Method makes request to get transactions, using filter data
+   *
+   * @param page
+   * @param size
+   */
   fetch(page: number, size: number): void {
     let filter;
     try {
@@ -215,6 +264,7 @@ export class TransactionsComponent implements OnInit {
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(filter));
       this.transactionService.get(filter).subscribe((response: Page<Transaction>) => {
         this.page = response;
+        this.state = JSON.parse(localStorage.getItem(this.STORAGE_KEY));
       }, (error: ErrorDetail) => {
         this.notificationService.error("Error", error.detail);
       });
@@ -223,6 +273,10 @@ export class TransactionsComponent implements OnInit {
     }
   }
 
+  /**
+   * Method makes request to get transactions, using filter's state
+   * @param state
+   */
   fetchByState(state: TransactionPageRequest): void {
     try {
       this.transactionService.get(state).subscribe((response: Page<Transaction>) => {
@@ -235,6 +289,27 @@ export class TransactionsComponent implements OnInit {
     }
   }
 
+  /**
+   * Method makes request to get excel file of transactions, using filter's state
+   */
+  report(): void {
+    try {
+      this.state.pageable.page = 0;
+      this.state.pageable.size = 2147483647;
+      this.transactionService.getReport(this.state).subscribe((response: Blob) => {
+        fileSaver.saveAs(response, "Transactions report.xls");
+      }, (error: ErrorDetail) => {
+        this.notificationService.error("Error", error.detail);
+      });
+    } catch (error) {
+      this.notificationService.error("Error", "Something went wrong, watch logs!");
+    }
+  }
+
+  /**
+   * Method returns index of first non object element
+   * @returns {number}
+   */
   private getIndexOfFirstSingle(): number {
     for (let i = 0; i < this.fields.length; i++) {
       if (!(this.data[this.fields[i]] instanceof Object)) {
@@ -243,6 +318,9 @@ export class TransactionsComponent implements OnInit {
     }
   }
 
+  /**
+   * Method sets default sorting for transactions page
+   */
   private defaultSorting(): void {
     for (let field of this.fields) {
       if (this.data[field] == "date") {

@@ -21,6 +21,7 @@ import {ResultDTO} from "./result-dto";
 import {CheckDTO} from "./check-dto";
 import {ErrorDetail} from "../shared/entity/error-detail";
 import {Transaction} from "./transaction";
+import * as fileSaver from 'file-saver';
 
 @Component({
   selector: 'app-coin-management',
@@ -313,19 +314,8 @@ export class CoinManagementComponent implements OnInit {
 
   // download template file from server
   public getTemplate(): void {
-    let reader = new FileReader();
     this.coinService.getTemplate().subscribe(response => {
-      reader.readAsDataURL(response);
-      reader.onloadend = () => {
-        let a = document.createElement("a");
-        document.body.appendChild(a);
-        a.setAttribute("style", "display: none");
-        a.href = reader.result;
-        a.target = '_blank';
-        a.download = 'template.csv';
-        a.click();
-        document.body.removeChild(a);
-      }
+      fileSaver.saveAs(response, "template.csv");
     });
   }
 

@@ -1,4 +1,6 @@
 <div class="row" [formGroup]="filter">
+
+  <!--field with dropdown-->
   <div class="form-group col-sm-4 col-md-4 col-lg-4 col-xl-4">
     <div class="input-group">
       <div class="input-group-addon">Field</div>
@@ -7,12 +9,14 @@
                             [control]="filter.controls['field']"></app-dropdown-cascade>
     </div>
   </div>
+
+  <!--value to select with autocomplete-->
   <div class="form-group col-sm-4 col-md-4 col-lg-4 col-xl-4">
     <input class="form-control" *ngIf="transactionService.getType(data,filter.controls['field'].value) == 'text' &&
      filter.controls['comparison'].value != 'in'" type="text"
            placeholder="Enter {{filter.controls['field'].value | pointSeparator}}" formControlName="value"
-           list="autocomplete">
-    <datalist id="autocomplete">
+           [attr.list]="datalist">
+    <datalist id="{{datalist}}">
       <option *ngFor="let value of autocomplete">{{value}}</option>
     </datalist>
     <input class="form-control" *ngIf="transactionService.getType(data,filter.controls['field'].value) == 'number' &&
@@ -38,6 +42,9 @@
                   placeholder="Enter {{filter.controls['field'].value | pointSeparator}}"
                   (addTag)="addWhileInclude($event)" (removeTag)="removeWhileInclude($event)"></rl-tag-input>
   </div>
+
+
+  <!--condition to select-->
   <div class="form-group col-sm-4 col-md-4 col-lg-4 col-xl-4">
     <div class="input-group">
       <div class="input-group-addon">Condition</div>

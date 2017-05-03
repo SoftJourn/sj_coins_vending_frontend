@@ -6,6 +6,7 @@ import {AppProperties} from "../app.properties";
 import {TransactionPageRequest} from "../../transactions/transaction-page-request";
 import {FullTransaction} from "../entity/full-transaction";
 import {Page} from "../entity/page";
+import {Response} from "@angular/http";
 
 @Injectable()
 export class TransactionService {
@@ -34,6 +35,18 @@ export class TransactionService {
 
   public getById(id: number): Observable<FullTransaction> {
     return this.httpService.get(this.getUrl() + "/" + id).map(response => response.json());
+  }
+
+  public getReport(transactionPageRequest: TransactionPageRequest): Observable<Blob> {
+    return this.httpService.post(this.getUrl() + "/export", transactionPageRequest).map((response: Response) => {
+      let byteCharacters = atob(response.text());
+      let byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      let byteArray = new Uint8Array(byteNumbers);
+      return new Blob([byteArray], {type: 'application/vnd.ms-excel'});
+    });
   }
 
   public getType(object: any, field: string): string {

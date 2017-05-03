@@ -34,8 +34,11 @@
         <tbody>
         <tr *ngFor="let detail of blockFields">
           <th>{{detail}}</th>
-          <td *ngIf="!transactionService.isDateType(transaction.transactionStoring[detail])">{{transaction.transactionStoring[detail]}}</td>
-          <td *ngIf="transactionService.isDateType(transaction.transactionStoring[detail])">{{transaction.transactionStoring[detail] | DatePipe}}
+          <td *ngIf="!transactionService.isDateType(transaction.transactionStoring[detail])">
+            {{transaction.transactionStoring[detail]}}
+          </td>
+          <td *ngIf="transactionService.isDateType(transaction.transactionStoring[detail])">
+            {{transaction.transactionStoring[detail] | DatePipe}}
           </td>
         </tr>
         </tbody>
@@ -49,6 +52,9 @@
         </tr>
         </thead>
         <tbody>
+        <tr *ngIf="callingFields">
+          <th colspan="2">No data to display!</th>
+        </tr>
         <tr *ngFor="let calling of callingFields">
           <th>{{calling}}</th>
           <td>{{transaction.transactionStoring.callingValue[calling]}}</td>
