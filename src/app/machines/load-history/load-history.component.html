@@ -1,0 +1,123 @@
+<div class="container-fluid">
+  <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 row header-container">
+    <div class="col-sm-8 col-md-8 col-lg-8 col-xl-8">
+      <h2>History</h2>
+    </div>
+    <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4 header-buttons-container">
+      <button class="btn btn-success" (click)="showFilter()">
+        <i class="fa fa-filter btn-icon"></i>Filter
+      </button>
+    </div>
+  </div>
+</div>
+<hr>
+<div class="container-fluid">
+  <div class="row" [hidden]="hideFilter">
+    <div class="col-xl-1"></div>
+    <div class="col-md-12 col-lg-12 col-xl-10">
+      <div class="card card-block card-outline-success">
+        <form class="form" [formGroup]="filterForm" (ngSubmit)="onSubmit()">
+          <div class="row">
+            <div class="col-md-12 col-lg-12 col-xl-12 header-buttons-container">
+              <div class="form-group col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                <div class="input-group">
+                  <div class="input-group-addon">Start</div>
+                  <input class="form-control" disabled [value]="start | DatePipe" *ngIf="start">
+                  <input class="form-control" disabled *ngIf="!start">
+                  <md2-datepicker type="datetime" [isOpen]="isStartOpen" (change)="dateTimeSelected('start',$event)"
+                                  style="display: none"></md2-datepicker>
+                  <div class="input-group-addon" (click)="openDatepicker('isStartOpen')">
+                    <i class="fa fa-calendar fa-lg"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group col-sm-4 col-md-4 col-lg-4 col-xl-4">
+                <div class="input-group">
+                  <div class="input-group-addon">Due</div>
+                  <input class="form-control" disabled [value]="due | DatePipe" *ngIf="due">
+                  <input class="form-control" disabled *ngIf="!due">
+                  <md2-datepicker type="datetime" [isOpen]="isDueOpen" (change)="dateTimeSelected('due',$event)"
+                                  style="display: none"></md2-datepicker>
+                  <div class="input-group-addon" (click)="openDatepicker('isDueOpen')">
+                    <i class="fa fa-calendar fa-lg"></i>
+                  </div>
+                </div>
+              </div>
+                <button type="submit" class="btn btn-success" [disabled]="!filterForm.valid">Submit
+                </button>
+                <button type="button" class="btn btn-success" (click)="report()">Export
+                </button>
+                <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="col-xl-1"></div>
+  </div>
+  <div class="row">
+    <div class="col-md-12 col-lg-12 col-xl-12 x-scroll">
+      <table class="table table-hover">
+        <thead class="thead-inverse">
+        <tr>
+          <th class="number-column">#</th>
+          <th>Product</th>
+          <th>Price(Coin)</th>
+          <th>Cell</th>
+          <th>Count</th>
+          <th>Total(Coin)</th>
+          <th>Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngIf="page?.content.length == 0">
+          <th colspan=7>No data to display!</th>
+        </tr>
+        <tr *ngFor="let content of page?.content; let i = index">
+          <th scope="row" class="number-column">{{i+1}}</th>
+          <td>
+            {{content?.productName}}
+          </td>
+          <td>
+            {{content?.productPrice}}
+          </td>
+          <td>
+            {{content?.cell}}
+          </td>
+          <td>
+            {{content?.count}}
+          </td>
+          <td>
+            {{content?.total}}
+          </td>
+          <td>
+            <div class="text-nowrap">{{content?.date | DatePipe}}
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="row" *ngIf="page?.content.length > 0">
+    <form [formGroup]="pageForm">
+      <div class="form-group row horizontal-alignment">
+        <div class="col-md-12 col-lg-10 col-xl-9 vertical-align">
+          <div class="col-md-2 col-lg-2 col-xl-2">
+            <select id="size" class="form-control" formControlName="pageSize" data-dropup-auto="false">
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+            </select>
+          </div>
+          <div class="col-md-10 col-lg-6 col-xl-7">
+            <ngb-pagination [collectionSize]="page?.totalElements" [maxSize]="pageItems" [page]="page?.number+1"
+                            [rotate]="true" [size]="pageItemsSize" [directionLinks]="pageDirectionLinks"
+                            [pageSize]="page?.size" (pageChange)="changePage($event)">
+            </ngb-pagination>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

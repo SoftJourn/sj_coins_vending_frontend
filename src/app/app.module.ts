@@ -87,6 +87,7 @@ import {ChartModule} from "angular2-highcharts";
 import {HighchartsStatic} from "angular2-highcharts/dist/HighchartsService";
 import * as highcharts from "highcharts";
 import * as drilldown from "highcharts/modules/drilldown";
+import { LoadHistoryComponent } from './machines/load-history/load-history.component';
 
 export function highchartsFactory() {
   const hc = highcharts;
@@ -136,6 +137,7 @@ export function highchartsFactory() {
     DynamicFormQuestionComponent,
     MachineRowDirective,
     MachineCellDirective,
+    LoadHistoryComponent,
   ],
   entryComponents: [UploadItemComponent],
   imports: [

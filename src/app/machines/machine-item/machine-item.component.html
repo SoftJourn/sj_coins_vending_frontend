@@ -11,6 +11,9 @@
         <button class="btn btn-success" [routerLink]="['/main/machines/fill', machine.id]">
           <i class="fa fa-upload btn-icon"></i>Fill
         </button>
+        <button class="btn btn-success" [routerLink]="['/main/machines/history', machine.id]">
+          <i class="fa fa-history btn-icon"></i>Load History
+        </button>
         <button class="btn btn-danger" (click)="deleteMachine()"><i class="fa fa-trash btn-icon"></i>Delete</button>
       </div>
     </md-card-actions>

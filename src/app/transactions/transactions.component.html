@@ -50,7 +50,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngIf="page?.content == []">
+        <tr *ngIf="page?.content.length == 0">
           <th [attr.colspan]="fields.length + 1">No data to display!</th>
         </tr>
         <tr *ngFor="let content of page?.content; let i = index" (click)="openTransaction(content?.id)">
@@ -67,7 +67,7 @@
       </table>
     </div>
   </div>
-  <div class="row" *ngIf="page?.content != ''">
+  <div class="row" *ngIf="page?.content.length > 0">
     <form [formGroup]="pageForm">
       <div class="form-group row horizontal-alignment">
         <div class="col-md-12 col-lg-10 col-xl-9 vertical-align">
