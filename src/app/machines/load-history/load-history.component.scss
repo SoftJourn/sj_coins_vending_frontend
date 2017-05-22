@@ -1,0 +1,104 @@
+.table td, th {
+  text-align: center;
+  cursor: pointer;
+}
+
+table {
+  table-layout: fixed;
+}
+
+div.horizontal-alignment {
+  select.form-control {
+    width: auto;
+  }
+}
+
+.horizontal-alignment {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center
+}
+
+.vertical-align {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.number-column {
+  width: 50px;
+}
+
+.text-nowrap {
+  white-space: nowrap;
+}
+
+.text-overflow {
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 1500px) {
+  div.x-scroll {
+    overflow-x: scroll;
+    -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+  }
+  table {
+    width: 200%;
+    max-width: inherit;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1080px) {
+  .col-lg-3 {
+    float: left;
+    width: 100%;
+  }
+}
+
+@media (min-width: 800px) and (max-width: 1280px) {
+  .col-lg-6 {
+    float: left;
+    width: 100%;
+  }
+  .col-xl-6 {
+    float: left;
+    width: 100%;
+  }
+}
+
+@media (max-width: 320px) {
+  .vertical-align {
+    display: block;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 360px) {
+  .vertical-align {
+    display: block;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .vertical-align {
+    display: block;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 568px) {
+  .vertical-align {
+    display: block;
+    align-items: center;
+    justify-content: center;
+  }
+}

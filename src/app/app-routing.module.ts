@@ -17,6 +17,7 @@ import { UsersComponent } from "./users/users.component";
 import { EditProductComponent } from "./products/edit-product/edit-product.component";
 import { PurchasesComponent } from "./purchases/purchases.component";
 import { EditMachineComponent } from "./machines/edit-machine/edit-machine.component";
+import {LoadHistoryComponent} from "./machines/load-history/load-history.component";
 
 const routes: Routes = [
   {path: '', pathMatch: 'full', redirectTo: 'main'},
@@ -28,6 +29,7 @@ const routes: Routes = [
     {path: 'machines', component: MachinesComponent, canActivate: [AuthGuard]},
     {path: 'machines/add', component: AddMachineComponent, canActivate: [AuthGuard]},
     {path: 'machines/fill/:id', component: FillMachineComponent, canActivate: [AuthGuard]},
+    {path: 'machines/history/:id', component: LoadHistoryComponent, canActivate: [AuthGuard]},
     {path: 'coins', component: CoinManagementComponent, canActivate: [AuthGuard]},
     {path: 'transactions', component: TransactionsComponent, canActivate: [AuthGuard]},
     {path: 'transactions/:id', component: TransactionComponent, canActivate: [AuthGuard]},
