@@ -14,8 +14,10 @@ import {
   Machine
 } from "../shared/machine";
 import {
+  AbstractControl,
   FormControl,
   FormGroup,
+  ValidatorFn,
   Validators
 } from "@angular/forms";
 import {ActivatedRoute} from "@angular/router";
@@ -129,8 +131,8 @@ export class FillMachineComponent implements OnInit, AfterContentInit {
       product: new FormControl('', Validators.required),
       count: new FormControl('', [
         Validators.required,
-        Validators.pattern('^[1-9]\\d*'),
-        Validators.min(0)
+        this.minValue(0),
+        Validators.pattern('^[1-9]\\d*')
       ])
     });
   }
@@ -281,8 +283,8 @@ export class FillMachineComponent implements OnInit, AfterContentInit {
 
     this.form.get('count').setValidators([
       Validators.required,
-      Validators.pattern('^[1-9]\\d*'),
-      Validators.min(oldFieldState.count)
+      this.minValue(oldFieldState.count),
+      Validators.pattern('^[1-9]\\d*')
     ]);
   }
 
@@ -292,5 +294,16 @@ export class FillMachineComponent implements OnInit, AfterContentInit {
     } else {
       return "";
     }
+  }
+
+  minValue(min: Number): ValidatorFn {
+    return (control: AbstractControl): {[key: string]: any} => {
+      const input = control.value,
+        isValid = input <= min;
+      if(isValid)
+        return { 'minValue': {min: min} }
+      else
+        return null;
+    };
   }
 }
