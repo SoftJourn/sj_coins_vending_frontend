@@ -15,10 +15,7 @@
     <input class="form-control" *ngIf="transactionService.getType(data,filter.controls['field'].value) == 'text' &&
      filter.controls['comparison'].value != 'in'" type="text"
            placeholder="Enter {{filter.controls['field'].value | pointSeparator}}" formControlName="value"
-           [attr.list]="datalist">
-    <datalist id="{{datalist}}">
-      <option *ngFor="let value of autocomplete">{{value}}</option>
-    </datalist>
+           [ngbTypeahead]="search">
     <input class="form-control" *ngIf="transactionService.getType(data,filter.controls['field'].value) == 'number' &&
      filter.controls['comparison'].value != 'in'"
            type="number"

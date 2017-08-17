@@ -36,6 +36,7 @@ export class TransactionComponent implements OnInit {
               return key;
             }
           });
+          console.log(this.generalFields);
           if (this.transaction["transactionStoring"]) {
             this.blockFields = Object.keys(this.transaction.transactionStoring).filter(key => {
               if (key != "transaction" && key != "callingValue" && key!= "id")
