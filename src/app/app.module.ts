@@ -137,7 +137,7 @@ export function highchartsFactory() {
     DynamicFormQuestionComponent,
     MachineRowDirective,
     MachineCellDirective,
-    LoadHistoryComponent,
+    LoadHistoryComponent
   ],
   entryComponents: [UploadItemComponent],
   imports: [

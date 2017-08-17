@@ -54,6 +54,7 @@ export class FillMachineComponent implements OnInit, AfterContentInit {
   private cellFormState = 'inactive';
   private selectedRowId = -1;
 
+  count: number = 0;
   selectedField: Field = null;
   machine: Machine;
   products: Product[];
@@ -136,9 +137,11 @@ export class FillMachineComponent implements OnInit, AfterContentInit {
       let product = this.products.find(product => product.id === field.product.id);
       productControl.patchValue(product);
       countControl.patchValue(field.count);
+      this.count = field.count;
     } else {
       productControl.patchValue('');
       countControl.patchValue('');
+      this.count = 0;
     }
 
     this.form.markAsPristine();

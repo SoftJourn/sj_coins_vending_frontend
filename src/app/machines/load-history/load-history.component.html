@@ -43,11 +43,11 @@
                   </div>
                 </div>
               </div>
-                <button type="submit" class="btn btn-success" [disabled]="!filterForm.valid">Submit
-                </button>
-                <button type="button" class="btn btn-success" (click)="report()">Export
-                </button>
-                <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+              <button type="submit" class="btn btn-success" [disabled]="!filterForm.valid">Submit
+              </button>
+              <button type="button" class="btn btn-success" (click)="report()">Export
+              </button>
+              <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
             </div>
           </div>
         </form>
@@ -94,6 +94,15 @@
             <div class="text-nowrap">{{content?.date | DatePipe}}
             </div>
           </td>
+        </tr>
+        <tr *ngIf="page?.content.length != 0">
+          <td></td>
+          <td></td>
+          <td title="Sum of prices">{{prices}}</td>
+          <td></td>
+          <td title="Sum of counts">{{counts}}</td>
+          <td title="Sum of totals">{{totals}}</td>
+          <td></td>
         </tr>
         </tbody>
       </table>

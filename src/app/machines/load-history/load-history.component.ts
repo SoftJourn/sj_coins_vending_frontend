@@ -33,6 +33,10 @@ export class LoadHistoryComponent implements OnInit {
   sorts: Sort[];
   loadRequest: LoadHistoryRequest;
 
+  prices: number = 0;
+  counts: number = 0;
+  totals: number = 0;
+
   isStartOpen: boolean;
   isDueOpen: boolean;
   start: string = '';
@@ -164,6 +168,7 @@ export class LoadHistoryComponent implements OnInit {
     try {
       this.machineService.getLoads(this.loadRequest).subscribe(response => {
         this.page = response;
+        this.calculate();
       });
     } catch (error) {
       this.notificationService.error("Error", "Something went wrong, watch logs!");
@@ -185,6 +190,20 @@ export class LoadHistoryComponent implements OnInit {
     } catch (error) {
       this.notificationService.error("Error", "Something went wrong, watch logs!");
     }
+  }
+
+  /**
+   * Calculate sums
+   */
+  calculate(): void {
+    this.prices = 0;
+    this.counts = 0;
+    this.totals = 0;
+    this.page.content.forEach(lh =>{
+      this.prices += lh.productPrice;
+      this.counts += lh.count;
+      this.totals += lh.total;
+    });
   }
 
 }

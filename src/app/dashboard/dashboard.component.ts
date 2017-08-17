@@ -25,6 +25,9 @@ export class DashboardComponent implements OnInit {
               private purchaseService: PurchaseService,
               private notificationService: NotificationsService) {
     this.options = {
+      credits: {
+        enabled: false
+      },
       chart: {
         type: 'column',
         height: '600px'

@@ -18,7 +18,7 @@ export class TransactionService {
   constructor(private httpService: HttpService) {
   }
 
-  public get(transactionPageRequest: TransactionPageRequest): Observable<Page<Transaction>> {
+  public get (transactionPageRequest: TransactionPageRequest): Observable<Page<Transaction>> {
     return this.httpService.post(this.getUrl(), transactionPageRequest).map(response => response.json());
   }
 
@@ -58,9 +58,11 @@ export class TransactionService {
   }
 
   public isDateType(datetime: any): boolean {
-    if (typeof datetime == "number") {
-      return false;
-    } else return !isNaN(Date.parse(datetime));
+    console.log("Input: ", datetime);
+    if (typeof datetime == "string") {
+      let result = datetime.match("\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\dZ");
+      return result != null;
+    } else return false;
   }
 
 

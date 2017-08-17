@@ -52,7 +52,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngIf="callingFields">
+        <tr *ngIf="callingFields.length == 0">
           <th colspan="2">No data to display!</th>
         </tr>
         <tr *ngFor="let calling of callingFields">

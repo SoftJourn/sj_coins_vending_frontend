@@ -6,6 +6,7 @@ import {
 import {FormGroup} from "@angular/forms";
 import {TransactionService} from "../../shared/services/transaction.service";
 import {filter} from "rxjs/operator/filter";
+import {Observable} from "rxjs/Observable";
 
 @Component({
   selector: 'app-transaction-filter-item',
@@ -29,6 +30,13 @@ export class TransactionFilterItemComponent implements OnInit {
   datetimeValue: string;
 
   autocomplete: string[];
+
+  search = (text$: Observable<string>) =>
+    text$
+      .debounceTime(200)
+      .distinctUntilChanged()
+      .map(term => term.length < 1 ? []
+        : this.autocomplete.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10));
 
   constructor(public transactionService: TransactionService) {
   }
