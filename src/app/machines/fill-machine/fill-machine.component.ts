@@ -6,22 +6,37 @@ import {
   ElementRef,
   Renderer2,
   Inject,
-  ViewChildren, QueryList
+  ViewChildren,
+  QueryList
 } from "@angular/core";
-import { MachineService } from "../../shared/services/machine.service";
-import { Machine, Field } from "../shared/machine";
-import { FormGroup, FormControl, Validators } from "@angular/forms";
-import { ActivatedRoute } from "@angular/router";
-import { ProductService } from "../../shared/services/product.service";
-import { Product } from "../../shared/entity/product";
-import { NotificationsService } from "angular2-notifications";
-import { AppProperties } from "../../shared/app.properties";
-import { FormValidationStyles } from "../../shared/form-validation-styles";
-import { ErrorDetail } from "../../shared/entity/error-detail";
-import { trigger, state, transition, style, animate } from "@angular/animations";
-import { DOCUMENT } from "@angular/platform-browser";
-import { MachineRowDirective } from "../../shared/directives/machine-row.directive";
-import { MachineCellDirective } from "../../shared/directives/machine-cell.directive";
+import {MachineService} from "../../shared/services/machine.service";
+import {
+  Machine,
+  Field
+} from "../shared/machine";
+import {
+  FormGroup,
+  FormControl,
+  Validators
+} from "@angular/forms";
+import {ActivatedRoute} from "@angular/router";
+import {ProductService} from "../../shared/services/product.service";
+import {Product} from "../../shared/entity/product";
+import {NotificationsService} from "angular2-notifications";
+import {AppProperties} from "../../shared/app.properties";
+import {FormValidationStyles} from "../../shared/form-validation-styles";
+import {ErrorDetail} from "../../shared/entity/error-detail";
+import {
+  trigger,
+  state,
+  transition,
+  style,
+  animate
+} from "@angular/animations";
+import {DOCUMENT} from "@angular/platform-browser";
+import {MachineRowDirective} from "../../shared/directives/machine-row.directive";
+import {MachineCellDirective} from "../../shared/directives/machine-cell.directive";
+import {min} from "rxjs/operator/min";
 
 @Component({
   selector: 'fill-machine',
@@ -54,9 +69,9 @@ export class FillMachineComponent implements OnInit, AfterContentInit {
   private cellFormState = 'inactive';
   private selectedRowId = -1;
 
-  count: number = 0;
   selectedField: Field = null;
   machine: Machine;
+  oldMachineState: Machine;
   products: Product[];
   form: FormGroup;
   formStyles: FormValidationStyles;
@@ -78,6 +93,7 @@ export class FillMachineComponent implements OnInit, AfterContentInit {
     this.machineService.findOne(id).subscribe(
       machine => {
         this.machine = machine;
+        this.oldMachineState = machine;
       },
       error => {
         try {
@@ -116,7 +132,8 @@ export class FillMachineComponent implements OnInit, AfterContentInit {
       product: new FormControl('', Validators.required),
       count: new FormControl('', [
         Validators.required,
-        Validators.pattern('^[1-9]\\d*')
+        Validators.pattern('^[1-9]\\d*'),
+        Validators.min(0)
       ])
     });
   }
@@ -137,11 +154,10 @@ export class FillMachineComponent implements OnInit, AfterContentInit {
       let product = this.products.find(product => product.id === field.product.id);
       productControl.patchValue(product);
       countControl.patchValue(field.count);
-      this.count = field.count;
+      this.updateFormValidator(field);
     } else {
       productControl.patchValue('');
       countControl.patchValue('');
-      this.count = 0;
     }
 
     this.form.markAsPristine();
@@ -235,6 +251,7 @@ export class FillMachineComponent implements OnInit, AfterContentInit {
         machine => {
           this.changedFields = [];
           this.machine = machine;
+          this.oldMachineState = machine;
           this.notificationService.success('Success', 'Machine filled successfully');
         },
         error => {
@@ -252,6 +269,24 @@ export class FillMachineComponent implements OnInit, AfterContentInit {
           }
         }
       );
+  }
+
+  updateFormValidator(field: Field): void {
+    let oldFieldState = null;
+
+    this.oldMachineState.rows.forEach(row => {
+      row.fields.forEach(oldField => {
+        if (oldField.id == field.id) {
+          oldFieldState = oldField;
+        }
+      });
+    });
+
+    this.form.get('count').setValidators([
+      Validators.required,
+      Validators.pattern('^[1-9]\\d*'),
+      Validators.min(oldFieldState.count)
+    ]);
   }
 
   setClassIfProductAbsent(field: Field): string {
