@@ -1,22 +1,21 @@
 import {
-  Component,
-  OnInit,
   AfterContentInit,
-  ViewChild,
+  Component,
   ElementRef,
+  OnInit,
+  QueryList,
   Renderer2,
-  Inject,
-  ViewChildren,
-  QueryList
+  ViewChild,
+  ViewChildren
 } from "@angular/core";
 import {MachineService} from "../../shared/services/machine.service";
 import {
-  Machine,
-  Field
+  Field,
+  Machine
 } from "../shared/machine";
 import {
-  FormGroup,
   FormControl,
+  FormGroup,
   Validators
 } from "@angular/forms";
 import {ActivatedRoute} from "@angular/router";
@@ -27,16 +26,14 @@ import {AppProperties} from "../../shared/app.properties";
 import {FormValidationStyles} from "../../shared/form-validation-styles";
 import {ErrorDetail} from "../../shared/entity/error-detail";
 import {
-  trigger,
+  animate,
   state,
-  transition,
   style,
-  animate
+  transition,
+  trigger
 } from "@angular/animations";
-import {DOCUMENT} from "@angular/platform-browser";
 import {MachineRowDirective} from "../../shared/directives/machine-row.directive";
 import {MachineCellDirective} from "../../shared/directives/machine-cell.directive";
-import {min} from "rxjs/operator/min";
 
 @Component({
   selector: 'fill-machine',
