@@ -110,7 +110,11 @@ export class FillMachineComponent implements OnInit, AfterContentInit {
 
     this.productService.findAll().subscribe(
       products => {
-        this.products = products;
+        this.products = products.sort((a, b) => {
+          if (a.name < b.name) return -1;
+          if (a.name > b.name) return 1;
+          return 0;
+        });
       },
       error => {
         try {
