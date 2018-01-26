@@ -9,29 +9,29 @@
     <form (ngSubmit)="onSubmit()" [formGroup]="form">
       <div class="row">
         <div class="col-xs-12 col-lg-12">
-          <md-input-container [dividerColor]="inputDividerColor('username')">
-            <input mdInput placeholder="LDAP login" type="text" formControlName="username">
-            <span mdSuffix [hidden]="isValidOrPristine('username')">
+          <mat-input-container [dividerColor]="inputDividerColor('username')">
+            <input matInput placeholder="LDAP login" type="text" formControlName="username">
+            <span matSuffix [hidden]="isValidOrPristine('username')">
               <i class="material-icons red400 md-18">error</i>
             </span>
-            <md-hint [hidden]="isValidOrPristine('username')" align="end">{{errorMessage('username')}}</md-hint>
-          </md-input-container>
+            <mat-hint [hidden]="isValidOrPristine('username')" align="end">{{errorMessage('username')}}</mat-hint>
+          </mat-input-container>
         </div>
       </div>
       <div class="row">
         <div class="col-xs-12 col-lg-12">
-          <md-input-container [dividerColor]="inputDividerColor('password')">
-            <input mdInput placeholder="Password" type="password" formControlName="password">
-            <span mdSuffix [hidden]="isValidOrPristine('password')">
+          <mat-input-container [dividerColor]="inputDividerColor('password')">
+            <input matInput placeholder="Password" type="password" formControlName="password">
+            <span matSuffix [hidden]="isValidOrPristine('password')">
               <i class="material-icons red400 md-18">error</i>
             </span>
-            <md-hint [hidden]="isValidOrPristine('password')" align="end">{{errorMessage('password')}}</md-hint>
-          </md-input-container>
+            <mat-hint [hidden]="isValidOrPristine('password')" align="end">{{errorMessage('password')}}</mat-hint>
+          </mat-input-container>
         </div>
       </div>
       <div class="row">
         <div class="col-xs-12 col-lg-12 login-button-container">
-          <button md-raised-button class="login-btn" type="submit" [disabled]="!form.valid">
+          <button mat-raised-button class="login-btn" type="submit" [disabled]="!form.valid">
             Login
           </button>
         </div>
