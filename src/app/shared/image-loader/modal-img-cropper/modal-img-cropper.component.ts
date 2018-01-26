@@ -6,10 +6,10 @@ import {
   OnInit,
   Output,
   SimpleChanges,
-  ViewChild } from "@angular/core";
-import { CropperSettings, ImageCropperComponent } from "ng2-img-cropper";
-import { NotificationsManager } from "../../notifications.manager";
-import { animate, AnimationEvent, style, transition, trigger } from "@angular/animations";
+  ViewChild } from '@angular/core';
+import { CropperSettings, ImageCropperComponent } from 'ng2-img-cropper';
+import { NotificationsManager } from '../../notifications.manager';
+import { animate, AnimationEvent, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-modal-img-cropper',
@@ -44,7 +44,7 @@ export class ModalImgCropperComponent implements OnChanges, OnInit {
   constructor(private notify: NotificationsManager) {}
 
   ngOnInit(): void {
-    let screenWidth = window.screen.availWidth;
+    const screenWidth = window.screen.availWidth;
 
     this.cropperSettings = new CropperSettings();
     if (screenWidth < 768) {
@@ -54,11 +54,11 @@ export class ModalImgCropperComponent implements OnChanges, OnInit {
       this.cropperSettings.canvasWidth = 500;
       this.cropperSettings.canvasHeight = 300;
     }
-    this.cropperSettings.width = 200;
-    this.cropperSettings.height = 200;
+    this.cropperSettings.width = 600;
+    this.cropperSettings.height = 600;
 
-    this.cropperSettings.croppedWidth = 200;
-    this.cropperSettings.croppedHeight = 200;
+    this.cropperSettings.croppedWidth = 600;
+    this.cropperSettings.croppedHeight = 600;
 
     this.cropperSettings.minWidth = 100;
     this.cropperSettings.minHeight = 100;
@@ -82,7 +82,7 @@ export class ModalImgCropperComponent implements OnChanges, OnInit {
   }
 
   setImageData() {
-    let resultImg = new Image();
+    const resultImg = new Image();
     resultImg.src = this.data.image;
     resultImg.name = this.cropImage.name;
     this.close();
@@ -106,13 +106,13 @@ export class ModalImgCropperComponent implements OnChanges, OnInit {
    */
   // TODO Set type depends on dataURI
   static dataURItoBlob(dataURI) {
-    let splitter = ',';
+    const splitter = ',';
     if (this.notValidDataURI(dataURI)) {
-      let message = "Data URI is not valid. Required format is data:[<data type>][;base64],<data>";
+      const message = 'Data URI is not valid. Required format is data:[<data type>][;base64],<data>';
       throw Error(message);
     }
-    let binary = atob(dataURI.split(splitter)[1]);
-    let array = [];
+    const binary = atob(dataURI.split(splitter)[1]);
+    const array = [];
     for (let i = 0; i < binary.length; i++) {
       array.push(binary.charCodeAt(i));
     }
@@ -120,13 +120,13 @@ export class ModalImgCropperComponent implements OnChanges, OnInit {
   }
 
   private static notValidDataURI(dataURI): boolean {
-    let regex = /^data:(.*);base64,/i;
-    let match = dataURI.match(regex);
+    const regex = /^data:(.*);base64,/i;
+    const match = dataURI.match(regex);
     return !match;
   }
 
   private hasValidSize(image: HTMLImageElement): boolean {
-    let blob = ModalImgCropperComponent.dataURItoBlob(image.src);
+    const blob = ModalImgCropperComponent.dataURItoBlob(image.src);
     return blob.size <= this.maxImageSize;
   }
 }

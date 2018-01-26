@@ -1,11 +1,11 @@
 <div class="col-xs-12 col-sm-12 col-lg-12 col-xl-6 vm-card-container">
-  <md-card class="vm-card-bg">
-    <md-card-title-group>
-      <img md-card-sm-image src="/assets/images/vending-256.png">
-      <md-card-title class="vm-card-title">{{machine.name}}</md-card-title>
-      <md-card-subtitle>{{machine.size | machineSize }}</md-card-subtitle>
-    </md-card-title-group>
-    <md-card-actions>
+  <mat-card class="vm-card-bg">
+    <mat-card-title-group>
+      <img mat-card-sm-image src="/assets/images/vending-256.png">
+      <mat-card-title class="vm-card-title">{{machine.name}}</mat-card-title>
+      <mat-card-subtitle>{{machine.size | machineSize }}</mat-card-subtitle>
+    </mat-card-title-group>
+    <mat-card-actions>
       <div class="action-btn-container">
         <button class="btn btn-success" (click)="onEditMachine()"><i class="fa fa-edit btn-icon"></i>Edit</button>
         <button class="btn btn-success" [routerLink]="['/main/machines/fill', machine.id]">
@@ -16,6 +16,6 @@
         </button>
         <button class="btn btn-danger" (click)="deleteMachine()"><i class="fa fa-trash btn-icon"></i>Delete</button>
       </div>
-    </md-card-actions>
-  </md-card>
+    </mat-card-actions>
+  </mat-card>
 </div>
