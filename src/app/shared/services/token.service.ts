@@ -1,12 +1,13 @@
-import { Injectable } from "@angular/core";
-import { Http, Headers } from "@angular/http";
-import { Observable } from "rxjs/Rx";
-import { AppError } from "../app-error";
-import { AppProperties } from "../app.properties";
-import { Role } from "../entity/role";
-import { UsernamePasswordCredentials } from "../username-password-credentials";
-import { MediaType } from "../media-type";
-import { HttpHeaders } from "../http-headers";
+import { Injectable } from '@angular/core';
+import { Http, Headers } from '@angular/http';
+import { Observable } from 'rxjs/Rx';
+import { AppError } from '../app-error';
+import { AppProperties } from '../app.properties';
+import { Role } from '../entity/role';
+import { UsernamePasswordCredentials } from '../username-password-credentials';
+import { MediaType } from '../media-type';
+import { HttpHeadersConst } from '../http-headers';
+import {HttpClient, HttpHeaders, HttpResponse} from '@angular/common/http';
 
 @Injectable()
 export class TokenService {
@@ -20,9 +21,9 @@ export class TokenService {
 
   private STORAGE_KEY = 'tokens';
 
-  constructor(private http: Http) {
+  constructor(private http: HttpClient) {
     if (this.isTokensExistsInStorage()) {
-      let tokens = this.getTokensFromStorage();
+      const tokens = this.getTokensFromStorage();
       this.populateFields(tokens);
     }
   }
@@ -33,18 +34,18 @@ export class TokenService {
   }
 
   private populateFields(tokenResponse: string) {
-    let tokenRespJson = JSON.parse(tokenResponse);
+    const tokenRespJson = JSON.parse(tokenResponse);
     this.accessToken = tokenRespJson['access_token'];
     this.refreshToken = tokenRespJson['refresh_token'];
     this.tokenType = tokenRespJson['token_type'];
     this.expirationTime = TokenService.getExpirationTimeFromPayload(tokenRespJson['access_token']);
     this.scope = tokenRespJson['scope'];
     this.jti = tokenRespJson['jti'];
-    this._authorities = JSON.parse(atob(this.accessToken.split('.', 2)[1])).authorities.map(a=>new Role(a,false));
+    this._authorities = JSON.parse(atob(this.accessToken.split('.', 2)[1])).authorities.map(a => new Role(a, false));
   }
 
   private static getExpirationTimeFromPayload(accessToken: string): Date {
-    let payload = JSON.parse(atob(accessToken.split('.')[1]));
+    const payload = JSON.parse(atob(accessToken.split('.')[1]));
 
     return new Date((payload['exp'] - 30) * 1000);
   }
@@ -84,7 +85,7 @@ export class TokenService {
   }
 
   public isAccessTokenExpired(): boolean {
-    let now = new Date();
+    const now = new Date();
 
     return !!(this.expirationTime
     && now.getTime() > this.expirationTime.getTime());
@@ -99,36 +100,36 @@ export class TokenService {
   }
 
   private getTokens(credentials: UsernamePasswordCredentials): Observable<string> {
-    let grantType = `grant_type=password`;
-    let clientId = 'client_id=user_cred';
-    let scope = 'scope=read write';
-    let username = `username=${credentials.username}`;
-    let password = `password=${credentials.password}`;
+    const grantType = `grant_type=password`;
+    const clientId = 'client_id=user_cred';
+    const scope = 'scope=read write';
+    const username = `username=${credentials.username}`;
+    const password = `password=${credentials.password}`;
 
-    let body = encodeURI(`${grantType}&${clientId}&${scope}&${username}&${password}`);
-    let url = AppProperties.AUTH_ENDPOINT;
+    const body = encodeURI(`${grantType}&${clientId}&${scope}&${username}&${password}`);
+    const url = AppProperties.AUTH_ENDPOINT;
 
-    return this.http.post(url, body, {headers: TokenService.getHeadersForTokenRequest()})
-      .map(response => response.text());
+    const headers = TokenService.getHeadersForTokenRequest();
+
+    return this.http.post<Object>(url, body, {headers: headers})
+      .map((response) => JSON.stringify(response));
   }
 
   private getTokensFromRefreshToken(refreshToken: string): Observable<string> {
-    let url = AppProperties.AUTH_ENDPOINT;
-    let grantType = 'grant_type=refresh_token';
-    let refreshTokenParam = `refresh_token=${refreshToken}`;
+    const url = AppProperties.AUTH_ENDPOINT;
+    const grantType = 'grant_type=refresh_token';
+    const refreshTokenParam = `refresh_token=${refreshToken}`;
 
-    let body = `${grantType}&${refreshTokenParam}`;
+    const body = `${grantType}&${refreshTokenParam}`;
 
-    return this.http.post(url, body, {headers: TokenService.getHeadersForTokenRequest()})
-      .map(response => response.text());
+    return this.http.post<Object>(url, body, {headers: TokenService.getHeadersForTokenRequest()})
+      .map(response => JSON.stringify(response));
   }
 
-  private static getHeadersForTokenRequest(): Headers {
-    let headers = new Headers();
-    headers.append(HttpHeaders.AUTHORIZATION, `Basic ${AppProperties.CLIENT_AUTH_HASH}`);
-    headers.append(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-
-    return headers;
+  private static getHeadersForTokenRequest(): HttpHeaders {
+    return new HttpHeaders()
+      .set(HttpHeadersConst.AUTHORIZATION, `Basic ${AppProperties.CLIENT_AUTH_HASH}`)
+      .set(HttpHeadersConst.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED)  ;
   }
 
   public deleteTokensFromStorage(): void {
@@ -142,17 +143,24 @@ export class TokenService {
     this.jti = null;
   }
 
+  public getAuthHttpHeaders(): Observable<HttpHeaders> {
+    return this.getAccessToken()
+      .map(accessToken => {
+        const token = this.getTokenType() +  ' ' + accessToken;
+        return new HttpHeaders().set(HttpHeadersConst.AUTHORIZATION, token);
+      });
+  }
+
   public getAuthHeaders(): Observable<Headers> {
     return this.getAccessToken()
       .map(accessToken => {
-        let headers = new Headers();
-        let authValue = `${this.getTokenType()} ${accessToken}`;
-
-        headers.append(HttpHeaders.AUTHORIZATION, authValue);
-
+        const token = this.getTokenType() +  ' ' + accessToken;
+        const headers = new Headers();
+        headers.append(HttpHeadersConst.AUTHORIZATION, token);
         return headers;
       });
   }
+
 
   public revokeRefreshToken(): Observable<{}> {
     if (!this.refreshToken) {
@@ -162,12 +170,11 @@ export class TokenService {
     }
 
 
-    let url = `${AppProperties.AUTH_ENDPOINT}/revoke`;
-    let body = `token_value=${this.refreshToken}`;
+    const url = `${AppProperties.AUTH_ENDPOINT}/revoke`;
+    const body = `token_value=${this.refreshToken}`;
 
-    return this.getAuthHeaders().flatMap((headers: Headers) => {
-      headers.append(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-      return this.http.post(url, body, {headers: headers});
+    return this.getAuthHttpHeaders().flatMap((headers: HttpHeaders) => {
+      return this.http.post(url, body, {headers: headers.set(HttpHeadersConst.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED)});
     });
   }
 

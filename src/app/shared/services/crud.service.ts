@@ -1,6 +1,6 @@
-import { Observable } from "rxjs";
-import { HttpService } from "./http.service";
-import { MediaType } from "../media-type";
+import { HttpService } from './http.service';
+import { MediaType } from '../media-type';
+import {Observable} from 'rxjs/Observable';
 
 export abstract class CrudService<T> {
 
@@ -12,9 +12,9 @@ export abstract class CrudService<T> {
   public genericFindAll<T>(): Observable<T[]> {
     return this.httpService.get(this.getUrl())
       .map(response => {
-        let json: T[] = response.json()
+        const json: T[] = response.json();
         let temp: T;
-        json.map(obj=> {
+        json.map(obj => {
           temp = obj;
           return temp;
         });
@@ -26,7 +26,7 @@ export abstract class CrudService<T> {
     if (this.proto) {
       return this.httpService.get(this.getUrl())
         .map(response => response.json()
-          .map(obj=> {
+          .map(obj => {
             obj.__proto__ = this.proto;
             return obj;
           }));
@@ -36,10 +36,10 @@ export abstract class CrudService<T> {
   }
 
   public findOne(id: number | string): Observable<T> {
-    let url = `${this.getUrl()}/${id}`;
+    const url = `${this.getUrl()}/${id}`;
 
     return this.httpService.get(url)
-      .map(response => response.json())
+      .map(response => response.json());
   }
 
   public save(entity: T): Observable<T> {
@@ -48,14 +48,14 @@ export abstract class CrudService<T> {
   }
 
   public delete(id: number | string): Observable<{}> {
-    let url = `${this.getUrl()}/${id}`;
+    const url = `${this.getUrl()}/${id}`;
 
     return this.httpService.delete(url)
-      .flatMap(response => Observable.empty())
+      .flatMap(response => Observable.empty());
   }
 
   public update(id: number | string, entity: T): Observable<T> {
-    let url = `${this.getUrl()}/${id}`;
+    const url = `${this.getUrl()}/${id}`;
     return this.httpService.post(url, entity, MediaType.APPLICATION_JSON)
       .map(response => response.json());
   }

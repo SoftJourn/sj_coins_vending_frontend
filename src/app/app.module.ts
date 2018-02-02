@@ -88,6 +88,10 @@ import {HighchartsStatic} from 'angular2-highcharts/dist/HighchartsService';
 import * as highcharts from 'highcharts';
 import * as drilldown from 'highcharts/modules/drilldown';
 import { LoadHistoryComponent } from './machines/load-history/load-history.component';
+import {HTTP_INTERCEPTORS} from '@angular/common/http';
+import {AuthExpiredInterceptor} from './shared/interceptor/auth-expired.interceptor';
+import {HttpClientModule} from '@angular/common/http';
+import {TokenInterceptor} from './shared/interceptor/token.interceptor';
 
 export function highchartsFactory() {
   const hc = highcharts;
@@ -142,6 +146,7 @@ export function highchartsFactory() {
   entryComponents: [UploadItemComponent],
   imports: [
     BrowserModule,
+    HttpClientModule,
     BrowserAnimationsModule,
     CommonModule,
     ReactiveFormsModule,
@@ -177,12 +182,15 @@ export function highchartsFactory() {
     CoinService,
     NotificationsManager,
     TransactionService,
+    { provide: HTTP_INTERCEPTORS, useClass: AuthExpiredInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
     {provide: ErrorHandler, useClass: GlobalErrorHandler},
     {provide: LocationStrategy, useClass: HashLocationStrategy},
     {
       provide: HighchartsStatic,
       useFactory: highchartsFactory
-    }
+    },
+
   ],
   bootstrap: [AppComponent]
 })
