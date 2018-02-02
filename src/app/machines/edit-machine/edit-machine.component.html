@@ -96,6 +96,16 @@
           </div>
         </div>
         <div class="form-group row">
+          <label class="col-sm-2">Vending machine is virtual</label>
+          <div class="col-sm-10">
+            <div class="form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" formControlName="isVirtual"> Available for purchase without real machine
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
           <div class="col-sm-12 form-buttons-container">
             <button class="btn btn-warning" type="button" (click)="resetMotorState()">Reset motor state</button>
             <button class="btn btn-success" type="submit" [disabled]="!form.valid">Submit</button>

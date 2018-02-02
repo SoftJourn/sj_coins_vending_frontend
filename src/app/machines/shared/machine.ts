@@ -9,7 +9,8 @@ export class Machine {
     public uniqueId: string,
     public rows: Row[],
     public size: MachineSize,
-    public isActive: boolean
+    public isActive: boolean,
+    public isVirtual: boolean
   ) {}
 }
 
