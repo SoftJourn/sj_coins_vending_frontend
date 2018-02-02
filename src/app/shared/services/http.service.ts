@@ -1,8 +1,8 @@
-import { Injectable } from "@angular/core";
-import { Http, Headers, Response } from "@angular/http";
-import { Observable } from "rxjs";
-import { TokenService } from "./token.service";
-import { HttpHeaders } from "../http-headers";
+import { Injectable } from '@angular/core';
+import { Http, Headers, Response } from '@angular/http';
+import { Observable } from 'rxjs';
+import { TokenService } from './token.service';
+import { HttpHeadersConst } from '../http-headers';
 
 @Injectable()
 export class HttpService {
@@ -25,7 +25,7 @@ export class HttpService {
         if (contentType == null) {
           return this.http.post(url, body, {headers: headers});
         } else {
-          headers.append(HttpHeaders.CONTENT_TYPE, contentType);
+          headers.append(HttpHeadersConst.CONTENT_TYPE, contentType);
 
           return this.http.post(url, body, {headers: headers});
         }
@@ -35,7 +35,7 @@ export class HttpService {
   put(url: string, body: any, contentType: string): Observable<Response> {
     return this.tokenService.getAuthHeaders()
       .flatMap((headers: Headers) => {
-        headers.append(HttpHeaders.CONTENT_TYPE, contentType);
+        headers.append(HttpHeadersConst.CONTENT_TYPE, contentType);
 
         return this.http.put(url, body, {headers: headers});
       });

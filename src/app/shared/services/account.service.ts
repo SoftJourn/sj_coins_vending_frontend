@@ -1,20 +1,20 @@
-import {Injectable} from "@angular/core";
-import {Observable} from "rxjs/Rx";
-import {TokenService} from "./token.service";
-import {AppProperties} from "../app.properties";
-import {AppError} from "../app-error";
-import {Account} from "../entity/account";
-import {UsernamePasswordCredentials} from "../username-password-credentials";
-import {HttpService} from "./http.service";
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs/Rx';
+import {TokenService} from './token.service';
+import {AppProperties} from '../app.properties';
+import {AppError} from '../app-error';
+import {Account} from '../entity/account';
+import {UsernamePasswordCredentials} from '../username-password-credentials';
+import {HttpClient, HttpResponse} from '@angular/common/http';
 
 export const routes: {[key: string]: string[]} = {
-  "ROLE_BILLING": ["/main/coins", "/main/transactions"],
-  "ROLE_INVENTORY": ["/main", "/main/products", "/main/machines", "/main/categories"],
-  "ROLE_USER_MANAGER": ["/main/users"],
-  "ROLE_SUPER_ADMIN": ["/main/coins"]
-    .concat(["/main/products", "/main/machines", "/main/categories"])
-    .concat(["/main/products", "/main/machines", "/main/categories"])
-    .concat(["/main/users"])
+  'ROLE_BILLING': ['/main/coins', '/main/transactions'],
+  'ROLE_INVENTORY': ['/main', '/main/products', '/main/machines', '/main/categories'],
+  'ROLE_USER_MANAGER': ['/main/users'],
+  'ROLE_SUPER_ADMIN': ['/main/coins']
+    .concat(['/main/products', '/main/machines', '/main/categories'])
+    .concat(['/main/products', '/main/machines', '/main/categories'])
+    .concat(['/main/users'])
 };
 
 @Injectable()
@@ -23,7 +23,7 @@ export class AccountService {
   private STORAGE_KEY = 'account';
 
   constructor(private tokenService: TokenService,
-              private httpService: HttpService) {
+              private httpClient: HttpClient) {
   }
 
   private createAccount(username: string): Observable<Account> {
@@ -34,10 +34,10 @@ export class AccountService {
 
       let url = `${AppProperties.AUTH_API}/users/${username}`;
 
-      this.httpService.get(url).subscribe(
+      this.httpClient.get<Account>(url, { observe: 'response' }).subscribe(
         response => {
           if (response.ok) {
-            let account = this.createAccountFromJson(response.json());
+            const account = this.createAccountFromJson(response.body);
             observer.next(account);
             observer.complete();
           } else {
@@ -54,7 +54,7 @@ export class AccountService {
 
       this.tokenService.deleteTokensFromStorage();
 
-      let badCredError = new AppError(
+      const badCredError = new AppError(
         'auth/account-not-found',
         'Wrong credentials'
       );
@@ -86,13 +86,13 @@ export class AccountService {
   }
 
   private static verifyCredentials(credentials: UsernamePasswordCredentials): boolean {
-    let regExp: RegExp = /^[\w!@#$%\^&*()\-\\.|\/?><;':"+=~`{}\[\],]+$/i;
+    const regExp: RegExp = /^[\w!@#$%\^&*()\-\\.|\/?><;':"+=~`{}\[\],]+$/i;
 
     return regExp.test(credentials.username) && regExp.test(credentials.password);
   }
 
   private createAccountFromJson(user: any): Account {
-    let account: Account = new Account(
+    const account: Account = new Account(
       user.ldapId,
       user.fullName,
       user.email,
