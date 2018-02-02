@@ -86,7 +86,8 @@ export class EditMachineComponent implements OnInit {
         Validators.required,
         Validators.pattern('^[1-9]$|^[1][0-9]{0,1}$')
       ]),
-      isActive: new FormControl(this.machines.isActive)
+      isActive: new FormControl(this.machines.isActive),
+      isVirtual: new FormControl(this.machines.isVirtual)
     });
 
     this.formStyles = new FormValidationStyles(this.form);

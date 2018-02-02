@@ -1,26 +1,26 @@
 import {
   Component,
   OnInit
-} from "@angular/core";
+} from '@angular/core';
 import {
   CoinsAccount,
   REGULAR,
   MERCHANT
-} from "./coins-account";
-import {CoinService} from "../shared/services/coin.service";
-import {NotificationsService} from "angular2-notifications";
+} from './coins-account';
+import {CoinService} from '../shared/services/coin.service';
+import {NotificationsService} from 'angular2-notifications';
 import {
   FormGroup,
   FormControl,
   Validators
-} from "@angular/forms";
-import {FormValidationStyles} from "../shared/form-validation-styles";
-import {AmountDto} from "./amount-dto";
-import {Observable} from "rxjs";
-import {ResultDTO} from "./result-dto";
-import {CheckDTO} from "./check-dto";
-import {ErrorDetail} from "../shared/entity/error-detail";
-import {Transaction} from "./transaction";
+} from '@angular/forms';
+import {FormValidationStyles} from '../shared/form-validation-styles';
+import {AmountDto} from './amount-dto';
+import {Observable} from 'rxjs';
+import {ResultDTO} from './result-dto';
+import {CheckDTO} from './check-dto';
+import {ErrorDetail} from '../shared/entity/error-detail';
+import {Transaction} from './transaction';
 import * as fileSaver from 'file-saver';
 
 @Component({
@@ -241,48 +241,14 @@ export class CoinManagementComponent implements OnInit {
     let uploadFormData = new FormData();
     uploadFormData.append('file', this.transferFile, this.transferFile.name);
     // send form with file inside the form
-    this.coinService.transferToAccounts(uploadFormData).subscribe((response: ResultDTO) => {
-        this.transferFileButtonDisabled = true;
-        this.progressHide = false;
-        this.transferFile = null;
-        this.fileName = '';
-        this.notificationService.success('Success', 'Accounts charging task is in progress!');
-        // checking progress on server
-        let subscription = this.coinService.checkProcessing(response.checkHash).subscribe((response: CheckDTO) => {
-          this.progressMax = response.total;
-          this.progressCurrent = response.isDone;
-          this.progressValue = (this.progressCurrent / this.progressMax * 100).toFixed(2);
-          // if all was done unsubscribe and show results
-          if (response.isDone == response.total) {
-            this.progressHide = true;
-            this.transactions = response.transactions;
-            this.showResultsButtonHide = false;
-            // Unblock Attach file button
-            this.blockAttachFileIfInProcess = false;
-            this.blockAttachFileIfInProcessClass = '';
-            this.notificationService.success('Success', 'Accounts charging task has finished successfully!');
-            subscription.unsubscribe();
-          }
-        }, error => {
-          try {
-            let errorDetail = <ErrorDetail> error.json();
-            if (!errorDetail.detail)
-            //noinspection ExceptionCaughtLocallyJS
-              throw errorDetail;
-            this.progressHide = true;
-            // Unblock Attach file button
-            this.blockAttachFileIfInProcess = false;
-            this.blockAttachFileIfInProcessClass = '';
-            this.notificationService.error('Error', errorDetail.detail);
-          } catch (err) {
-            console.log(err);
-            this.progressHide = true;
-            // Unblock Attach file button
-            this.blockAttachFileIfInProcess = false;
-            this.blockAttachFileIfInProcessClass = '';
-            this.notificationService.error('Error', 'Error appeared, watch logs!');
-          }
-        });
+    this.coinService.transferToAccounts(uploadFormData).subscribe(() => {
+        {
+          this.transferFileButtonDisabled = true;
+          this.progressHide = false;
+          this.transferFile = null;
+          this.fileName = '';
+          this.notificationService.success('Success', 'Accounts charging task is completed!');
+        }
       },
       error => {
         try {
@@ -315,7 +281,7 @@ export class CoinManagementComponent implements OnInit {
   // download template file from server
   public getTemplate(): void {
     this.coinService.getTemplate().subscribe(response => {
-      fileSaver.saveAs(response, "template.csv");
+      fileSaver.saveAs(response, 'template.csv');
     });
   }
 

@@ -74,18 +74,9 @@ export class CoinService {
       .map(response => response.json());
   }
 
-  public transferToAccounts(transferFile: any): Observable<ResultDTO> {
+  public transferToAccounts(transferFile: any): Observable<any> {
     let url = `${AppProperties.API_COINS_ENDPOINT}/add/`;
-    return this.httpService.post(url, transferFile)
-      .map(response => response.json());
-  }
-
-  public checkProcessing(checkHash: string): Observable<CheckDTO> {
-    let url = `${AppProperties.API_COINS_ENDPOINT}/check/${checkHash}`;
-    let request = this.httpService.get(url)
-      .map(response => response.json());
-    return request.expand(() => Observable.timer(5000).concatMap(() => this.httpService.get(url)
-      .map(response => response.json())));
+    return this.httpService.post(url, transferFile);
   }
 
   public getTemplate(): Observable<Blob> {
