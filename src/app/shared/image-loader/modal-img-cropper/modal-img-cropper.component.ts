@@ -51,8 +51,8 @@ export class ModalImgCropperComponent implements OnChanges, OnInit {
       this.cropperSettings.canvasWidth = 220;
       this.cropperSettings.canvasHeight = 200;
     } else {
-      this.cropperSettings.canvasWidth = 800;
-      this.cropperSettings.canvasHeight = 600;
+      this.cropperSettings.canvasWidth = 500;
+      this.cropperSettings.canvasHeight = 300;
     }
     this.cropperSettings.width = 600;
     this.cropperSettings.height = 600;
