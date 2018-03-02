@@ -7,12 +7,11 @@ import {Account} from '../entity/account';
 import {UsernamePasswordCredentials} from '../username-password-credentials';
 import {HttpClient, HttpResponse} from '@angular/common/http';
 
-export const routes: {[key: string]: string[]} = {
-  'ROLE_BILLING': ['/main/coins', '/main/transactions'],
+export const routes: { [key: string]: string[] } = {
+  'ROLE_BILLING': ['/main/coins', '/main/transactions', '/main/accounts'],
   'ROLE_INVENTORY': ['/main', '/main/products', '/main/machines', '/main/categories'],
   'ROLE_USER_MANAGER': ['/main/users'],
-  'ROLE_SUPER_ADMIN': ['/main/coins']
-    .concat(['/main/products', '/main/machines', '/main/categories'])
+  'ROLE_SUPER_ADMIN': ['/main/coins', '/main/transactions', '/main/accounts']
     .concat(['/main/products', '/main/machines', '/main/categories'])
     .concat(['/main/users'])
 };
@@ -34,7 +33,7 @@ export class AccountService {
 
       let url = `${AppProperties.AUTH_API}/users/${username}`;
 
-      this.httpClient.get<Account>(url, { observe: 'response' }).subscribe(
+      this.httpClient.get<Account>(url, {observe: 'response'}).subscribe(
         response => {
           if (response.ok) {
             const account = this.createAccountFromJson(response.body);

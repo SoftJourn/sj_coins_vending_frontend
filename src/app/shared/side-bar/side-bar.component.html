@@ -34,6 +34,12 @@
         <span><i class="fa fa-exchange fa-lg"></i>Transactions</span>
       </a>
     </li>
+    <li *ngIf="isVisible('/main/accounts')">
+      <a [routerLink]="['/main/accounts']" routerLinkActive="router-link-active"
+         [routerLinkActiveOptions]="{exact: true}" class="list-group-item" (click)="hide()">
+        <span><i class="fa fa-id-card-o fa-lg"></i>Accounts</span>
+      </a>
+    </li>
     <li *ngIf="isVisible('/main/categories')">
       <a [routerLink]="['/main/categories']" routerLinkActive="router-link-active"
          [routerLinkActiveOptions]="{exact: true}" class="list-group-item" (click)="hide()">

@@ -20,13 +20,13 @@ export class PurchaseService {
 
   public findAllByFilter(filter: PurchaseFilter, page: number, size: number): Observable<Page<Purchase>> {
     return this.httpService.post(this.getUrl() + '/filter?page=' + (page - 1) + '&size=' + size, filter).map(response => {
-      return response.json()
+      return response.json();
     });
   }
 
   public findTopProduct(topProduct: TopProductRequest): Observable<TopProductResponse[]> {
     return this.httpService.post(this.getUrl() + '/top', topProduct).map(response => {
-      return response.json()
+      return response.json();
     });
   }
 

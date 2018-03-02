@@ -1,0 +1,141 @@
+.table td, th {
+  text-align: center;
+}
+
+a.fa {
+  position: absolute;
+  z-index: 1000;
+  top: 30%;
+  right: 20px;
+  cursor: pointer;
+}
+
+.affix-top {
+  z-index: 10;
+  background-color: #fff;
+  position: fixed;
+  left: 225px;
+  right: 0;
+  margin-top: -10px;
+  padding: 10px 10px 0 10px;
+}
+
+.affix-bottom {
+  margin-top: 80px;
+}
+
+div.horizontal-alignment {
+  select.form-control {
+    width: auto;
+  }
+}
+
+.horizontal-alignment {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center
+}
+
+.vertical-align {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.number-column {
+  width: 50px;
+}
+
+@media only screen and (max-width: 768px) {
+  /* For mobile phones: */
+  [class*="affix-top"] {
+    left: 0px;
+  }
+}
+
+@media only screen and (min-width: 320px) and (max-width: 360px) {
+  a.fa {
+    right: 10px;
+  }
+}
+
+@media only screen and (min-width: 360px) and (max-width: 480px) {
+  a.fa {
+    right: 20px;
+  }
+}
+
+@media screen and (min-width: 0px) and (max-width: 600px) {
+  .affix-bottom {
+    margin-top: 115px;
+  }
+}
+
+@media screen and (min-width: 320px) and (max-width: 600px) {
+  .header-container {
+    display: inline-block;
+  }
+}
+
+@media screen and (min-width: 340px) and (max-width: 568px) {
+  .col-sm-8 {
+    width: 81%;
+  }
+}
+
+@media screen and (max-width: 568px) and (min-width: 340px) {
+  .col-sm-8 {
+    width: 100%;
+  }
+}
+
+@media screen and (min-width: 1280px) and (max-width: 1560px) {
+  .col-xl-7 {
+    width: 100%;
+  }
+  .col-xl-5 {
+    width: 70%;
+  }
+}
+
+@media screen and (min-width: 1560px) and (max-width: 1920px) {
+  .col-xl-7 {
+    width: 100%;
+  }
+  .col-xl-5 {
+    width: 70%;
+  }
+}
+
+@media (max-width: 320px) {
+  .vertical-align {
+    display: block;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 360px) {
+  .vertical-align {
+    display: block;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .vertical-align {
+    display: block;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 568px) {
+  .vertical-align {
+    display: block;
+    align-items: center;
+    justify-content: center;
+  }
+}

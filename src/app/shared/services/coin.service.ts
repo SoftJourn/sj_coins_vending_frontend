@@ -1,20 +1,15 @@
-import {Injectable} from "@angular/core";
-import {HttpService} from "./http.service";
-import {
-  AccountType,
-  CoinsAccount
-} from "../../coin-management/coins-account";
-import {Observable} from "rxjs";
-import {AppProperties} from "../app.properties";
-import {AmountDto} from "../../coin-management/amount-dto";
-import {Transaction} from "../../coin-management/transaction";
-import {MediaType} from "../media-type";
-import {ResultDTO} from "../../coin-management/result-dto";
-import {CheckDTO} from "../../coin-management/check-dto";
-import {
-  Response,
-  ResponseContentType
-} from "@angular/http";
+import {Injectable} from '@angular/core';
+import {HttpService} from './http.service';
+import {AccountType, CoinsAccount} from '../../coin-management/coins-account';
+import {Observable} from 'rxjs';
+import {AppProperties} from '../app.properties';
+import {AmountDto} from '../../coin-management/amount-dto';
+import {Transaction} from '../../coin-management/transaction';
+import {MediaType} from '../media-type';
+import {Response} from '@angular/http';
+import {Page} from '../entity/page';
+import {Pageable} from '../entity/pageable';
+import {AccountDTO} from '../dto/account-dto';
 
 @Injectable()
 export class CoinService {
@@ -26,6 +21,23 @@ export class CoinService {
     let url = `${AppProperties.API_COINS_ENDPOINT}/accounts/${accountType.type}`;
 
     return this.httpService.get(url).map(response => response.json());
+  }
+
+  public getAccounts(pageable: Pageable): Observable<Page<AccountDTO>> {
+    let url = `${AppProperties.API_COINS_ENDPOINT}/accounts/pages?page=${pageable.page}&size=${pageable.size}`;
+    return this.httpService.get(url).map(response => {
+      return response.json();
+    });
+  }
+
+  public searchByAccounts(value: string, pageable: Pageable): Observable<Page<AccountDTO>> {
+    let url = `${AppProperties.API_COINS_ENDPOINT}/accounts/search?value=${value}&page=${pageable.page}&size=${pageable.size}`;
+    return this.httpService.get(url).map(response => response.json());
+  }
+
+  public deleteAccount(ldapId: string): Observable<{}> {
+    let url = `${AppProperties.API_COINS_ENDPOINT}/account/${ldapId}`;
+    return this.httpService.delete(url).flatMap(() => Observable.empty());
   }
 
   public getTreasuryAmount(): Observable<AmountDto> {
@@ -64,7 +76,7 @@ export class CoinService {
       .map(response => response.json());
   }
 
-  public transferToAccount(transferDto: {account: CoinsAccount, amount: number}): Observable<Transaction> {
+  public transferToAccount(transferDto: { account: CoinsAccount, amount: number }): Observable<Transaction> {
     let url = `${AppProperties.API_COINS_ENDPOINT}/add/${transferDto.account.ldapId}`;
     let amountDto = new AmountDto(
       transferDto.amount,

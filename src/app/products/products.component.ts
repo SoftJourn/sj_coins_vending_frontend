@@ -62,11 +62,6 @@ export class ProductsComponent implements OnInit {
     });
   }
 
-  searchCancel() {
-    this.form.get('name').patchValue('');
-    this.searchChangeClass = this.searchClass;
-  }
-
   onDelete(id: number) {
     this.productService.delete(id).subscribe(
       () => {

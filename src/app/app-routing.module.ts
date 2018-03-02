@@ -18,12 +18,14 @@ import { EditProductComponent } from "./products/edit-product/edit-product.compo
 import { PurchasesComponent } from "./purchases/purchases.component";
 import { EditMachineComponent } from "./machines/edit-machine/edit-machine.component";
 import {LoadHistoryComponent} from "./machines/load-history/load-history.component";
+import {AccountsComponent} from './accounts/accounts.component';
 
 const routes: Routes = [
   {path: '', pathMatch: 'full', redirectTo: 'main'},
   {
     path: 'main', component: MainInfoComponent, children: [
     {path: '', component: DashboardComponent, canActivate: [AuthGuard]},
+    {path: 'accounts', component: AccountsComponent, canActivate: [AuthGuard]},
     {path: 'products', component: ProductsComponent, canActivate: [AuthGuard]},
     {path: 'products/add', component: AddProductComponent, canActivate: [AuthGuard]},
     {path: 'machines', component: MachinesComponent, canActivate: [AuthGuard]},

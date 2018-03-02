@@ -92,6 +92,7 @@ import {HTTP_INTERCEPTORS} from '@angular/common/http';
 import {AuthExpiredInterceptor} from './shared/interceptor/auth-expired.interceptor';
 import {HttpClientModule} from '@angular/common/http';
 import {TokenInterceptor} from './shared/interceptor/token.interceptor';
+import { AccountsComponent } from './accounts/accounts.component';
 
 export function highchartsFactory() {
   const hc = highcharts;
@@ -141,7 +142,8 @@ export function highchartsFactory() {
     DynamicFormQuestionComponent,
     MachineRowDirective,
     MachineCellDirective,
-    LoadHistoryComponent
+    LoadHistoryComponent,
+    AccountsComponent
   ],
   entryComponents: [UploadItemComponent],
   imports: [

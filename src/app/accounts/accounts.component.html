@@ -1,0 +1,78 @@
+<div class="affix-top">
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 row header-container">
+    <div class="col-xs-12 col-sm-4 col-md-3 col-lg-6 col-xl-7">
+      <h2>Accounts</h2>
+    </div>
+    <div class="col-xs-12 col-sm-8 col-md-9 col-lg-5 col-xl-4">
+      <form [formGroup]="search">
+        <div class="">
+          <a class="fa fa-lg" [ngClass]="searchChangeClass"></a>
+          <input type="search"
+                 class="form-control"
+                 formControlName="value"
+                 placeholder="Search"/>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="header-divider">
+    <hr style="width: 100%">
+  </div>
+</div>
+<div class="container-fluid affix-bottom">
+  <div class="row">
+    <div class="col-lg-1 col-xl-2"></div>
+    <div class="col-md-12 col-lg-10 col-xl-8 x-scroll">
+      <table class="table table-hover">
+        <thead class="thead-inverse">
+        <tr>
+          <th class="number-column">#</th>
+          <th>Email</th>
+          <th>Full Name</th>
+          <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let content of page?.content; let i = index">
+          <th scope="row" class="number-column">{{pageSize * page.number + i + 1}}</th>
+          <td>{{content?.email}}</td>
+          <td>{{content?.fullName}}</td>
+          <td *ngIf="content?.deleted">
+            Deactivated
+          </td>
+          <td *ngIf="content?.deleted === false">
+            <button type="button" class="btn btn-danger" (click)="deactivate(content?.ldapId)" >
+              <i class="fa fa-trash btn-icon"></i>Deactivate
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-lg-1 col-xl-2"></div>
+  </div>
+  <div class="row" *ngIf="page?.content.length > 0">
+    <form [formGroup]="pageForm">
+      <div class="form-group row horizontal-alignment">
+        <div class="col-lg-1 col-xl-2"></div>
+        <div class="col-md-12 col-lg-10 col-xl-8 vertical-align">
+          <div class="col-md-2 col-lg-2 col-xl-2">
+            <select id="size" class="form-control" formControlName="pageSize" data-dropup-auto="false">
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+            </select>
+          </div>
+          <div class="col-md-10 col-lg-6 col-xl-6">
+            <ngb-pagination [collectionSize]="page?.totalElements" [maxSize]="pageItems" [page]="page?.number+1"
+                            [rotate]="true" [size]="pageItemsSize" [directionLinks]="pageDirectionLinks"
+                            [pageSize]="page?.size" (pageChange)="changePage($event)">
+            </ngb-pagination>
+          </div>
+        </div>
+        <div class="col-lg-1 col-xl-2"></div>
+      </div>
+    </form>
+  </div>
+</div>
+
