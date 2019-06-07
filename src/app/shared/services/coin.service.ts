@@ -79,6 +79,12 @@ export class CoinService {
     return this.httpService.post(url, transferFile);
   }
 
+  public deleteAccount(account: CoinsAccount): Observable<{}> {
+    let url = `${AppProperties.API_COINS_ENDPOINT}/account/${account.ldapId}`;
+    return this.httpService.delete(url)
+      .flatMap(response => Observable.empty());
+  }
+
   public getTemplate(): Observable<Blob> {
     let url = `${AppProperties.API_COINS_ENDPOINT}/template`;
     return this.httpService.get(url).map((response: Response) => {

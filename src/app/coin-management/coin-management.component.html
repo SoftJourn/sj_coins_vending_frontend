@@ -145,4 +145,23 @@
     </div>
   </div>
 
+  <div class="row">
+    <div class="card card-block" [ngClass]="deleteFormStyles.getCardOutlineClass()">
+      <form class="form-inline" (ngSubmit)="deleteAccount()" [formGroup]="deleteForm">
+        <div class="form-group">
+          <label class="sr-only" for="deleteAccount">Amount (in coins)</label>
+          <select class="form-control" id="deleteAccount" formControlName="account">
+            <option disabled selected value></option>
+            <option *ngFor="let account of regularAccounts" [ngValue]="account">
+              {{account.fullName}} ({{account.amount}}) {{account.isNew ? 'NEW' : ''}}
+            </option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-success" [disabled]="!isFormValid(deleteForm)">
+          Delete account
+        </button>
+      </form>
+    </div>
+  </div>
+
 </div>

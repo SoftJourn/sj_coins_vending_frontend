@@ -1,27 +1,16 @@
-import {
-  Component,
-  OnInit
-} from '@angular/core';
-import {
-  CoinsAccount,
-  REGULAR,
-  MERCHANT
-} from './coins-account';
+import {Component, OnInit, ViewContainerRef} from '@angular/core';
+import {CoinsAccount, MERCHANT, REGULAR} from './coins-account';
 import {CoinService} from '../shared/services/coin.service';
 import {NotificationsService} from 'angular2-notifications';
-import {
-  FormGroup,
-  FormControl,
-  Validators
-} from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {FormValidationStyles} from '../shared/form-validation-styles';
 import {AmountDto} from './amount-dto';
 import {Observable} from 'rxjs';
-import {ResultDTO} from './result-dto';
-import {CheckDTO} from './check-dto';
 import {ErrorDetail} from '../shared/entity/error-detail';
 import {Transaction} from './transaction';
 import * as fileSaver from 'file-saver';
+import {Modal} from 'angular2-modal/plugins/bootstrap';
+import {Overlay} from 'angular2-modal';
 
 @Component({
   selector: 'app-coin-management',
@@ -53,12 +42,16 @@ export class CoinManagementComponent implements OnInit {
   replenishForm: FormGroup;
   withdrawForm: FormGroup;
   transferForm: FormGroup;
+  deleteForm: FormGroup;
 
   replenishFormStyles: FormValidationStyles;
   transferFormStyles: FormValidationStyles;
+  deleteFormStyles: FormValidationStyles;
 
   constructor(private coinService: CoinService,
-              private notificationService: NotificationsService) {
+              private notificationService: NotificationsService,
+              overlay: Overlay, vcRef: ViewContainerRef, public modal: Modal) {
+    overlay.defaultViewContainer = vcRef;
   }
 
   ngOnInit() {
@@ -89,6 +82,12 @@ export class CoinManagementComponent implements OnInit {
     });
 
     this.transferFormStyles = new FormValidationStyles(this.transferForm);
+
+    this.deleteForm = new FormGroup({
+      account: new FormControl('', Validators.required)
+    });
+
+    this.deleteFormStyles = new FormValidationStyles(this.deleteForm);
   }
 
   private loadData(): void {
@@ -254,10 +253,12 @@ export class CoinManagementComponent implements OnInit {
         try {
           // Unblock Attach file button
           this.blockAttachFileIfInProcess = false;
-          let errorDetail = <ErrorDetail> error.json();
+          let errorDetail = <ErrorDetail>error.json();
           if (!errorDetail.detail)
           //noinspection ExceptionCaughtLocallyJS
+          {
             throw errorDetail;
+          }
           this.notificationService.error('Error', errorDetail.detail);
         } catch (err) {
           console.log(err);
@@ -313,4 +314,42 @@ export class CoinManagementComponent implements OnInit {
     }
   }
 
+  deleteAccount(): void {
+    let accountDto = this.deleteForm.value ? this.deleteForm.value.account : null;
+
+    this.modal.confirm()
+      .size('sm')
+      .isBlocking(true)
+      .showClose(true)
+      .keyboard(27)
+      .title('Delete user')
+      .body('Do you really want to delete this account?')
+      .okBtn('Yes')
+      .okBtnClass('btn btn-success modal-footer-confirm-btn')
+      .cancelBtn('Cancel')
+      .cancelBtnClass('btn btn-secondary modal-footer-confirm-btn')
+      .open()
+      .then((response) => {
+        response.result.then(
+          () => {
+            this.coinService.deleteAccount(accountDto)
+              .subscribe(
+                () => {
+                },
+                error => {
+                  this.notificationService.error('Delete', error.body);
+                },
+                () => {
+                  this.loadData();
+                  this.notificationService.success('Delete', 'User ' + accountDto.ldapId + ' has been removed successfully');
+                });
+          },
+          () => {
+
+          }
+        );
+      });
+
+    this.deleteForm.reset({account: ''});
+  }
 }
